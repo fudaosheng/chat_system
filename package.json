@@ -1,0 +1,28 @@
+{
+  "name": "chat_system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-client": "cd client && npm run start",
+    "dev-server": "cd server && npm run start",
+    "start": "concurrently \"npm:dev-server\" \"npm:dev-client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitee.com:fudaosheng/chat_system.git"
+  },
+  "keywords": [
+    "chat",
+    "react",
+    "koa",
+    "mysql",
+    "聊天"
+  ],
+  "author": "fudaosheng",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^6.4.0"
+  }
+}
