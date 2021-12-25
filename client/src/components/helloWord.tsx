@@ -6,7 +6,9 @@ export const HelloWord: React.FC = () => {
     return (
         <div>
             <p>counte: {count}</p>
-            <button onClick={() => request({url: '/login'})}> + </button>
+            <button onClick={() => request({
+                url:'/test/login'
+            })}> + </button>
             <button onClick={() => setCount(count-1)}> - </button>
         </div>
     )

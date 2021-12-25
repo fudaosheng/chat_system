@@ -1,11 +1,8 @@
 import axios, {AxiosRequestConfig} from 'axios';
 
 export function request(config: AxiosRequestConfig) {
-    const baseURL = 'localhost:8000';
-
     const install = axios.create({
-        baseURL,
-        timeout: 2000
+        timeout: 2000,
     });
     install.interceptors.request.use(data => {
         return data;
