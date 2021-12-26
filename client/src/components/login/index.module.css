@@ -9,7 +9,7 @@
 }
 
 .loginForm {
-  height: calc(100% - 100px);
+  /* height: calc(100% - 100px); */
   padding: 24px 0;
 }
 
@@ -21,7 +21,8 @@
   width: initial;
 }
 
-.loginForm .submit {
+.loginForm .submit, .registry {
+  margin: 12px 0;
   display: flex;
   justify-content: center;
 }

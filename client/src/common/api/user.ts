@@ -1,11 +1,21 @@
 import request from '.';
 
-export interface LoginParams {
+export interface LoginRequest {
   name: string;
   passowrd: string;
 }
-export const login = (data: LoginParams) => request({
+export const login = (data: LoginRequest) => request({
   url: 'user/login',
+  method: 'POST',
+  data
+});
+
+export interface RegistryRequest {
+  name: string;
+  passowrd: string;
+}
+export const registryUser = (data: RegistryRequest) => request({
+  url: 'user/registry',
   method: 'POST',
   data
 });
