@@ -1,0 +1,27 @@
+.main {
+  height: 100%;
+}
+
+.avatar {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.loginForm {
+  height: calc(100% - 100px);
+  padding: 24px 0;
+}
+
+.loginForm :global .semi-form-field {
+  justify-content: center;
+}
+
+.loginForm :global .semi-form-field .semi-form-field-main {
+  width: initial;
+}
+
+.loginForm .submit {
+  display: flex;
+  justify-content: center;
+}
