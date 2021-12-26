@@ -1,6 +1,7 @@
 const app = require('./app/index');
 require('dotenv').config();
 require('colors');
+
 const { PORT } = process.env;
 
 app.listen(PORT, () => {
@@ -10,4 +11,8 @@ app.listen(PORT, () => {
 process.once('SIGUSR2', function () {
   console.log(`pid: ${process.pid}`.red);
   process.kill(process.pid, 'SIGUSR2');
+});
+
+process.on('SIGINT', function () {
+  process.kill(process.pid, 'SIGINT');
 });

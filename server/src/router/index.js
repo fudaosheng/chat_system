@@ -4,7 +4,7 @@ require('colors');
 
 function registryRoutes() {
     const paths = fs.readdirSync(__dirname);
-    console.log(`registry router list: ${paths}`.green);
+    console.log('registry router: ', paths);
     paths.forEach(path => {
         if(path === 'index.js') {
             return;
