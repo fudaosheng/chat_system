@@ -1,18 +1,21 @@
 import React, { createContext, Dispatch, memo, useReducer } from 'react';
-import { GlobalAction } from './action';
+import { GlobalActionType } from './action';
 import { reducer as globalReducer } from './reducer';
-
 export interface GlobalState {
-    userInfo: Record<string, any>;
+    userInfo: UserInfo;
 }
 
 const initState: GlobalState = {
-    userInfo: {}
+    userInfo: {
+        token: '',
+        name: '',
+        avatar: ''
+    }
 }
 
 interface ContextType {
     state: GlobalState;
-    dispatch: Dispatch<GlobalAction>;
+    dispatch: Dispatch<GlobalActionType>;
 }
 export const GlobalContext = createContext<ContextType>({ state: initState, dispatch: () => {} });
 GlobalContext.displayName = 'globalContext';

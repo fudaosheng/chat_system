@@ -4,6 +4,8 @@ import { useContext } from 'react';
 import { GlobalContext } from 'common/store';
 import styles from './index.module.css';
 import { login, LoginRequest, RegistryRequest, registryUser } from 'common/api/user';
+import { GlobalAction } from 'common/store/action';
+import { LOCAL_STORAGE_USER_INFO } from 'common/constance/localStorage';
 
 enum Type {
     LOGIN, // 登陆
@@ -12,7 +14,8 @@ enum Type {
 
 export const Login: React.FC = () => {
   const {
-    state: { userInfo = {} },
+    state: { userInfo },
+    dispatch
   } = useContext(GlobalContext);
 
   const [loading, setLoading] = useState(false);
@@ -37,7 +40,14 @@ export const Login: React.FC = () => {
     try {
       // 登陆
       if(type === Type.LOGIN) {
-        await login(values as unknown as LoginRequest);
+        const resp = await login(values as unknown as LoginRequest);
+        
+        const userInfo = resp?.data || {};
+        // 设置用户信息
+        dispatch(GlobalAction.setUserInfo(userInfo));
+        // 设置缓存
+        localStorage.setItem(LOCAL_STORAGE_USER_INFO, JSON.stringify(userInfo));
+
         Toast.info('登陆成功');
       } else if(type === Type.REGISTRY) { // 注册
         await registryUser(values as unknown as RegistryRequest)
@@ -51,8 +61,9 @@ export const Login: React.FC = () => {
 
   // 弹窗标题
   const title = useMemo((): string => type === Type.LOGIN ? '登陆' : '注册', [type]);
+
   return (
-    <Modal height={500} visible={!userInfo?.token} footer={null} title={title} closable={false}>
+    <Modal key={userInfo?.token} height={500} visible={!localStorage.getItem(LOCAL_STORAGE_USER_INFO)} footer={null} title={title} closable={false}>
       <div className={styles.main}>
         <div className={styles.avatar}>
           <Avatar style={{ width: 100, height: 100 }} />

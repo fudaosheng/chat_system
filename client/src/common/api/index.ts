@@ -16,7 +16,7 @@ export function request(config: AxiosRequestConfig) {
             Toast.error(data?.data?.message || 'System error');
             throw data;
         }
-        return data;
+        return data?.data;
     }, err => {
         throw err;
     });
