@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, NavLinkProps } from 'react-router-dom';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 
 const Link: React.FC<NavLinkProps> = (props: NavLinkProps) => {
     return <NavLink exact activeClassName={styles.active} {...props} />

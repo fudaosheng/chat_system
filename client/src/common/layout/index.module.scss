@@ -8,8 +8,27 @@
 .layout_header {
   height: 60px;
   border: 1px solid #ccc;
+  display: flex;
+  .headerLeft {
+    width: 240px;
+    border: 1px solid green;
+  }
+  .headerRight {
+    flex: 1;
+    display: flex;
+    .headerRightNav {
+      flex: 1;
+    }
+    .userInfo {
+      width: 200px;
+      border: 1px solid pink;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding-right: 24px;
+    }
+  }
 }
-
 .layout_main {
   height: calc(100vh - 120px);
   display: flex;

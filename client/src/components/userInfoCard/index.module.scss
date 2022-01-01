@@ -1,0 +1,47 @@
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userInfoCard {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+
+  .top {
+    min-height: 190px;
+    border: 1px solid yellow;
+
+    .avatar {
+      transform: translateY(-30%);
+      @include flex-center;
+    }
+
+    .main {
+      @include flex-center;
+      flex-direction: column;
+
+      .name {
+        font-weight: 600;
+        font-size: 24px;
+      }
+
+      .bio {
+        font-size: 12px;
+        color: var(--text-color2);
+        @include flex-center;
+        margin: 4px 0;
+      }
+    }
+  }
+}
+
+.iconCamera {
+    background-color: rgba(0,0,0,.4);
+    height: 100%;
+    width: 100%;
+    @include flex-center;
+    color: #FFF;
+}
