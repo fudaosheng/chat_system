@@ -9,6 +9,7 @@ function makeResp({ code, message = 'success', data }) {
     if (data && Object.keys(data).length) {
       resp.data = data;
     }
+    // 防止继续往下执行
     this.body = resp;
   }
 

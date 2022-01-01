@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useMemo } from 'react';
-import { Modal, Avatar, Form, Button } from '@douyinfe/semi-ui';
+import { Modal, Avatar, Form, Button, Toast } from '@douyinfe/semi-ui';
 import { useContext } from 'react';
 import { GlobalContext } from 'common/store';
 import styles from './index.module.css';
@@ -33,14 +33,16 @@ export const Login: React.FC = () => {
 
   // 登陆
   const handleLogin = useCallback(async (values: Record<string, string>) => {
-    console.log(values);
     setLoading(true);
     try {
       // 登陆
       if(type === Type.LOGIN) {
         await login(values as unknown as LoginRequest);
+        Toast.info('登陆成功');
       } else if(type === Type.REGISTRY) { // 注册
         await registryUser(values as unknown as RegistryRequest)
+        Toast.info('注册成功，请登陆');
+        setType(Type.LOGIN)
       }
     } finally {
       setLoading(false);

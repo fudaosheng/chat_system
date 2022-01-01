@@ -14,5 +14,6 @@ process.once('SIGUSR2', function () {
 });
 
 process.on('SIGINT', function () {
+  console.log(`SIGINT, pid: ${process.pid}`.red);
   process.kill(process.pid, 'SIGINT');
 });

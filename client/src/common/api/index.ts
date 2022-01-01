@@ -1,4 +1,6 @@
+import { Toast } from '@douyinfe/semi-ui';
 import axios, {AxiosRequestConfig} from 'axios';
+import { STATUS_CODES } from 'common/constance';
 
 export function request(config: AxiosRequestConfig) {
     const install = axios.create({
@@ -10,6 +12,10 @@ export function request(config: AxiosRequestConfig) {
         return err
     });
     install.interceptors.response.use(data => {
+        if(data?.data?.code !== STATUS_CODES.SUCCESS) {
+            Toast.error(data?.data?.message || 'System error');
+            throw data;
+        }
         return data;
     }, err => {
         throw err;
