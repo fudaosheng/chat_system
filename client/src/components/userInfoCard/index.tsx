@@ -1,8 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Avatar, Button, Popover, Upload } from '@douyinfe/semi-ui';
+import { customRequestArgs } from '@douyinfe/semi-ui/upload';
 import { IconEdit, IconCamera } from '@douyinfe/semi-icons';
 import { GlobalContext } from 'common/store';
 import styles from './index.module.scss';
+import { request } from 'common/api';
+
+const imageOnly = 'image/*';
 
 const hoverMask = (
   <div className={styles.iconCamera}>
@@ -15,6 +19,17 @@ export const UserInfoCard: React.FC = () => {
     state: { userInfo },
   } = useContext(GlobalContext);
 
+  const handleUploadImg = useCallback(async (params: customRequestArgs) =>{
+    console.log(params);
+    const formData = new FormData();
+    formData.append('img', params.fileInstance);
+    return await request({
+      url: '/upload/img',
+      method: 'POST',
+      data: formData
+    });
+  }, []);
+
   const renderUserInfoCard = () => {
     return (
       <div className={styles.userInfoCard}>
@@ -22,10 +37,12 @@ export const UserInfoCard: React.FC = () => {
           <div className={styles.avatar}>
             <Upload
               className="avatar-upload"
-              // action={api}
+              action={''}
+              name='img'
               // onSuccess={onSuccess}
-              // accept={imageOnly}
+              accept={imageOnly}
               showUploadList={false}
+              customRequest={handleUploadImg}
               // onError={() => Toast.error('上传失败')}
             >
               <Avatar size="large" hoverMask={hoverMask} />

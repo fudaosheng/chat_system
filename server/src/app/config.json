@@ -1,3 +1,3 @@
 {
-    "middleware": ["headers"]
+    "middleware": ["headers", "authentication"]
 }

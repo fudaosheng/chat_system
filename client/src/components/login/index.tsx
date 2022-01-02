@@ -5,7 +5,7 @@ import { GlobalContext } from 'common/store';
 import styles from './index.module.css';
 import { login, LoginRequest, RegistryRequest, registryUser } from 'common/api/user';
 import { GlobalAction } from 'common/store/action';
-import { LOCAL_STORAGE_USER_INFO } from 'common/constance/localStorage';
+import { LOCAL_STORAGE_USER_INFO, LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
 
 enum Type {
     LOGIN, // 登陆
@@ -47,6 +47,7 @@ export const Login: React.FC = () => {
         dispatch(GlobalAction.setUserInfo(userInfo));
         // 设置缓存
         localStorage.setItem(LOCAL_STORAGE_USER_INFO, JSON.stringify(userInfo));
+        localStorage.setItem(LOCAL_STORAGE_USER_TOKEN, userInfo?.token || '');
 
         Toast.info('登陆成功');
       } else if(type === Type.REGISTRY) { // 注册
@@ -63,7 +64,7 @@ export const Login: React.FC = () => {
   const title = useMemo((): string => type === Type.LOGIN ? '登陆' : '注册', [type]);
 
   return (
-    <Modal key={userInfo?.token} height={500} visible={!localStorage.getItem(LOCAL_STORAGE_USER_INFO)} footer={null} title={title} closable={false}>
+    <Modal key={userInfo?.token} height={500} visible={!localStorage.getItem(LOCAL_STORAGE_USER_TOKEN)} footer={null} title={title} closable={false}>
       <div className={styles.main}>
         <div className={styles.avatar}>
           <Avatar style={{ width: 100, height: 100 }} />
