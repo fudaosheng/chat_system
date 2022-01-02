@@ -5,7 +5,7 @@ import { GlobalContext } from 'common/store';
 import styles from './index.module.css';
 import { login, LoginRequest, RegistryRequest, registryUser } from 'common/api/user';
 import { GlobalAction } from 'common/store/action';
-import { LOCAL_STORAGE_USER_INFO, LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
+import { LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
 
 enum Type {
     LOGIN, // 登陆
@@ -45,9 +45,6 @@ export const Login: React.FC = () => {
         const userInfo = resp?.data || {};
         // 设置用户信息
         dispatch(GlobalAction.setUserInfo(userInfo));
-        // 设置缓存
-        localStorage.setItem(LOCAL_STORAGE_USER_INFO, JSON.stringify(userInfo));
-        localStorage.setItem(LOCAL_STORAGE_USER_TOKEN, userInfo?.token || '');
 
         Toast.info('登陆成功');
       } else if(type === Type.REGISTRY) { // 注册

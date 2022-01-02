@@ -10,3 +10,10 @@ export const uploadImg = (img: File) => {
     data: formData,
   });
 };
+
+
+export const getImgByFilename = (filename: string) => {
+  return request({
+    url: '/file/get/img/' + filename,
+  });
+}

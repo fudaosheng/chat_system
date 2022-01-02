@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-require('dotenv').config();
 
 const {
   MYSQL_LOCALHOST,
@@ -9,7 +8,7 @@ const {
   MYSQL_DATABASE,
   MYSQL_CONNECTION_LIMIT,
   MYSQL_QUEUE_LIMIT,
-} = process.env;
+} = require('./env');
 
 const connectionPoolConfig = {
   host: MYSQL_LOCALHOST,

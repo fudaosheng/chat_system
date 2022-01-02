@@ -15,7 +15,14 @@ export interface RegistryRequest {
   passowrd: string;
 }
 export const registryUser = (data: RegistryRequest) => request({
-  url: 'user/registry',
+  url: '/user/registry',
   method: 'POST',
   data
+});
+
+
+export const setUserAvatar = (avatar: string) => request({
+  url: '/user/update/avatar',
+  method: 'POST',
+  data: { avatar }
 });
