@@ -5,6 +5,7 @@ import { IconEdit, IconCamera } from '@douyinfe/semi-icons';
 import { GlobalContext } from 'common/store';
 import styles from './index.module.scss';
 import { request } from 'common/api';
+import { uploadImg } from 'common/api/file';
 
 const imageOnly = 'image/*';
 
@@ -20,14 +21,7 @@ export const UserInfoCard: React.FC = () => {
   } = useContext(GlobalContext);
 
   const handleUploadImg = useCallback(async (params: customRequestArgs) =>{
-    console.log(params);
-    const formData = new FormData();
-    formData.append('img', params.fileInstance);
-    return await request({
-      url: '/upload/img',
-      method: 'POST',
-      data: formData
-    });
+    return uploadImg(params.fileInstance);
   }, []);
 
   const renderUserInfoCard = () => {

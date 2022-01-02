@@ -1,14 +1,17 @@
 const KoaRouter = require('koa-router');
 const multer = require('@koa/multer');
 const { imgUploadPath } = require('../../constance');
-const uploadFileController = require('../../controller/uploadFile');
+const fileController = require('../../controller/file');
 
-const router = new KoaRouter({ prefix: '/upload' })
+const router = new KoaRouter({ prefix: '/file' })
 
 // 图片上传
 const uploadImgMulter = multer({ dest: imgUploadPath });
 
 // multer.single只允许文件名是img的文件
-router.post('/img', uploadImgMulter.single('img') , uploadFileController.uploadImg);
+router.post('/upload/img', uploadImgMulter.single('img') , fileController.uploadImg);
+
+// 查找图片
+router.get('/get/img/:filename', fileController.getImgByFilename);
 
 module.exports = router;
