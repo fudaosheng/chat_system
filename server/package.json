@@ -14,12 +14,14 @@
   "author": "fudaosheng",
   "license": "ISC",
   "dependencies": {
+    "@koa/multer": "^3.0.0",
     "colors": "^1.4.0",
     "dotenv": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
+    "multer": "^1.4.4",
     "mysql2": "^2.3.3"
   },
   "devDependencies": {

@@ -46,7 +46,7 @@ class UserController {
     }
 
     // 利用rsa256算法生成token
-    const token = ctx.service.userService.generateToken({ name, password });
+    const token = ctx.service.userService.generateToken({ name, password, userId: userInfo.id });
 
     // 将用户信息返回给前端，同时去掉密码信息
     delete userInfo.password;

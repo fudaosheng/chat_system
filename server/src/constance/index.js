@@ -1,3 +1,4 @@
+const path = require('path');
 /**
  * 请求状态吗
  */
@@ -13,6 +14,9 @@ const STATUS_CODE = {
   FORBIDDEN: 403,
 };
 
+const imgUploadPath = path.resolve(__dirname, '../../resource/img');
+
 module.exports = {
-  STATUS_CODE
+  STATUS_CODE,
+  imgUploadPath
 }
