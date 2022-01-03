@@ -8,11 +8,19 @@
   width: 320px;
   display: flex;
   flex-direction: column;
-  padding: 12px;
+  position: relative;
+  .editBtn {
+    font-weight: 500;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    z-index: 10;
+  }
 
   .top {
-    min-height: 190px;
-    border: 1px solid yellow;
+    padding: 12px;
+    background: radial-gradient(farthest-side at 60% 55%, #dfeefd, #ddedfd, #daebfe, #d8eafe);
 
     .avatar {
       transform: translateY(-30%);
@@ -33,6 +41,22 @@
         color: var(--text-color2);
         @include flex-center;
         margin: 6px 0;
+      }
+    }
+  }
+  .otherInfo {
+    font-size: 14px;
+    padding: 12px;
+    &Item {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      .label {
+        color: var(--text-color2);
+      }
+      .info {
+        font-weight: 500;
+        margin-left: 8px;
       }
     }
   }

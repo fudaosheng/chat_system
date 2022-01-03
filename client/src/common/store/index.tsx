@@ -10,7 +10,7 @@ const initState: GlobalState = {
         token: '',
         name: '',
         avatar: '',
-        bio: ''
+        bio: '',
     }
 }
 

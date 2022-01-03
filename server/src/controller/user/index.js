@@ -93,6 +93,38 @@ class UserController {
           : STATUS_CODE.ERROR,
     });
   }
+  // 设置个性签名
+  async setUserBio(ctx) {
+    const { bio } = ctx.request.body;
+    const userId = ctx.user.userId;
+
+    // 调用database服务修改字段
+    const result = await ctx.service.dbService.update({ bio }, { id: userId }, TABLE_NAMES.USERS);
+    return ctx.makeResp({ code: result.affectedRows !== undefined ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR })
+  }
+  // 更新用户信息，可全部更新
+  async updateUserInfo(ctx) {
+    const { sex, birthday, phone_num, name, password, avatar, bio } = ctx.request.body;
+    const _userInfo = {  sex, birthday, phone_num, name, password, avatar, bio  };
+    const userInfo = {};
+    // 对用户信息进行效验，过滤掉无效值，同时如果字段为密码需要进行加密
+    for(let key in _userInfo) {
+      const value = _userInfo[key];
+      if(value === undefined || value === '') {
+        continue;
+      }
+      userInfo[key] = value;
+      if(key === 'password') {
+        userInfo['password'] = encryption(value);
+      }
+    }
+    console.log('update user info', userInfo);
+
+    // 从context拿出userId
+    const userId = ctx.user.userId;
+    const result = await ctx.service.dbService.update(userInfo, { id: userId }, TABLE_NAMES.USERS);
+    return ctx.makeResp({ code: result.affectedRows !== undefined ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR })
+  }
 }
 
 module.exports = new UserController();

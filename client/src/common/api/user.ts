@@ -26,3 +26,24 @@ export const setUserAvatar = (avatar: string) => request({
   method: 'POST',
   data: { avatar }
 });
+
+export const setUserBio = (bio: string) => request({
+  url: '/user/update/bio',
+  method: 'POST',
+  data: { bio }
+});
+
+interface UpdateUserInfoRequest {
+  name?: string;
+  password?: string;
+  birthday?: string;
+  sex?: number;
+  phone_num?: string;
+  avatar?: string;
+  bio?: string;
+}
+export const updateUserInfo = (userInfo: UpdateUserInfoRequest) => request({
+  url: '/user/update/info',
+  method: 'POST',
+  data: userInfo
+});
