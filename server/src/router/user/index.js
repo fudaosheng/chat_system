@@ -1,7 +1,7 @@
 const userController = require('../../controller/user');
 const KoaRouter = require('koa-router');
 
-const router = new KoaRouter({ prefix: '/user' });
+const router = new KoaRouter({ prefix: '/api/user' });
 
 router.post('/login', userController.login);
 

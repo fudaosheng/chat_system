@@ -4,7 +4,7 @@ const { STATUS_CODE } = require('../constance');
 const { PUBLIC_KEY } = require('../constance/keys');
 const noNeedAuthenticationPath = ['/user/login', '/user/registry', '/file'];
 
-const authentication = async (ctx, next) => {
+const authenticate = async (ctx, next) => {
   const { url: rawUrl } = ctx.request;
   
   // 为了防止get请求query字符串中含有上面不需鉴权的字符串而绕过鉴权;
@@ -40,4 +40,4 @@ const authentication = async (ctx, next) => {
   }
 };
 
-module.exports = authentication;
+module.exports = authenticate;

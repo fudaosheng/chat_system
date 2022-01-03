@@ -3,7 +3,7 @@ const multer = require('@koa/multer');
 const { imgUploadPath } = require('../../constance');
 const fileController = require('../../controller/file');
 
-const router = new KoaRouter({ prefix: '/file' })
+const router = new KoaRouter({ prefix: '/api/file' });
 
 // 图片上传
 const uploadImgMulter = multer({ dest: imgUploadPath });

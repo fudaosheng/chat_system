@@ -4,6 +4,7 @@ import request from '.';
 export const uploadImg = (img: File) => {
   const formData = new FormData();
   formData.append('img', img);
+
   return request({
     url: '/file/upload/img',
     method: 'POST',

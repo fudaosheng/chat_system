@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const {
   HOST,
-  SERVER_PORT
+  CLIENT_PORT
 } = require('../../app/env');
 const { STATUS_CODE, imgUploadPath } = require('../../constance');
 const { TABLE_NAMES } = require('../../constance/tables');
@@ -16,8 +16,8 @@ class FileController {
     const successed = result.insertId !== undefined;
     if(successed) {
       const sep = path.sep;
-      // 设置图片url地址, 将端口设置成前端端口号，否则会跨域
-      fileInfo.url = `${HOST}:${SERVER_PORT+sep}file${sep}get${sep}img${sep+filename}`;
+      // 设置图片url地址, 不设置host + port，前端通过get请求获取图片
+      fileInfo.url = `${sep}api${sep}file${sep}get${sep}img${sep+filename}`;
     }
     return ctx.makeResp({
       code: successed ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR,

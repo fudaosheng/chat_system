@@ -10,7 +10,6 @@ function registryRoutes() {
             return;
         }
         const route = require(`.${_path.sep}` + path);
-        console.log(this);
         this.use(route.routes());
         this.use(route.allowedMethods());
     })

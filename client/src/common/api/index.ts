@@ -5,6 +5,7 @@ import { LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
 
 export function request(config: AxiosRequestConfig) {
   const install = axios.create({
+    baseURL: '/api',
     timeout: 2000,
   });
   install.interceptors.request.use(
