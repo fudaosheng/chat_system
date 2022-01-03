@@ -4,68 +4,15 @@
   padding: 0;
   box-sizing: border-box;
 }
-
-.layout_header {
-  height: 60px;
-  // border: 1px solid var(--border-color);
-  background-color: #e7e2e3;
+.layout_main {
+  height: calc(100vh - 60px);
   display: flex;
-  .headerLeft {
-    padding: 0 4px 0 24px;
-    width: 240px;
+
+  .layout_main_content {
+    flex: 1;
+    border-right: 1px dashed var(--border-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    .addBtn {
-      margin-left: 12px;
-      border-radius: 100px;
-      background-color: #fff;
-    }
+    justify-content: center;
   }
-  .headerRight {
-    flex: 1;
-    display: flex;
-    .headerRightNav {
-      flex: 1;
-    }
-    .userInfo {
-      width: 200px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding-right: 24px;
-    }
-  }
-}
-.layout_main {
-  height: calc(100vh - 120px);
-  display: flex;
-}
-
-.layout_main_nav{
-  width: 240px;
-  border-right: 1px solid var(--border-color);
-}
-
-.layout_main_nav a {
-  display: block;
-  width: 240px;
-  height: 50px;
-  line-height: 50px;
-  padding-left: 20px;
-  text-decoration: none;
-  color: initial;
-}
-.layout_main_nav .active {
-  color: red;
-}
-
-.layout_main_content{
-  flex: 1;
-  border-right: 1px dashed var(--border-color);
-}
-
-.layout_footer {
-  height: 60px;
-  border: 1px solid var(--border-color);
 }

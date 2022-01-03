@@ -1,0 +1,32 @@
+.layout_header {
+  height: 60px;
+  // border: 1px solid var(--border-color);
+  background-color: #e7e2e3;
+  display: flex;
+  .headerLeft {
+    padding: 0 4px 0 24px;
+    width: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .addBtn {
+      margin-left: 12px;
+      border-radius: 100px;
+      background-color: #fff;
+    }
+  }
+  .headerRight {
+    flex: 1;
+    display: flex;
+    .headerRightNav {
+      flex: 1;
+    }
+    .userInfo {
+      width: 200px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding-right: 24px;
+    }
+  }
+}
