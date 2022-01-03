@@ -1,14 +1,17 @@
 # User表
 ```
-CREATE TABLE users (
-id int PRIMARY KEY auto_increment,
-name varchar(50) NOT NULL,
-password varchar(30) NOT NULL,
-age int,
-sex int,
-phone_num VARCHAR(11) UNIQUE,
-avatar VARCHAR(100)
-);
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `password` varchar(200) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `sex` int DEFAULT NULL,
+  `phone_num` varchar(11) DEFAULT NULL,
+  `avatar` varchar(100) DEFAULT NULL,
+  `bio` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `phone_num` (`phone_num`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3
 ```
 
 

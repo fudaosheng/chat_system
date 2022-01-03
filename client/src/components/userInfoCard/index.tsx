@@ -165,10 +165,10 @@ export const UserInfoCard: React.FC = () => {
         // 效验失败会抛出error,能走到下面说明效验成功
         const result = await formApi.current.validate();
         const birthday = formatDate(new Date(result.birthday), 'yyyy-MM-dd');
-        const userOtherInfo = { ...result, birthday };
+        const userOtherInfo: Record<string, any> = { ...result, birthday };
         await updateUserInfo(userOtherInfo);
         // 更新全局的用户信息
-        dispatch(GlobalAction.setUserInfo({ ...userInfo, ...userOtherInfo, sex: Number(userInfo.sex) }));
+        dispatch(GlobalAction.setUserInfo({ ...userInfo, ...userOtherInfo, sex: Number(userOtherInfo.sex) }));
         setEditOtherInfo(false);
       } finally {
       }
