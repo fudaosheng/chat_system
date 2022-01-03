@@ -107,6 +107,9 @@ export const UserInfoCard: React.FC = () => {
           <span className={styles.label}>生日</span>
           <span className={styles.info}>{birthday || '请完善信息'}</span>
         </div>
+        <Button className={styles.logout} type="tertiary" onClick={() => dispatch(GlobalAction.clearUserInfo())}>
+          退出登陆
+        </Button>
       </>
     );
   };

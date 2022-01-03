@@ -1,17 +1,19 @@
 import React, { createContext, Dispatch, memo, useReducer } from 'react';
 import { GlobalActionType } from './action';
 import { reducer as globalReducer } from './reducer';
+
+export const defaultUserInfo = {
+    token: '',
+    name: '',
+    avatar: '',
+    bio: '',
+};
 export interface GlobalState {
     userInfo: UserInfo;
 }
 
 const initState: GlobalState = {
-    userInfo: {
-        token: '',
-        name: '',
-        avatar: '',
-        bio: '',
-    }
+    userInfo: defaultUserInfo
 }
 
 interface ContextType {
