@@ -20,6 +20,16 @@
     display: flex;
     .headerRightNav {
       flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .link {
+        margin: 0px 20px;
+        color: #888a91;
+      }
+      .activeLink {
+        color: #52b5ef;
+      }
     }
     .userInfo {
       width: 200px;

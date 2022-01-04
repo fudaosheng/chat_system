@@ -1,0 +1,23 @@
+.chat {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+
+  .contacts {
+    width: 240px;
+    border-right: 1px solid var(--border-color);
+  }
+  .emptyContacts {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .conversations {
+    flex: 1;
+    border-right: 1px dashed var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

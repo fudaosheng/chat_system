@@ -6,13 +6,4 @@
 }
 .layout_main {
   height: calc(100vh - 60px);
-  display: flex;
-
-  .layout_main_content {
-    flex: 1;
-    border-right: 1px dashed var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 }
