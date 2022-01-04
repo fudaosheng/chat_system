@@ -3,7 +3,7 @@ import { NavLink, NavLinkProps } from 'react-router-dom';
 import { IconComment, IconUserSetting, IconGlobe } from '@douyinfe/semi-icons';
 import { Searcher } from 'components/searcher';
 import { UserInfoCard } from 'components/userInfoCard';
-import { AddButton } from 'components/addButton';
+import { AddButton } from 'components/addContacts';
 import styles from './index.module.scss';
 
 interface Router extends NavLinkProps {
