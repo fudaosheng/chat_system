@@ -3,7 +3,17 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { STATUS_CODES } from 'common/constance';
 import { LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
 
-export function request(config: AxiosRequestConfig) {
+const formatURLQuery = (obj: Record<string, string>): string => {
+  return Object.entries(obj || {}).map(item => item.join('=')).join('&');
+}
+
+export interface BaseResponse {
+  code: number;
+  message: string;
+  data: any;
+}
+
+export function request(config: AxiosRequestConfig): BaseResponse {
   const install = axios.create({
     baseURL: '/api',
     timeout: 2000,
@@ -12,11 +22,12 @@ export function request(config: AxiosRequestConfig) {
     data => {
       if (data?.headers) {
         const token = localStorage.getItem(LOCAL_STORAGE_USER_TOKEN);
-        console.log('token', token);
-        
         if (token) {
           data.headers['Authorization'] = 'Bearer ' + token;
         }
+      }
+      if(data?.method?.toLocaleUpperCase() === 'GET') {;
+        data.url = data.url + '?' + formatURLQuery(config.data);
       }
 
       return data;
@@ -37,7 +48,7 @@ export function request(config: AxiosRequestConfig) {
       throw err;
     }
   );
-  return install(config);
+  return install(config) as unknown as BaseResponse;
 }
 
 export default request;

@@ -15,6 +15,7 @@
     "classnames": "^2.3.1",
     "http-proxy-middleware": "^2.0.1",
     "immer": "^9.0.7",
+    "lodash": "^4.17.21",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -48,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.178",
     "@types/react-router-dom": "^5.1.7"
   }
 }

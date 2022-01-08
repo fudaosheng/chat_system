@@ -19,7 +19,7 @@ export const AddButton: React.FC<ButtonProps> = (props: ButtonProps) => {
         }>
         <Button {...props} icon={<IconPlus />}></Button>
       </Dropdown>
-      <AddContactModal visible={addContactModalVisible} onCancel={() => setAddContactModalVisible(false)} />
+      <AddContactModal key={addContactModalVisible ? 1 : 0} visible={addContactModalVisible} onCancel={() => setAddContactModalVisible(false)} />
     </>
   );
 };

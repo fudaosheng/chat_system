@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import { Avatar, Button, Popover, Upload, Toast, Input, Form } from '@douyinfe/semi-ui';
 import { customRequestArgs } from '@douyinfe/semi-ui/upload';
+import { PopoverProps } from '@douyinfe/semi-ui/popover';
 import { FormApi } from '@douyinfe/semi-ui/form';
 import { IconEdit, IconCamera } from '@douyinfe/semi-icons';
 import { GlobalContext } from 'common/store';
@@ -19,11 +20,13 @@ const hoverMask = (
   </div>
 );
 
-export const UserInfoCard: React.FC = () => {
+export const UserInfoCard: React.FC<PopoverProps> = (props: PopoverProps) => {
   const {
     state: { userInfo },
     dispatch,
   } = useContext(GlobalContext);
+
+  const { children, ...restProps } = props;
 
   // 个性签名
   const [editBio, setEditBio] = useState(false);
@@ -91,10 +94,14 @@ export const UserInfoCard: React.FC = () => {
 
   // 渲染其他用户信息
   const renderOtherInfo = () => {
-    const { birthday, sex, phone_num } = userInfo;
+    const { birthday, sex, phone_num, id } = userInfo;
     const sexInfo = sex ? (sex === SEX.MAN ? '男' : '女') : undefined;
     return (
       <>
+        <div className={styles.otherInfoItem}>
+          <span className={styles.label}>ID</span>
+          <span className={styles.info}>{id || '请完善信息'}</span>
+        </div>
         <div className={styles.otherInfoItem}>
           <span className={styles.label}>手机</span>
           <span className={styles.info}>{phone_num || '请完善信息'}</span>
@@ -105,7 +112,7 @@ export const UserInfoCard: React.FC = () => {
         </div>
         <div className={styles.otherInfoItem}>
           <span className={styles.label}>生日</span>
-          <span className={styles.info}>{birthday || '请完善信息'}</span>
+          <span className={styles.info}>{formatDate(new Date(birthday || ''), 'yyyy-MM-dd') || '请完善信息'}</span>
         </div>
         <Button className={styles.logout} type="tertiary" onClick={() => dispatch(GlobalAction.clearUserInfo())}>
           退出登陆
@@ -207,8 +214,8 @@ export const UserInfoCard: React.FC = () => {
   };
   return (
     <div>
-      <Popover trigger="click" content={renderUserInfoCard()} position="bottomRight">
-        <Avatar src={userInfo.avatar}>{userInfo.name.substring(0, 2)}</Avatar>
+      <Popover trigger="click" content={renderUserInfoCard()} position="bottomRight" {...restProps}>
+        {children}
       </Popover>
     </div>
   );

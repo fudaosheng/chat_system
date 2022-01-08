@@ -52,6 +52,7 @@
       align-items: center;
       padding: 4px 0;
       .label {
+        min-width: 30px;
         color: var(--text-color2);
       }
       .info {

@@ -1,4 +1,4 @@
-import request from '.';
+import request, { BaseResponse } from '.';
 
 export interface LoginRequest {
   name: string;
@@ -47,3 +47,16 @@ export const updateUserInfo = (userInfo: UpdateUserInfoRequest) => request({
   method: 'POST',
   data: userInfo
 });
+
+export interface GetUserListResp extends BaseResponse {
+  data: Array<UserInfo>;
+}
+export const getUserListByName = (name: string): GetUserListResp => request({
+  url: '/user/get/user_list_by_name',
+  data: { name }
+});
+
+export const getUserById = (id: number): GetUserListResp => request({
+  url: '/user/get/user_by_id',
+  data: { id }
+})

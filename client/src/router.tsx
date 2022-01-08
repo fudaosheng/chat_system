@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Chat } from 'pages/chat';
 import { Contacts } from 'pages/contacts';
 import { AppLayout } from './common/layout';
@@ -19,6 +19,7 @@ export const AppRouter: React.FC = () => {
           <Route path="/explore">
             <Explore />
           </Route>
+          <Redirect to="/chat" />
         </Switch>
       </AppLayout>
     </BrowserRouter>

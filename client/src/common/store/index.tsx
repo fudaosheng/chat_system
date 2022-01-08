@@ -3,6 +3,7 @@ import { GlobalActionType } from './action';
 import { reducer as globalReducer } from './reducer';
 
 export const defaultUserInfo = {
+    id: 0,
     token: '',
     name: '',
     avatar: '',

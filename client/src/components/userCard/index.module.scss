@@ -1,0 +1,21 @@
+.userCard {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+
+  .userInfo {
+    flex: 1;
+    height: 100%;
+    margin-left: 12px;
+
+    .name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .bio {
+      color: var(--text-color2);
+    }
+  }
+}

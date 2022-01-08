@@ -1,4 +1,5 @@
 interface UserInfo {
+    id: number;
     token: string;
     name: string;
     avatar: string;
