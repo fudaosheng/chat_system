@@ -1,10 +1,11 @@
 const connections = require('../../app/database');
+require('colors');
 const { isDb, objNotEmpty, deleteEmptyField } = require('./utils');
 class DbService {
   /**
    *
-   * @param {*} query 查询条件对象
-   * @returns
+   * @param {*} query Record<string, string> => SQL精确查询条件
+   * @returns SQL精确查询条件
    */
   _queryCondition(query) {
     let condition = '';
@@ -24,7 +25,28 @@ class DbService {
 
   /**
    *
-   * @param {*} obj 要生成update SQL的assignmentList的对象
+   * @param {*} query Record<string, string> => 模糊查询的条件语句
+   * @returns name LIKE '%aa%' AND id LIKE '%12%'
+   */
+  _likeQueryCondition(query) {
+    let condition = '';
+    if (objNotEmpty(query)) {
+      const keys = Object.keys(query);
+      condition = keys.reduce((queryCondition, key, index) => {
+        if (index === keys.length - 1) {
+          queryCondition += `${key} LIKE '%${query[key]}%'`;
+        } else {
+          queryCondition += `${key} LIKE '%${query[key]}%' AND `;
+        }
+        return queryCondition;
+      }, '');
+    }
+    return condition;
+  }
+
+  /**
+   *
+   * @param {*} obj Record<string,string> => 更新SQL的assignmentList
    * @returns string
    */
   _assignmentList(obj) {
@@ -44,13 +66,33 @@ class DbService {
    *
    * @param {*} query 查询条件对象
    * @param {*} db 要查询的数据库名称
+   * @param {*} opt 可选配置项
+   * opt = {
+   *   isLikeQuery = false, 是否是模糊查询，默认精确查询
+   *   columns: [col1, col2, col3]，要查询的列
+   * }
    * @returns array<Record<string, unknown>>
    */
-  async query(query, db) {
+  async query(query, db, opt = {}) {
+    const { isLikeQuery = false, columns = [] } = opt;
+
     if (objNotEmpty(query) && isDb(db)) {
-      const queryCondition = this._queryCondition(query);
-      const SQL = `SELECT * FROM ${db} WHERE ${queryCondition}`;
+      // 查询条件
+      const queryCondition = isLikeQuery ? this._likeQueryCondition(query) : this._queryCondition(query);
+      // 要查询的列
+      const queryColumns = columns.length ? columns.join(', ') : '*';
+      const SQL = `SELECT ${queryColumns} FROM ${db} WHERE ${queryCondition}`;
       const values = Object.values(query);
+
+      // debug log
+      console.log(`*************************************************`.green);
+      if (isLikeQuery) {
+        console.log(`Query SQL：${SQL}`.green);
+      } else {
+        console.log(`Query SQL：${SQL}, values: ${values.join(', ')}`.green);
+      }
+      console.log(`*************************************************`.green);
+
       try {
         const result = await connections.query(SQL, values);
         return result[0];

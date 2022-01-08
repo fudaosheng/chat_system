@@ -14,4 +14,10 @@ router.post('/update/bio', userController.setUserBio);
 
 router.post('/update/info', userController.updateUserInfo);
 
+// 根据name模糊搜索用户
+router.get('/get/user_list_by_name', userController.getUserListByName);
+
+// 根据用户ID精确搜索
+router.get('/get/user_by_id', userController.getUserById);
+
 module.exports = router;
