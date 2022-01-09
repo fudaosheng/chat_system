@@ -1,7 +1,8 @@
 const { CONTACT_GROUP_TABLE, TABLE_NAMES } = require('../../constance/tables');
 const { STATUS_CODE } = require('../../constance');
-class GroupController {
-    async createGroup(ctx) {
+class ContactGroupController {
+    // 创建联系人分组
+    async createContactGroup(ctx) {
         const { name } = ctx.request.body;
         const userId = ctx.user.userId;
         // 想group表中插入数据
@@ -20,6 +21,11 @@ class GroupController {
         const result = await ctx.service.dbService.insert(groupRecord, TABLE_NAMES.CONTACT_GROUP);
         return ctx.makeResp({ code: result.insertId !== undefined ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR });
     }
+    // 查询联系人分组
+    async getContactGroupList(ctx) {
+        const userId = ctx.user.userId;
+        console.log('userId', userId);
+    }
 }
 
-module.exports = new GroupController();
+module.exports = new ContactGroupController();

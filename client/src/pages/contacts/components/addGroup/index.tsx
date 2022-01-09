@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Button, Modal, Input, Toast } from '@douyinfe/semi-ui';
 import styles from './index.module.scss';
-import { createGroup } from 'common/api/group';
+import { createContactGroup } from 'common/api/contactGroup';
 
 export const AddGroup: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -16,7 +16,7 @@ export const AddGroup: React.FC = () => {
     }
     setLoading(true);
     try {
-      await createGroup(value);
+      await createContactGroup(value);
       Toast.success('添加分组成功');
       setVisible(false);
     } finally {
