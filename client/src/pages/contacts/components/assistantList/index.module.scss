@@ -1,0 +1,17 @@
+.assistant {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  .right {
+    flex: 1;
+    margin-left: 12px;
+
+    .name {
+      font-size: 14px;
+    }
+  }
+}
+.active {
+  background-color: var(--shadow-color);
+}

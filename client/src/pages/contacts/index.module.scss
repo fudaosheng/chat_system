@@ -1,20 +1,30 @@
 .contacts {
-  display: flex;
   height: 100%;
-  overflow: hidden;
+  .spin {
+    height: 100%;
+    overflow: hidden;
+    :global {
+      .semi-spin-children {
+        height: 100%;
+        display: flex;
+        overflow: hidden;
+      }
+    }
+  }
 
-  .group {
+  .sider {
     width: var(--sider-width);
     border-right: 1px solid var(--border-color);
-    padding-left: 24px;
+    // padding-left: 24px;
     .title {
+      padding-left: 12px;
       font-size: 14px;
       margin: 24px 0 16px 0;
       font-weight: 600;
     }
   }
 
-  .detailInfo {
+  .main {
     flex: 1;
     overflow: scroll;
   }
