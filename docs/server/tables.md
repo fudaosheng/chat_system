@@ -54,13 +54,15 @@ CREATE TABLE `apply_contact_ticket` (
 
 # 联系人分组表
 ```
-CREATE TABLE group (
-  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name varchar(30) NOT NULL, --分组名称
-  user_id INT NOT NULL, --分组属于谁
-  contact_ids TEXT, -- 联系人
-  create_time timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  update_time timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-)
+CREATE TABLE `contact_group` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `user_id` int NOT NULL,
+  `contact_ids` text,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `contact_group_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3
 ```

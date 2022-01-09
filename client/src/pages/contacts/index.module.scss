@@ -1,0 +1,21 @@
+.contacts {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+
+  .group {
+    width: var(--sider-width);
+    border-right: 1px solid var(--border-color);
+    padding-left: 24px;
+    .title {
+      font-size: 14px;
+      margin: 24px 0;
+      font-weight: 600;
+    }
+  }
+
+  .detailInfo {
+    flex: 1;
+    overflow: scroll;
+  }
+}

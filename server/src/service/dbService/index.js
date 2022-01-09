@@ -110,9 +110,16 @@ class DbService {
       const keys = Object.keys(record);
       const columns = keys.join(', ');
       const placeholders = new Array(keys.length).fill('?').join(', ');
-      const SQL = `INSERT INTO ${db} (${columns}) VALUES (${placeholders})`;
+      const SQL = 'INSERT INTO ' + '`' + db + '`' + ` (${columns}) VALUES (${placeholders})`;
+
+      const values = Object.values(record);
+
+      console.log(`*************************************************`.green);
+      console.log(`Insert SQL：${SQL}, values: ${values.join(', ')}`.green);
+      console.log(`*************************************************`.green);
+
       try {
-        const result = await connections.execute(SQL, Object.values(record));
+        const result = await connections.execute(SQL, values);
         return result[0];
       } catch (error) {
         throw error;
