@@ -51,12 +51,12 @@ export const updateUserInfo = (userInfo: UpdateUserInfoRequest) => request({
 export interface GetUserListResp extends BaseResponse {
   data: Array<UserInfo>;
 }
-export const getUserListByName = (name: string): GetUserListResp => request({
+export const getUserListByName = (name: string): Promise<GetUserListResp> => request({
   url: '/user/get/user_list_by_name',
   data: { name }
 });
 
-export const getUserById = (id: number): GetUserListResp => request({
+export const getUserById = (id: number): Promise<GetUserListResp> => request({
   url: '/user/get/user_by_id',
   data: { id }
 })

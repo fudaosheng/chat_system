@@ -3,7 +3,12 @@ import { Button, Modal, Input, Toast } from '@douyinfe/semi-ui';
 import styles from './index.module.scss';
 import { createContactGroup } from 'common/api/contactGroup';
 
-export const AddGroup: React.FC = () => {
+interface Porps {
+  onChange: () => void; //添加联系人成功，触发更新
+}
+
+export const AddContactGroup: React.FC<Porps> = (props: Porps) => {
+  const { onChange } = props;
   const [visible, setVisible] = useState(false);
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,6 +22,7 @@ export const AddGroup: React.FC = () => {
     setLoading(true);
     try {
       await createContactGroup(value);
+      onChange();
       Toast.success('添加分组成功');
       setVisible(false);
     } finally {

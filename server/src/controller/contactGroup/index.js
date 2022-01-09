@@ -24,7 +24,9 @@ class ContactGroupController {
     // 查询联系人分组
     async getContactGroupList(ctx) {
         const userId = ctx.user.userId;
-        console.log('userId', userId);
+        const queryCondition = { [CONTACT_GROUP_TABLE.USER_ID]: userId };
+        const contactGroupList = await ctx.service.dbService.query(queryCondition, TABLE_NAMES.CONTACT_GROUP);
+        return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: contactGroupList });
     }
 }
 

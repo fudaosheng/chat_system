@@ -13,7 +13,7 @@ export interface BaseResponse {
   data: any;
 }
 
-export function request(config: AxiosRequestConfig): BaseResponse {
+export function request(config: AxiosRequestConfig): Promise<BaseResponse> {
   const install = axios.create({
     baseURL: '/api',
     timeout: 2000,
@@ -26,7 +26,7 @@ export function request(config: AxiosRequestConfig): BaseResponse {
           data.headers['Authorization'] = 'Bearer ' + token;
         }
       }
-      if(data?.method?.toLocaleUpperCase() === 'GET') {;
+      if(data?.method?.toLocaleUpperCase() === 'GET' && config.data) {;
         data.url = data.url + '?' + formatURLQuery(config.data);
       }
 
@@ -48,7 +48,7 @@ export function request(config: AxiosRequestConfig): BaseResponse {
       throw err;
     }
   );
-  return install(config) as unknown as BaseResponse;
+  return install(config) as unknown as Promise<BaseResponse>;
 }
 
 export default request;
