@@ -3,7 +3,7 @@ import { Spin } from '@douyinfe/semi-ui';
 import { AddContactGroup } from './components/addContactGroup';
 import styles from './index.module.scss';
 import { spinStyle } from 'common/constance';
-import { getContactList } from 'common/api/contactGroup';
+import { getContactGroupList } from 'common/api/contactGroup';
 import { ContactGroupList } from './components/contactGroupList';
 
 export interface ContactGroupStruct extends ContactGroup {
@@ -18,10 +18,10 @@ export const Contacts: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   // 获取联系人列表
-  const getContactListRequest = async (needLoading = true) => {
+  const getContactGroupListRequest = async (needLoading = true) => {
     needLoading && setLoading(true);
     try {
-      const { data } = await getContactList();
+      const { data } = await getContactGroupList();
       // 对联系人数据进行处理
       const newContactGroupList = data?.map(item => ({ ...item, label: item.name, value: item.id, key: String(item.id) }));
       setContactGroupList(newContactGroupList);
@@ -32,13 +32,13 @@ export const Contacts: React.FC = () => {
 
   useEffect(() => {
     // 获取联系人分组
-    getContactListRequest();
+    getContactGroupListRequest();
   }, []);
   return (
     <div className={styles.contacts}>
       <Spin spinning={loading} style={spinStyle} childStyle={spinStyle}>
         <div className={styles.group}>
-          <AddContactGroup onChange={() => getContactListRequest(false)} />
+          <AddContactGroup onChange={() => getContactGroupListRequest(false)} />
           <div className={styles.title}>好友列表</div>
           <ContactGroupList data={contactGroupList} />
         </div>

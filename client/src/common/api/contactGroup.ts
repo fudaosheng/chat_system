@@ -7,11 +7,11 @@ export const createContactGroup = (name: string) =>
     data: { name },
   });
 
-export interface GetContactListResp extends BaseResponse {
+export interface GetContactGroupListResp extends BaseResponse {
   data: Array<ContactGroup>;
 }
 // 查询联系人分组列表
-export const getContactList = (): Promise<GetContactListResp> =>
+export const getContactGroupList = (): Promise<GetContactGroupListResp> =>
   request({
     url: '/contact_group/get',
     method: 'GET',
