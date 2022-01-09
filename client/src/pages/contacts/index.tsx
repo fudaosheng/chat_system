@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom';
 import { Spin } from '@douyinfe/semi-ui';
 import { AddContactGroup } from './components/addContactGroup';
@@ -7,6 +7,8 @@ import { spinStyle } from 'common/constance';
 import { getContactGroupList } from 'common/api/contactGroup';
 import { ContactGroupList } from './components/contactGroupList';
 import { AssistantList } from './components/assistantList';
+import { ApplyContactTicketList } from './subPages/applyContactTicketList';
+import { GlobalContext } from 'common/store';
 
 export interface ContactGroupStruct extends ContactGroup {
   label: string;
@@ -17,6 +19,7 @@ export interface ContactGroupStruct extends ContactGroup {
 export const Contacts: React.FC = () => {
   const history = useHistory();
   const { path, url } = useRouteMatch();
+  const { state: { userInfo } } = useContext(GlobalContext);
   
   // 联系人分组
   const [contactGroupList, setContactGroupList] = useState<Array<ContactGroupStruct>>([]);
@@ -36,9 +39,12 @@ export const Contacts: React.FC = () => {
   }
 
   useEffect(() => {
+    if(!userInfo?.id) {
+      return;
+    }
     // 获取联系人分组
     getContactGroupListRequest();
-  }, []);
+  }, [userInfo.id]);
   return (
     <div className={styles.contacts}>
       <Spin wrapperClassName={styles.spin} spinning={loading}>
@@ -56,7 +62,7 @@ export const Contacts: React.FC = () => {
               path:{path},url：{url}
             </Route>
             <Route path={`${url}/apply_tickets`}>
-              好友申请工单
+              <ApplyContactTicketList />
             </Route>
           </Switch>
         </div>

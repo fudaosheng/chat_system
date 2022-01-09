@@ -2,6 +2,11 @@ const connections = require('../../app/database');
 require('colors');
 const { isDb, objNotEmpty, deleteEmptyField } = require('./utils');
 class DbService {
+
+  connections;
+  constructor() {
+    this.connections = connections;
+  }
   /**
    *
    * @param {*} query Record<string, string> => SQL精确查询条件

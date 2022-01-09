@@ -9,4 +9,13 @@ export const addContact = (data: AddContactRequest) => request({
     url: '/contact/add',
     method: 'POST',
     data
+});
+
+export interface GetApplyContactTicketListRequest {
+    currentPage: number;
+    pageSize: number;
+}
+export const getApplyContactTicketList = (data: GetApplyContactTicketListRequest) => request({
+    url: '/contact/get/apply_contact_ticket_list',
+    data,
 })

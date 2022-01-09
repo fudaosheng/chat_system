@@ -1,3 +1,5 @@
+const { TABLE_NAMES, USER_TABLE } = require('../constance/tables');
+
 const crypto = require('crypto');
 
 /** 时间格式化函数 */
@@ -30,7 +32,18 @@ const encryption = content => {
   return md5.update(content).digest('hex');
 }
 
+// 将一个数组转换成符合SQL规范的列字符串，如： table.`status` `status`
+const getTableSelectColumns = (columns = [], tableName = TABLE_NAMES.USERS) => {
+  return columns.map(k => `${tableName}.` + '`' + k + '` ' + '`' + k + '`').join(', ');
+}
+// 将一个数组转换成符合SQL JSON_OBJECT规范的列字符串，如： `status`, table.`status`
+const getJSONOBJECTColumns = (columns = [], tableName = TABLE_NAMES.USERS) => {
+  return columns.map(k => "'" + k + "', " + `${tableName}.` + '`' + k + '`').join(', ');
+}
+
 module.exports = {
   formatDate,
-  encryption
+  encryption,
+  getTableSelectColumns,
+  getJSONOBJECTColumns
 };
