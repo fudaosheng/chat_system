@@ -63,18 +63,31 @@ class ContactController {
     // user表中选择的列
     const userTableSelectColumns = Object.values(USER_TABLE).filter(k => k !== USER_TABLE.PASSWORD);
 
+    // 查询数据的条件
+    const queryCondition = `${TICKETS}.applicant_user_id = ${userId} || ${TICKETS}.target_user_id = ${userId}`;
+
     // 通过左连接将好友申请表和用户信息连接起来，然后根据申请工单更新时间排序，之后进行分组
     const SQL = `SELECT ${ticketTableSelectColumns}, 
     JSON_OBJECT(${getJSONOBJECTColumns(userTableSelectColumns, 'tarUser')}) target_user, 
     JSON_OBJECT(${getJSONOBJECTColumns(userTableSelectColumns, 'appUser')}) applicant_user
     FROM ${TICKETS} LEFT JOIN ${USERS} as tarUser ON ${TICKETS}.target_user_id = tarUser.id 
       LEFT JOIN ${USERS} as appUser ON ${TICKETS}.applicant_user_id = appUser.id 
-      WHERE ${TICKETS}.applicant_user_id = ${userId} || ${TICKETS}.target_user_id = ${userId}
+      WHERE ${queryCondition}
       ORDER BY ${TICKETS}.update_time DESC LIMIT ${offset}, ${pageSize};`;
 
-    console.log('查询申请列表SQL:', SQL);
-    const result = await connections.execute(SQL);
-    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0] })
+    // 查询总共有多少条数据
+    const totalQuerySQL = `SELECT COUNT(*) as total FROM ${TICKETS} WHERE ${queryCondition}`;
+
+    // 一起查询，性能优化
+    const [totalResp, ticketsResp] = await Promise.all([
+      connections.execute(totalQuerySQL),
+      connections.execute(SQL)
+    ]);
+
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: {
+      applyTicketList: ticketsResp[0],
+      total: totalResp[0][0].total
+    } })
   }
 }
 

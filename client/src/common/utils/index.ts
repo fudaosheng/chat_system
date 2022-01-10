@@ -26,3 +26,7 @@ export function formatDate(date: Date, fmt: string): string {
   }
   return fmt;
 }
+
+// 时间格式化模版
+export const dateFormat = 'yyyy-MM-dd';
+export const dateTimeFormat = 'yyyy-MM-dd hh:mm:ss';
