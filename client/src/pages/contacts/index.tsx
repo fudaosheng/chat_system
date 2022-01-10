@@ -62,7 +62,7 @@ export const Contacts: React.FC = () => {
               path:{path},url：{url}
             </Route>
             <Route path={`${url}/apply_tickets`}>
-              <ApplyContactTicketList />
+              <ApplyContactTicketList contactGroupList={contactGroupList} />
             </Route>
           </Switch>
         </div>

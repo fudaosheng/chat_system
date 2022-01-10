@@ -5,37 +5,56 @@
   // display: flex;
   // flex-direction: column;
   // align-items: center;
+
   .time {
     text-align: center;
   }
+
   .ticketInfo {
     border-radius: 8px;
     border: 1px solid var(--border-color);
     padding: 12px 24px 12px 12px;
     margin-top: 24px;
+
     .top {
       display: flex;
       align-items: center;
+
       .userInfo {
         flex: 1;
       }
     }
-    .message {
-      margin-top: 12px;
+
+    .footer {
       margin-left: 72px;
-      span {
-        color: initial;
+
+      .message {
+        margin-top: 12px;
+
+        span {
+          color: initial;
+        }
+      }
+      .item {
+        margin-top: 12px;
+        // border: 1px solid red;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
     }
   }
+
   .customName {
     font-weight: initial;
+
     .name {
       color: var(--semi-color-primary);
     }
+
     .tip {
-        color: initial;
-        margin-left: 6px;
+      color: initial;
+      margin-left: 6px;
     }
   }
 }

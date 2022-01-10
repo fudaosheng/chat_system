@@ -3,8 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { Spin, Pagination } from '@douyinfe/semi-ui';
 import styles from './index.module.scss';
 import { ApplyContactTicket } from 'pages/contacts/components/applyContactTick';
+import { ContactGroupStruct } from 'pages/contacts';
 
-export const ApplyContactTicketList: React.FC = () => {
+interface Props {
+  contactGroupList: Array<ContactGroupStruct>; //分组信息
+}
+export const ApplyContactTicketList: React.FC<Props> = (props: Props) => {
+  const { contactGroupList } = props;
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -51,7 +56,7 @@ export const ApplyContactTicketList: React.FC = () => {
         <div className={styles.title}>好友验证消息</div>
         <div className={styles.tictetList}>
           {applyTicketList?.map(item => (
-            <ApplyContactTicket key={item.id} applyTicket={item} />
+            <ApplyContactTicket key={item.id} applyTicket={item} contactGroupList={contactGroupList} />
           ))}
         </div>
         <div className={styles.pagination}>
