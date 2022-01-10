@@ -22,6 +22,11 @@ export interface GetApplyContactTicketListResponse extends BaseResponse {
     };
 }
 export const getApplyContactTicketList = (data: GetApplyContactTicketListRequest): Promise<GetApplyContactTicketListResponse> => request({
-    url: '/apply_contact_ticket/get/apply_contact_ticket_list',
+    url: '/apply_contact_ticket/get/ticket_list',
     data,
 })
+
+// 查询别人发给自己的申请工单的数量
+export const getApplyTicketCount = () => request({
+    url: '/apply_contact_ticket/get/apply_ticket_list',
+});

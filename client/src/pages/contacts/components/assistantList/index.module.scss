@@ -6,9 +6,14 @@
   .right {
     flex: 1;
     margin-left: 12px;
-
-    .name {
-      font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .main {
+      flex: 1;
+      .name {
+        font-size: 14px;
+      }
     }
   }
 }

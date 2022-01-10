@@ -75,18 +75,23 @@ class DbService {
    * opt = {
    *   isLikeQuery = false, 是否是模糊查询，默认精确查询
    *   columns: [col1, col2, col3]，要查询的列
+   *   orderBy: [fieldname, ASC|DESC], // 排序
    * }
    * @returns array<Record<string, unknown>>
    */
   async query(query, db, opt = {}) {
-    const { isLikeQuery = false, columns = [] } = opt;
+    const { isLikeQuery = false, columns = [], orderBy = [] } = opt;
 
     if (objNotEmpty(query) && isDb(db)) {
       // 查询条件
       const queryCondition = isLikeQuery ? this._likeQueryCondition(query) : this._queryCondition(query);
       // 要查询的列
       const queryColumns = columns.length ? columns.join(', ') : '*';
-      const SQL = `SELECT ${queryColumns} FROM ${db} WHERE ${queryCondition}`;
+      let SQL = `SELECT ${queryColumns} FROM ${db} WHERE ${queryCondition}`;
+      // 排序
+      if(orderBy.length) {
+        SQL += ' ORDER BY ' + orderBy.join(' ');
+      }
       const values = Object.values(query);
 
       // debug log

@@ -1,10 +1,8 @@
-interface ApplyContactTicket {
-    applicant_user: UserInfo;
-    target_user: UserInfo;
+interface ContactGroup {
+    id: number;
+    name: string;
+    user_id: number;
+    contact_ids?: string;
     create_time: string;
     update_time: string;
-    group_id: number;
-    id: number;
-    message: string;
-    status: number;
 }

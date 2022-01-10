@@ -14,9 +14,15 @@ const STATUS_CODE = {
   FORBIDDEN: 403,
 };
 
+const SORT_TYPE = {
+  DESC: 'DESC',
+  ASC: 'ASC'
+}
+
 const imgUploadPath = path.resolve(__dirname, '../../resource/img');
 
 module.exports = {
   STATUS_CODE,
-  imgUploadPath
+  imgUploadPath,
+  SORT_TYPE
 }
