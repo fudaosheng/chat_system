@@ -5,7 +5,7 @@ import { ModalProps } from '@douyinfe/semi-foundation/lib/es/modal/modalFoundati
 import { ContactGroupStruct } from 'pages/contacts';
 import { getContactGroupList } from 'common/api/contactGroup';
 import styles from './index.module.scss';
-import { addContact } from 'common/api/contact';
+import { addContact } from 'common/api/applyContactTicket';
 
 const eleStyle = { width: 200 };
 

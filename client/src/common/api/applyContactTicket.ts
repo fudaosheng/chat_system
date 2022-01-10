@@ -6,7 +6,7 @@ export interface AddContactRequest {
     message: string; // 申请信息
 }
 export const addContact = (data: AddContactRequest) => request({
-    url: '/contact/add',
+    url: '/apply_contact_ticket/add',
     method: 'POST',
     data
 });
@@ -22,6 +22,6 @@ export interface GetApplyContactTicketListResponse extends BaseResponse {
     };
 }
 export const getApplyContactTicketList = (data: GetApplyContactTicketListRequest): Promise<GetApplyContactTicketListResponse> => request({
-    url: '/contact/get/apply_contact_ticket_list',
+    url: '/apply_contact_ticket/get/apply_contact_ticket_list',
     data,
 })

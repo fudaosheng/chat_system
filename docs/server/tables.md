@@ -58,11 +58,10 @@ CREATE TABLE `contact_group` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
   `user_id` int NOT NULL,
-  `contact_ids` text,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `contact_group_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3
 ```

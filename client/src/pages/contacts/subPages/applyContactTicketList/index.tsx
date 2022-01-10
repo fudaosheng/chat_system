@@ -1,4 +1,4 @@
-import { getApplyContactTicketList } from 'common/api/contact';
+import { getApplyContactTicketList } from 'common/api/applyContactTicket';
 import React, { useEffect, useState } from 'react';
 import { Spin, Pagination } from '@douyinfe/semi-ui';
 import styles from './index.module.scss';
