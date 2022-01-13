@@ -11,13 +11,13 @@ class ContactController {
   // 添加联系人
   async addContact(ctx) {
     const { userId: targetUserId, group_id, message } = ctx.request.body;
-    const userId = ctx.user.userId;
+    const { userId } = ctx.user;
 
     // 查询申请人和添加人是否已存在待处理的申请工单，如果已存在则不能重复申请
     const queryCondition = {
       [APPLY_CONTACT_TICKET_TABLE.APPLICANT_USER_ID]: userId, // 申请人
       [APPLY_CONTACT_TICKET_TABLE.TARGET_USER_ID]: targetUserId, // 要添加的人
-      [APPLY_CONTACT_TICKET_TABLE.STATUS]: APPLY_CONTACT_TICKET_STATUS.PENDING, //工单状态,默认值1。1等待处理、2申请同意、3申请拒绝
+      [APPLY_CONTACT_TICKET_TABLE.STATUS]: APPLY_CONTACT_TICKET_STATUS.PENDING, // 工单状态,默认值1。1等待处理、2申请同意、3申请拒绝
     };
     const applyTicket = await ctx.service.dbService.query(queryCondition, TABLE_NAMES.APPLY_CONTACT_TICKET);
     console.log('applyTicket', applyTicket);
@@ -27,8 +27,8 @@ class ContactController {
     // 向数据库新插入一条申请记录
     const ticket = {
       ...queryCondition,
-      [APPLY_CONTACT_TICKET_TABLE.GROUP_ID]: group_id, //添加的分组
-      [APPLY_CONTACT_TICKET_TABLE.MESSAGE]: message, //申请信息
+      [APPLY_CONTACT_TICKET_TABLE.GROUP_ID]: group_id, // 添加的分组
+      [APPLY_CONTACT_TICKET_TABLE.MESSAGE]: message, // 申请信息
     };
     console.log('ticket', ticket);
     const result = await ctx.service.dbService.insert(ticket, TABLE_NAMES.APPLY_CONTACT_TICKET);
@@ -49,14 +49,14 @@ class ContactController {
    */
   async getTicketList(ctx) {
     const { pageSize, currentPage } = ctx.request.query;
-    const userId = ctx.user.userId;
+    const { userId } = ctx.user;
     // 分页偏移量
     const offset = (currentPage - 1) * pageSize;
 
     // 好友申请表
     const TICKETS = TABLE_NAMES.APPLY_CONTACT_TICKET;
     // 用户表
-    const USERS = TABLE_NAMES.USERS;
+    const { USERS } = TABLE_NAMES;
     const { APPLICANT_USER_ID, TARGET_USER_ID } = APPLY_CONTACT_TICKET_TABLE;
     // 申请好友表中要查找的列
     const ticketTableSelectColumns = getTableSelectColumns(
@@ -92,18 +92,32 @@ class ContactController {
       },
     });
   }
-  // 查询别人发给自己的待处理好友申请工单
+  // 查询别人发给自己的待处理好友申请工单,不包含详细的用户信息
   async getApplyTicket(ctx) {
-    const userId = ctx.user.userId;
+    const { userId } = ctx.user;
     // 查询为处理工单，以更新时间倒序
-    const result = await ctx.service.dbService.query({
-      [APPLY_CONTACT_TICKET_TABLE.TARGET_USER_ID]: userId,
-      [APPLY_CONTACT_TICKET_TABLE.STATUS]: APPLY_CONTACT_TICKET_STATUS.PENDING, //为处理工单
-    }, TABLE_NAMES.APPLY_CONTACT_TICKET, {
-      orderBy: [APPLY_CONTACT_TICKET_TABLE.UPDATE_TIME, SORT_TYPE.DESC]
-    });
-    console.log(result);
+    const result = await ctx.service.dbService.query(
+      {
+        [APPLY_CONTACT_TICKET_TABLE.TARGET_USER_ID]: userId,
+        [APPLY_CONTACT_TICKET_TABLE.STATUS]: APPLY_CONTACT_TICKET_STATUS.PENDING, // 为处理工单
+      },
+      TABLE_NAMES.APPLY_CONTACT_TICKET,
+      {
+        orderBy: [APPLY_CONTACT_TICKET_TABLE.UPDATE_TIME, SORT_TYPE.DESC],
+      }
+    );
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result });
+  }
+  // 拒绝添加好友
+  async rejectApplyContact(ctx) {
+    const { id } = ctx.request.body;
+    // 将好友申请表中id = id的工单状态置为拒绝状态
+    const result = await ctx.service.dbService.update(
+      { [APPLY_CONTACT_TICKET_TABLE.STATUS]: APPLY_CONTACT_TICKET_STATUS.DISAGREE },
+      { id },
+      TABLE_NAMES.APPLY_CONTACT_TICKET
+    );
+    return ctx.makeResp({ code: result.affectedRows ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR });
   }
 }
 

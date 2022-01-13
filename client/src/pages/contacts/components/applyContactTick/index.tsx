@@ -1,4 +1,5 @@
 import { Button, Input, Select, Toast } from '@douyinfe/semi-ui';
+import { rejectAddContact } from 'common/api/applyContactTicket';
 import { getContactGroupList } from 'common/api/contactGroup';
 import { APPLY_CONTACT_TICKET_STATUS } from 'common/constance';
 import { GlobalContext } from 'common/store';
@@ -15,9 +16,10 @@ import styles from './index.module.scss';
 interface Props {
   applyTicket: ApplyContactTicket;
   contactGroupList: Array<ContactGroupStruct>; //分组信息
+  onChange?: () => void; // 工单状态变化，需要重新拉取数据
 }
 export const ApplyContactTicket: React.FC<Props> = (props: Props) => {
-  const { applyTicket, contactGroupList } = props;
+  const { applyTicket, contactGroupList, onChange } = props;
   const {
     state: { userInfo },
   } = useContext(GlobalContext);
@@ -27,6 +29,8 @@ export const ApplyContactTicket: React.FC<Props> = (props: Props) => {
   const [contactGroup, setContactGroup] = useState(contactGroupList?.[0]?.id);
   // 好友备注
   const [note, setNote] = useState('');
+  // 按钮loading,防抖
+  const [btnLoading, setBtnLoading] = useState(false);
 
   // 处理同意申请
   const handleAgreeApply = () => {
@@ -35,14 +39,31 @@ export const ApplyContactTicket: React.FC<Props> = (props: Props) => {
       setVisible(true);
       return;
     }
-    console.log(note);
     if(!contactGroup) {
       Toast.error('必须选择分组信息');
       return;
     }
-    console.log(contactGroup);
+    console.log(contactGroup, note);
     console.log('处理好友申请同意逻辑');
     
+  }
+
+  // 拒绝添加联系人申请
+  const handleDisagreeAddContact = async () => {
+    // 取消填写信息
+    if(visible) {
+      setVisible(false);
+      return;
+    }
+    //拒绝添加联系人
+    setBtnLoading(true);
+    try {
+      await rejectAddContact(applyTicket.id);
+      onChange && onChange();
+      Toast.success(`已拒绝${applyTicket?.applicant_user?.name}的好友申请`);
+    } finally {
+      setBtnLoading(false);
+    }
   }
 
   const renderName = useCallback((name: string) => {
@@ -58,11 +79,11 @@ export const ApplyContactTicket: React.FC<Props> = (props: Props) => {
     if (target_user.id === userInfo.id && status === APPLY_CONTACT_TICKET_STATUS.PENDING) {
       return (
         <>
-          <Button type="tertiary" theme="borderless" onClick={() => setVisible(false)}>
-            拒绝
+          <Button loading={btnLoading} type="tertiary" theme="borderless" onClick={handleDisagreeAddContact}>
+            { visible ? '取消' : '拒绝'}
           </Button>
-          <Button theme="solid" style={{ marginLeft: 8 }} onClick={handleAgreeApply}>
-            同意
+          <Button loading={btnLoading} theme="solid" style={{ marginLeft: 8 }} onClick={handleAgreeApply}>
+            { visible ? '确定' : '同意'}
           </Button>
         </>
       );

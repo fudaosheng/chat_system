@@ -7,9 +7,10 @@ import { ContactGroupStruct } from 'pages/contacts';
 
 interface Props {
   contactGroupList: Array<ContactGroupStruct>; //分组信息
+  onChange?: () => void; //好友申请工单状态变化，需要重新拉取数据；
 }
 export const ApplyContactTicketList: React.FC<Props> = (props: Props) => {
-  const { contactGroupList } = props;
+  const { contactGroupList, onChange } = props;
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -50,13 +51,18 @@ export const ApplyContactTicketList: React.FC<Props> = (props: Props) => {
     // 从新请求数据
     getApplyContactTicketListRequest(newCurPage, newPageSize);
   };
+  // 处理工单状态变化
+  const handleApplyTicketChange = () => {
+    onChange && onChange();
+    getApplyContactTicketListRequest();
+  }
   return (
     <div className={styles.applyContactTicketList}>
       <Spin wrapperClassName={styles.spin} spinning={loading}>
         <div className={styles.title}>好友验证消息</div>
         <div className={styles.tictetList}>
           {applyTicketList?.map(item => (
-            <ApplyContactTicket key={item.id} applyTicket={item} contactGroupList={contactGroupList} />
+            <ApplyContactTicket key={item.id} applyTicket={item} contactGroupList={contactGroupList} onChange={handleApplyTicketChange} />
           ))}
         </div>
         <div className={styles.pagination}>

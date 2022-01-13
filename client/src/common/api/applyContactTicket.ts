@@ -27,6 +27,12 @@ export const getApplyContactTicketList = (data: GetApplyContactTicketListRequest
 })
 
 // 查询别人发给自己的申请工单的数量
-export const getApplyTicketCount = () => request({
+export const getApplyTicketList = () => request({
     url: '/apply_contact_ticket/get/apply_ticket_list',
 });
+// 拒绝添加联系人
+export const rejectAddContact = (id: number) => request({
+    url: '/apply_contact_ticket/reject_add_contact',
+    method: 'POST',
+    data: { id }
+})
