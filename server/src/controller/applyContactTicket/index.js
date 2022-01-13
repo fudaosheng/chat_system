@@ -25,6 +25,15 @@ class ContactController {
     if (applyTicket.length) {
       return ctx.makeResp({ code: STATUS_CODE.ERROR, message: '已发送过好友申请，请耐心等待' });
     }
+    // 在好友表中查询是否申请人和添加人已是好友关系，如果已是则不能添加
+    const contactQueryCondition = {
+      [CONTACTS_TABLE.USER_ID]: userId,
+      [CONTACTS_TABLE.CONTACT_ID]: targetUserId
+    }
+    const contactList = await ctx.service.dbService.query(contactQueryCondition, TABLE_NAMES.CONTACTS);
+    if (contactList.length) {
+      return ctx.makeResp({ code: STATUS_CODE.ERROR, message: '已是好友关系，不能再次申请' });
+    }
     // 向数据库新插入一条申请记录
     const ticket = {
       ...queryCondition,
