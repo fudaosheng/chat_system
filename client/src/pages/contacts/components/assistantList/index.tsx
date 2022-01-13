@@ -28,7 +28,7 @@ interface Props {
   onChange?: (key: string) => void;
 }
 export const AssistantList: React.FC<Props> = (props: Props) => {
-  const { applyTicketList, onChange } = props;
+  const { applyTicketList = [], onChange } = props;
   const {
     state: { userInfo },
   } = useContext(GlobalContext);

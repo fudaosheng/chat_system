@@ -31,7 +31,7 @@ export const Contacts: React.FC = () => {
 
   // 查询待自己处理的好友申请工单的数量
   const requestApplyContactTicketCount = async () => {
-    const { data } = await getApplyTicketList();
+    const { data = [] } = await getApplyTicketList();
     setApplyTicketList(data);
   };
 

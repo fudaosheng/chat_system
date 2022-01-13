@@ -5,6 +5,7 @@ const {
   APPLY_CONTACT_TICKET_TABLE,
   APPLY_CONTACT_TICKET_STATUS,
   USER_TABLE,
+  CONTACTS_TABLE,
 } = require('../../constance/tables');
 const { getJSONOBJECTColumns, getTableSelectColumns } = require('../../utils');
 class ContactController {
@@ -109,7 +110,7 @@ class ContactController {
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result });
   }
   // 拒绝添加好友
-  async rejectApplyContact(ctx) {
+  async disagreeApplyContact(ctx) {
     const { id } = ctx.request.body;
     // 将好友申请表中id = id的工单状态置为拒绝状态
     const result = await ctx.service.dbService.update(
@@ -118,6 +119,50 @@ class ContactController {
       TABLE_NAMES.APPLY_CONTACT_TICKET
     );
     return ctx.makeResp({ code: result.affectedRows ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR });
+  }
+  // 同意添加好友
+  async agreeApplyContact(ctx) {
+    const { apply_contact_ticketId, group_id, note } = ctx.request.body;
+    const { USER_ID, GROUP_ID, CONTACT_ID, NOTE } = CONTACTS_TABLE;
+    // 根据id查询好友申请工单详细信息
+    const result = await ctx.service.dbService.query(
+      { [APPLY_CONTACT_TICKET_TABLE.ID]: apply_contact_ticketId },
+      TABLE_NAMES.APPLY_CONTACT_TICKET
+    );
+    // 好友申请工单
+    const applyTicket = result[0];
+    // 同意人，同意人及为验证者，contact_id为申请人
+    const { applicant_user_id, target_user_id } = applyTicket;
+    console.log('applyTicket', applyTicket);
+    // 添加申请人好友关系
+    const applicantContactRecord = {
+      [USER_ID]: applicant_user_id,
+      [GROUP_ID]: applyTicket.group_id,
+      [CONTACT_ID]: target_user_id,
+    };
+    // 添加验证人好友关系
+    const targetUserContactRecord = {
+      [USER_ID]: target_user_id,
+      [GROUP_ID]: group_id,
+      [CONTACT_ID]: applicant_user_id,
+      [NOTE]: note,
+    };
+
+    console.log('applicantContactRecord', applicantContactRecord);
+    console.log('targetUserContactRecord', targetUserContactRecord);
+    // 同时写入数据，添加好友成功
+    const addResult = await Promise.all([
+      ctx.service.dbService.insert(applicantContactRecord, TABLE_NAMES.CONTACTS),
+      ctx.service.dbService.insert(targetUserContactRecord, TABLE_NAMES.CONTACTS),
+      ctx.service.dbService.update(
+        // 更新好友申请工单状态
+        { [APPLY_CONTACT_TICKET_TABLE.STATUS]: APPLY_CONTACT_TICKET_STATUS.AGREE },
+        { id: apply_contact_ticketId },
+        TABLE_NAMES.APPLY_CONTACT_TICKET
+      ),
+    ]);
+    console.log(addResult);
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS });
   }
 }
 

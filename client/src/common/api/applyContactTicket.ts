@@ -36,3 +36,14 @@ export const rejectAddContact = (id: number) => request({
     method: 'POST',
     data: { id }
 })
+export interface AgreeAddContactRequest {
+    apply_contact_ticketId: number;
+    note: string;
+    group_id: number;
+}
+//同意添加联系人
+export const agreeAddContact = (data: AgreeAddContactRequest) => request({
+    url: '/apply_contact_ticket/agree_add_contact',
+    method: 'POST',
+    data
+})

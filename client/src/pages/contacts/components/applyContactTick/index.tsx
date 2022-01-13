@@ -1,6 +1,5 @@
 import { Button, Input, Select, Toast } from '@douyinfe/semi-ui';
-import { rejectAddContact } from 'common/api/applyContactTicket';
-import { getContactGroupList } from 'common/api/contactGroup';
+import { agreeAddContact, rejectAddContact } from 'common/api/applyContactTicket';
 import { APPLY_CONTACT_TICKET_STATUS } from 'common/constance';
 import { GlobalContext } from 'common/store';
 import { dateTimeFormat, formatDate } from 'common/utils';
@@ -33,7 +32,7 @@ export const ApplyContactTicket: React.FC<Props> = (props: Props) => {
   const [btnLoading, setBtnLoading] = useState(false);
 
   // 处理同意申请
-  const handleAgreeApply = () => {
+  const handleAgreeApply = async () => {
     // 需要填写信息
     if(!visible) {
       setVisible(true);
@@ -45,7 +44,18 @@ export const ApplyContactTicket: React.FC<Props> = (props: Props) => {
     }
     console.log(contactGroup, note);
     console.log('处理好友申请同意逻辑');
-    
+    setBtnLoading(true);
+    try {
+      await agreeAddContact({
+        note,
+        apply_contact_ticketId: applyTicket.id,
+        group_id: contactGroup,
+      });
+      onChange && onChange();
+      Toast.success(`已成功添加${applyTicket?.applicant_user?.name}为好友`);
+    } finally {
+      setBtnLoading(false);
+    }
   }
 
   // 拒绝添加联系人申请

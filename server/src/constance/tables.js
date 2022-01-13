@@ -4,6 +4,7 @@ const TABLE_NAMES = {
   IMGS: 'imgs', // 图片资源表
   CONTACT_GROUP: 'contact_group', // 联系人分组表
   APPLY_CONTACT_TICKET: 'apply_contact_ticket', //申请好友工单表
+  CONTACTS: 'contacts', //好友关系表
 };
 
 // user表字段
@@ -47,10 +48,22 @@ const APPLY_CONTACT_TICKET_STATUS = {
   DISAGREE: 3
 }
 
+//好友关系表
+const CONTACTS_TABLE = {
+  ID: 'id',
+  USER_ID: 'user_id',
+  GROUP_ID: 'group_id',
+  CONTACT_ID: 'contact_id',
+  NOTE: 'note',// 好友备注
+  CREATE_TIME: 'create_time',
+  UPDATE_TIME: 'update_time'
+}
+
 module.exports = {
   TABLE_NAMES,
   USER_TABLE,
   CONTACT_GROUP_TABLE,
   APPLY_CONTACT_TICKET_TABLE,
-  APPLY_CONTACT_TICKET_STATUS
+  APPLY_CONTACT_TICKET_STATUS,
+  CONTACTS_TABLE
 };
