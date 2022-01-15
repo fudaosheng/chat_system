@@ -28,8 +28,8 @@ export const Login: React.FC = () => {
       if (!values[key]) {
         errors[key] = '值不能为空';
       }
-      if (key === 'name' && values[key].length < 3){
-        errors[key] = '用户名不能少于3个字符'
+      if (key === 'name' && values[key] === ' '){
+        errors[key] = '用户名不能为空'
       }
       if (key === 'password' && values[key].length < 6) {
         errors[key] = '密码长度必须不小于6个字符';

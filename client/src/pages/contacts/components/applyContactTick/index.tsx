@@ -53,6 +53,7 @@ export const ApplyContactTicket: React.FC<Props> = (props: Props) => {
       });
       onChange && onChange();
       Toast.success(`已成功添加${applyTicket?.applicant_user?.name}为好友`);
+      setVisible(false);
     } finally {
       setBtnLoading(false);
     }
