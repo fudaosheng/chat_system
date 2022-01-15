@@ -30,7 +30,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3
 ```
 
-# 申请好友表
+# 申请好友工单表
 ```
 CREATE TABLE `apply_contact_ticket` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -41,15 +41,16 @@ CREATE TABLE `apply_contact_ticket` (
   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `message` varchar(100) DEFAULT NULL,
   `group_id` int NOT NULL,
+  `note` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `applicant_user_id` (`applicant_user_id`),
   KEY `target_user_id` (`target_user_id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `apply_contact_ticket_ibfk_1` FOREIGN KEY (`applicant_user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `apply_contact_ticket_ibfk_2` FOREIGN KEY (`target_user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `apply_contact_ticket_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`),
-  CONSTRAINT `apply_contact_ticket_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+  CONSTRAINT `apply_contact_ticket_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `contact_group` (`id`),
+  CONSTRAINT `apply_contact_ticket_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `contact_group` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3
 ```
 
 # 联系人分组表

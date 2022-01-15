@@ -1,15 +1,17 @@
 import { getApplyContactTicketList } from 'common/api/applyContactTicket';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Spin, Pagination } from '@douyinfe/semi-ui';
 import styles from './index.module.scss';
 import { ApplyContactTicket } from 'pages/contacts/components/applyContactTick';
 import { ContactGroupStruct } from 'pages/contacts';
+import { GlobalContext } from 'common/store';
 
 interface Props {
   contactGroupList: Array<ContactGroupStruct>; //分组信息
   onChange?: () => void; //好友申请工单状态变化，需要重新拉取数据；
 }
 export const ApplyContactTicketList: React.FC<Props> = (props: Props) => {
+  const { state: { userInfo } } = useContext(GlobalContext);
   const { contactGroupList, onChange } = props;
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,8 +38,11 @@ export const ApplyContactTicketList: React.FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
+    if(!userInfo?.id) {
+      return;
+    }
     getApplyContactTicketListRequest();
-  }, []);
+  }, [userInfo?.id]);
 
   // 处理翻页
   const handlePaginationChange = (newCurPage: number, newPageSize: number) => {

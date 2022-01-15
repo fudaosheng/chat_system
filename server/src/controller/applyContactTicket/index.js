@@ -11,7 +11,7 @@ const { getJSONOBJECTColumns, getTableSelectColumns } = require('../../utils');
 class ContactController {
   // 添加联系人
   async addContact(ctx) {
-    const { userId: targetUserId, group_id, message } = ctx.request.body;
+    const { userId: targetUserId, group_id, message, note } = ctx.request.body;
     const { userId } = ctx.user;
 
     // 查询申请人和添加人是否已存在待处理的申请工单，如果已存在则不能重复申请
@@ -21,7 +21,7 @@ class ContactController {
       [APPLY_CONTACT_TICKET_TABLE.STATUS]: APPLY_CONTACT_TICKET_STATUS.PENDING, // 工单状态,默认值1。1等待处理、2申请同意、3申请拒绝
     };
     const applyTicket = await ctx.service.dbService.query(queryCondition, TABLE_NAMES.APPLY_CONTACT_TICKET);
-    console.log('applyTicket', applyTicket);
+
     if (applyTicket.length) {
       return ctx.makeResp({ code: STATUS_CODE.ERROR, message: '已发送过好友申请，请耐心等待' });
     }
@@ -39,6 +39,7 @@ class ContactController {
       ...queryCondition,
       [APPLY_CONTACT_TICKET_TABLE.GROUP_ID]: group_id, // 添加的分组
       [APPLY_CONTACT_TICKET_TABLE.MESSAGE]: message, // 申请信息
+      [APPLY_CONTACT_TICKET_TABLE.NOTE]: note
     };
     console.log('ticket', ticket);
     const result = await ctx.service.dbService.insert(ticket, TABLE_NAMES.APPLY_CONTACT_TICKET);
@@ -142,12 +143,12 @@ class ContactController {
     const applyTicket = result[0];
     // 同意人，同意人及为验证者，contact_id为申请人
     const { applicant_user_id, target_user_id } = applyTicket;
-    console.log('applyTicket', applyTicket);
     // 添加申请人好友关系
     const applicantContactRecord = {
       [USER_ID]: applicant_user_id,
       [GROUP_ID]: applyTicket.group_id,
       [CONTACT_ID]: target_user_id,
+      [NOTE]: applyTicket.note
     };
     // 添加验证人好友关系
     const targetUserContactRecord = {
@@ -170,7 +171,6 @@ class ContactController {
         TABLE_NAMES.APPLY_CONTACT_TICKET
       ),
     ]);
-    console.log(addResult);
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS });
   }
 }

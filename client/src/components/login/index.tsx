@@ -5,7 +5,7 @@ import { GlobalContext } from 'common/store';
 import styles from './index.module.css';
 import { login, LoginRequest, RegistryRequest, registryUser } from 'common/api/user';
 import { GlobalAction } from 'common/store/action';
-import { LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
+import { LOCAL_STORAGE_LOGIN_AVATAR, LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
 
 enum Type {
   LOGIN, // 登陆
@@ -49,6 +49,8 @@ export const Login: React.FC = () => {
         const userInfo = resp?.data || {};
         // 设置用户信息
         dispatch(GlobalAction.setUserInfo(userInfo));
+        // 设置登录头像
+        localStorage.setItem(LOCAL_STORAGE_LOGIN_AVATAR, userInfo.avatar);
 
         Toast.info('登陆成功');
       } else if (type === Type.REGISTRY) { // 注册
@@ -68,7 +70,7 @@ export const Login: React.FC = () => {
     <Modal key={userInfo?.token} height={500} visible={!localStorage.getItem(LOCAL_STORAGE_USER_TOKEN)} footer={null} title={title} closable={false}>
       <div className={styles.main}>
         <div className={styles.avatar}>
-          <Avatar style={{ width: 100, height: 100 }} />
+          <Avatar src={localStorage.getItem(LOCAL_STORAGE_LOGIN_AVATAR) || ''} style={{ width: 100, height: 100 }} />
         </div>
         <div className={styles.loginForm}>
           <Form labelPosition="left" validateFields={handleLoginValidate} onSubmit={handleLogin}>

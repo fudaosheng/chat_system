@@ -36,6 +36,7 @@ const APPLY_CONTACT_TICKET_TABLE = {
   TARGET_USER_ID: 'target_user_id',
   STATUS: 'status',
   MESSAGE: 'message',
+  NOTE: 'note', // 好友备注
   GROUP_ID: 'group_id',
   CREATE_TIME: 'create_time',
   UPDATE_TIME: 'update_time'

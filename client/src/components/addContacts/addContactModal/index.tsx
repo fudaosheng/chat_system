@@ -8,7 +8,7 @@ import { getUserById, getUserListByName } from 'common/api/user';
 import styles from './index.module.scss';
 import { spinStyle } from 'common/constance';
 import { UserCard } from 'components/userCard';
-import { ApplyModal } from '../applyModal';
+import { ApplyInfoModal } from '../applyInfoModal';
 import { GlobalContext } from 'common/store';
 
 interface Props extends ModalReactProps {}
@@ -81,7 +81,7 @@ export const AddContactModal: React.FC<Props> = (props: Props) => {
           </div>
         </div>
       </Modal>
-      <ApplyModal
+      <ApplyInfoModal
         key={applyModalVisible ? 1 : 0}
         targetUserInfo={targetUserInfo}
         visible={applyModalVisible}

@@ -6,19 +6,22 @@ import { ContactGroupStruct } from 'pages/contacts';
 import { getContactGroupList } from 'common/api/contactGroup';
 import styles from './index.module.scss';
 import { addContact } from 'common/api/applyContactTicket';
+import { Input } from '@douyinfe/semi-ui/lib/es/input';
 
 const eleStyle = { width: 200 };
 
 interface Props extends ModalProps {
   targetUserInfo: UserInfo | undefined;
 }
-export const ApplyModal: React.FC<Props> = (props: Props) => {
+export const ApplyInfoModal: React.FC<Props> = (props: Props) => {
   const { targetUserInfo, visible, ...restProps } = props;
   const [contactGroupList, setContactGroupList] = useState<Array<ContactGroupStruct>>([]);
   // 申请信息
   const [message, setMessage] = useState('');
   // 要添加的分组Id
   const [contactGroup, setContactGroup] = useState<number | undefined>();
+  // 好友备注
+  const [note, setNote] = useState('');
   const [loading, setLoading] = useState(false);
 
   // 获取联系人列表
@@ -59,8 +62,9 @@ export const ApplyModal: React.FC<Props> = (props: Props) => {
     setLoading(true);
     try {
       await addContact({
-        userId: targetUserInfo.id,
         message,
+        note,
+        userId: targetUserInfo.id,
         group_id: contactGroup,
       });
       Toast.info('申请信息已发送~');
@@ -83,6 +87,13 @@ export const ApplyModal: React.FC<Props> = (props: Props) => {
           style={eleStyle}
           optionList={contactGroupList}
           onChange={v => setContactGroup(v as number)}></Select>
+      </div>
+      <div className={styles.item}>
+        <label>备注：</label>
+        <Input
+          value={note}
+          style={eleStyle}
+          onChange={v => setNote(v)} />
       </div>
     </Modal>
   );
