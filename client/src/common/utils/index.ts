@@ -30,3 +30,27 @@ export function formatDate(date: Date, fmt: string): string {
 // 时间格式化模版
 export const dateFormat = 'yyyy-MM-dd';
 export const dateTimeFormat = 'yyyy-MM-dd hh:mm:ss';
+
+export interface DepthFirstSearchOpt {
+  traversalKey?: string;
+  key?: string; //利用traversalKey转换成新的key
+}
+// 深度优先遍历同时会修改数据
+export const depthFirstSearch = <T extends Record<string, any>>(
+  list: Array<T>,
+  callback: (item: T) => T,
+  opt?: DepthFirstSearchOpt
+): Array<T> => {
+  const { traversalKey = 'children', key } = opt || {};
+  const s = (recordList: Array<T>) => {
+    const result: Array<T> = [];
+    recordList?.forEach((item, index) => {
+      result[index] = callback(item);
+      if (item?.[traversalKey]?.length) {
+        result[index] = { ...result[index], [key || traversalKey]: s(item[traversalKey]) };
+      }
+    });
+    return result;
+  };
+  return s(list);
+};

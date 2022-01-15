@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Select, TextArea, Toast } from '@douyinfe/semi-ui';
 import { UserCard } from 'components/userCard';
 import { ModalProps } from '@douyinfe/semi-foundation/lib/es/modal/modalFoundation';
-import { ContactGroupStruct } from 'pages/contacts';
 import { getContactGroupList } from 'common/api/contactGroup';
 import styles from './index.module.scss';
 import { addContact } from 'common/api/applyContactTicket';
@@ -15,7 +14,7 @@ interface Props extends ModalProps {
 }
 export const ApplyInfoModal: React.FC<Props> = (props: Props) => {
   const { targetUserInfo, visible, ...restProps } = props;
-  const [contactGroupList, setContactGroupList] = useState<Array<ContactGroupStruct>>([]);
+  const [contactGroupList, setContactGroupList] = useState<Array<ContactGroupExtra>>([]);
   // 申请信息
   const [message, setMessage] = useState('');
   // 要添加的分组Id

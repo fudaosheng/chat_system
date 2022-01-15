@@ -1,10 +1,9 @@
-import { ContactGroupStruct } from 'pages/contacts';
 import React from 'react';
 import { Tree } from '@douyinfe/semi-ui';
 import styles from './index.module.scss';
 
 interface Props {
-  data: Array<ContactGroupStruct>;
+  data: Array<DetailContactGroupInfoExtra>;
 }
 
 export const ContactGroupList: React.FC<Props> = (props: Props) => {

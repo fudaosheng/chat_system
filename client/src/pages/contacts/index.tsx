@@ -3,28 +3,24 @@ import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom';
 import { Spin } from '@douyinfe/semi-ui';
 import { AddContactGroup } from './components/addContactGroup';
 import styles from './index.module.scss';
-import { spinStyle } from 'common/constance';
-import { getContactGroupList } from 'common/api/contactGroup';
 import { ContactGroupList } from './components/contactGroupList';
 import { AssistantList } from './components/assistantList';
 import { ApplyContactTicketList } from './subPages/applyContactTicketList';
 import { GlobalContext } from 'common/store';
 import { getApplyTicketList } from 'common/api/applyContactTicket';
+import { getContactList } from 'common/api/contacts';
+import { depthFirstSearch } from 'common/utils';
 const interval = 1000 * 60; //轮询间隔
-
-export interface ContactGroupStruct extends ContactGroup {
-  label: string;
-  key: string;
-  value: number;
-}
 
 export const Contacts: React.FC = () => {
   const history = useHistory();
   const { path, url } = useRouteMatch();
-  const { state: { userInfo } } = useContext(GlobalContext);
+  const {
+    state: { userInfo },
+  } = useContext(GlobalContext);
 
-  // 联系人分组
-  const [contactGroupList, setContactGroupList] = useState<Array<ContactGroupStruct>>([]);
+  // 联系人分组列表
+  const [contactGroupList, setContactGroupList] = useState<Array<DetailContactGroupInfoExtra>>([]);
   const [loading, setLoading] = useState(false);
   // 申请列表
   const [applyTicketList, setApplyTicketList] = useState<Array<ApplyTicket>>([]);
@@ -48,23 +44,30 @@ export const Contacts: React.FC = () => {
   }, [userInfo.id]);
 
   // 获取联系人分组列表
+  // todo：要先查询分组，再根据分组查询联系人，否则查询的分组不全
   const getContactGroupListRequest = async (needLoading = true) => {
     needLoading && setLoading(true);
     try {
-      const { data } = await getContactGroupList();
+      const { data } = await getContactList();
       // 对联系人数据进行处理
-      const newContactGroupList = data?.map(item => ({ ...item, label: item.name, value: item.id, key: String(item.id) }));
+      const newContactGroupList = depthFirstSearch(
+        data,
+        item => ({ ...item, label: item.name, value: item.id, key: String(item.id) }),
+        { traversalKey: 'contact_list', key: 'children' }
+      ) as Array<DetailContactGroupInfoExtra>;
+      console.log(newContactGroupList);
+
       setContactGroupList(newContactGroupList);
     } finally {
       needLoading && setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (!userInfo?.id) {
       return;
     }
-    // 获取联系人分组
+    // 获取联系人 + 分组信息
     getContactGroupListRequest();
   }, [userInfo.id]);
   return (
@@ -84,7 +87,10 @@ export const Contacts: React.FC = () => {
               path:{path},url：{url}
             </Route>
             <Route path={`${url}/apply_tickets`}>
-              <ApplyContactTicketList contactGroupList={contactGroupList} onChange={requestApplyContactTicketCount} />
+              <ApplyContactTicketList
+                contactGroupList={contactGroupList as any}
+                onChange={requestApplyContactTicketCount}
+              />
             </Route>
           </Switch>
         </div>

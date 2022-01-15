@@ -41,9 +41,13 @@ const getJSONOBJECTColumns = (columns = [], tableName = TABLE_NAMES.USERS) => {
   return columns.map(k => "'" + k + "', " + `${tableName}.` + '`' + k + '`').join(', ');
 }
 
+// user表中不涉密的columns
+const userTableCommonColumns = Object.values(USER_TABLE).filter(k => k !== USER_TABLE.PASSWORD);
+
 module.exports = {
   formatDate,
   encryption,
   getTableSelectColumns,
-  getJSONOBJECTColumns
+  getJSONOBJECTColumns,
+  userTableCommonColumns
 };

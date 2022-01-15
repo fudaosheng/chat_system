@@ -4,7 +4,6 @@ import { APPLY_CONTACT_TICKET_STATUS } from 'common/constance';
 import { GlobalContext } from 'common/store';
 import { dateTimeFormat, formatDate } from 'common/utils';
 import { UserCard } from 'components/userCard';
-import { ContactGroupStruct } from 'pages/contacts';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 /**
@@ -14,7 +13,7 @@ import styles from './index.module.scss';
 
 interface Props {
   applyTicket: ApplyContactTicket;
-  contactGroupList: Array<ContactGroupStruct>; //分组信息
+  contactGroupList: Array<DetailContactGroupInfoExtra>; //分组信息
   onChange?: () => void; // 工单状态变化，需要重新拉取数据
 }
 export const ApplyContactTicket: React.FC<Props> = (props: Props) => {

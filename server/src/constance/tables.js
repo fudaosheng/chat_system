@@ -24,7 +24,6 @@ const CONTACT_GROUP_TABLE = {
   ID: 'id',
   NAME: 'name',
   USER_ID: 'user_id',
-  CONTACT_IDS: 'contact_ids',
   CREATE_TIME: 'create_time',
   UPDATE_TIME: 'update_time'
 }
