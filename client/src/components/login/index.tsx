@@ -8,8 +8,8 @@ import { GlobalAction } from 'common/store/action';
 import { LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
 
 enum Type {
-    LOGIN, // 登陆
-    REGISTRY// 注册
+  LOGIN, // 登陆
+  REGISTRY// 注册
 }
 
 export const Login: React.FC = () => {
@@ -27,8 +27,12 @@ export const Login: React.FC = () => {
     Object.keys(values).forEach(key => {
       if (!values[key]) {
         errors[key] = '值不能为空';
-      } else if (values[key].length < 6) {
-        errors[key] = '值的长度必须不小于6个字符';
+      }
+      if (key === 'name' && values[key].length < 3){
+        errors[key] = '用户名不能少于3个字符'
+      }
+      if (key === 'password' && values[key].length < 6) {
+        errors[key] = '密码长度必须不小于6个字符';
       }
     });
     return Object.keys(errors).length ? errors : '';
@@ -39,15 +43,15 @@ export const Login: React.FC = () => {
     setLoading(true);
     try {
       // 登陆
-      if(type === Type.LOGIN) {
+      if (type === Type.LOGIN) {
         const resp = await login(values as unknown as LoginRequest);
-        
+
         const userInfo = resp?.data || {};
         // 设置用户信息
         dispatch(GlobalAction.setUserInfo(userInfo));
 
         Toast.info('登陆成功');
-      } else if(type === Type.REGISTRY) { // 注册
+      } else if (type === Type.REGISTRY) { // 注册
         await registryUser(values as unknown as RegistryRequest)
         Toast.info('注册成功，请登陆');
         setType(Type.LOGIN)
@@ -72,20 +76,20 @@ export const Login: React.FC = () => {
             <Form.Input field="password" style={{ width: 250 }} label="密码" placeholder="请输入密码" required />
             <div className={styles.submit}>
               <Button style={{ width: 290 }} type="primary" theme="solid" htmlType="submit" loading={loading}>
-                { type === Type.LOGIN ? '登陆' : '注册账号'}
+                {type === Type.LOGIN ? '登陆' : '注册账号'}
               </Button>
             </div>
             <div className={styles.registry}>
-                {
-                    type === Type.LOGIN && (
-                        <Button type="primary" theme="borderless" onClick={() => setType(Type.REGISTRY)}>注册账号</Button>
-                    )
-                }
-                {
-                    type === Type.REGISTRY && (
-                        <Button type="primary" theme="borderless" onClick={() => setType(Type.LOGIN)}>已有账号？登陆</Button>
-                    )
-                }
+              {
+                type === Type.LOGIN && (
+                  <Button type="primary" theme="borderless" onClick={() => setType(Type.REGISTRY)}>注册账号</Button>
+                )
+              }
+              {
+                type === Type.REGISTRY && (
+                  <Button type="primary" theme="borderless" onClick={() => setType(Type.LOGIN)}>已有账号？登陆</Button>
+                )
+              }
             </div>
           </Form>
         </div>
