@@ -25,9 +25,11 @@ CREATE TABLE `users` (
   `phone_num` varchar(11) DEFAULT NULL,
   `avatar` varchar(100) DEFAULT NULL,
   `bio` varchar(50) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `phone_num` (`phone_num`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3
 ```
 
 # 申请好友工单表

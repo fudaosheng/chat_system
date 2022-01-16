@@ -1,0 +1,84 @@
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userInfo {
+  height: 100%;
+  overflow: hidden;
+
+  .spin {
+    height: 100%;
+    overflow: hidden;
+
+    :global {
+
+      .semi-spin-children {
+        height: 100%;
+        flex-direction: column;
+        overflow: scroll;
+      }
+    }
+  }
+
+  .top {
+    padding: 24px;
+    background: radial-gradient(farthest-side at 60% 55%, #dfeefd, #ddedfd, #daebfe, #d8eafe);
+    
+    .avatar {
+      //   transform: translateY(-30%);
+      @include flex-center;
+    }
+    
+    .main {
+      @include flex-center;
+      flex-direction: column;
+    
+      .name {
+        font-weight: 600;
+        font-size: 24px;
+        margin: 12px 0;
+      }
+
+      .function {
+
+        :global {
+
+          .semi-button {
+            margin: 0 12px;
+          }
+        }
+      }
+    }
+  }
+  .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .otherInfo {
+      font-size: 14px;
+      margin: 24px 0;
+      &Item {
+        display: flex;
+        align-items: center;
+        padding: 4px 0;
+        .label {
+          min-width: 30px;
+          color: var(--text-color2);
+        }
+        .info {
+          font-weight: 500;
+          margin-left: 8px;
+        }
+        .input {
+          margin-left: 8px;
+        }
+        .wrap {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+}

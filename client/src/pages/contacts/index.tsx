@@ -7,6 +7,7 @@ import styles from './index.module.scss';
 import { ContactGroupList } from './components/contactGroupList';
 import { AssistantList } from './components/assistantList';
 import { ApplyContactTicketList } from './subPages/applyContactTicketList';
+import { UserInfo } from './subPages/userInfo';
 import { GlobalContext } from 'common/store';
 import { getApplyTicketList } from 'common/api/applyContactTicket';
 import { getContactListByGroupIds } from 'common/api/contacts';
@@ -46,7 +47,7 @@ export const Contacts: React.FC = () => {
 
   // 获取联系人分组列表
   // todo：要先查询分组，再根据分组查询联系人，否则查询的分组不全
-  const getContactGroupListRequest = async (needLoading = true) => {
+  const getContactGroupListRequest = async (needLoading = false) => {
     needLoading && setLoading(true);
     try {
       // 查询用户分组列表
@@ -82,13 +83,13 @@ export const Contacts: React.FC = () => {
       return;
     }
     // 获取联系人 + 分组信息
-    getContactGroupListRequest();
+    getContactGroupListRequest(true);
   }, [userInfo.id]);
   return (
     <div className={styles.contacts}>
       <Spin wrapperClassName={styles.spin} spinning={loading}>
         <div className={styles.sider}>
-          <AddContactGroup onChange={() => getContactGroupListRequest(false)} />
+          <AddContactGroup onChange={getContactGroupListRequest} />
           {/* 申请记录、群助手 */}
           <div className={styles.title}>系统助手</div>
           <AssistantList applyTicketList={applyTicketList} onChange={key => history.push(`${url}/${key}`)} />
@@ -106,7 +107,7 @@ export const Contacts: React.FC = () => {
             </Route>
             {/* 用户详细信息 */}
             <Route path={`${url}/user_info/:userId`}>
-              'sss'
+              <UserInfo onChange={getContactGroupListRequest} />
             </Route>
           </Switch>
         </div>

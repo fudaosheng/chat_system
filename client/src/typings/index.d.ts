@@ -8,6 +8,8 @@ interface UserInfo {
   birthday?: string;
   sex?: number;
   phone_num?: string;
+  create_time?: string;
+  update_time?: string;
 }
 interface UserInfoExtra extends UserInfo {
   label: string;

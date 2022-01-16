@@ -1,28 +1,35 @@
 .applyContactTicketList {
+  padding: 24px;
+  height: 100%;
+
+  .spin {
     height: 100%;
-    .spin {
+
+    :global {
+
+      .semi-spin-children {
         height: 100%;
-        :global {
-            .semi-spin-children {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
-            }
-        }
-    }
-    .title {
-        font-size: 16px;
-        font-weight: 600;
-    }
-    .tictetList {
-        flex: 1;
-        // border: 1px solid pink;
-        overflow: scroll;
-    }
-    .pagination {
-        margin-top: 8px;
         display: flex;
-        justify-content: flex-end;
+        flex-direction: column;
+        overflow: hidden;
+      }
     }
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .tictetList {
+    flex: 1;
+    // border: 1px solid pink;
+    overflow: scroll;
+  }
+
+  .pagination {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+  }
 }

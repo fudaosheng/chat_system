@@ -1,3 +1,9 @@
+// 公共的数据库字段
+const COMMON_TABLE_FIELDS = {
+  CREATE_TIME: 'create_time',
+  UPDATE_TIME: 'update_time'
+}
+
 // 数据库表名
 const TABLE_NAMES = {
   USERS: 'users', //用户表
@@ -9,6 +15,7 @@ const TABLE_NAMES = {
 
 // user表字段
 const USER_TABLE = {
+  ...COMMON_TABLE_FIELDS,
   ID: 'id',
   NAME: 'name',
   PASSWORD: 'password',
@@ -21,15 +28,15 @@ const USER_TABLE = {
 
 // 分组表字段
 const CONTACT_GROUP_TABLE = {
+  ...COMMON_TABLE_FIELDS,
   ID: 'id',
   NAME: 'name',
   USER_ID: 'user_id',
-  CREATE_TIME: 'create_time',
-  UPDATE_TIME: 'update_time'
 }
 
 // 申请好友工单表
 const APPLY_CONTACT_TICKET_TABLE = {
+  ...COMMON_TABLE_FIELDS,
   ID: 'id',
   APPLICANT_USER_ID: 'applicant_user_id',
   TARGET_USER_ID: 'target_user_id',
@@ -37,8 +44,6 @@ const APPLY_CONTACT_TICKET_TABLE = {
   MESSAGE: 'message',
   NOTE: 'note', // 好友备注
   GROUP_ID: 'group_id',
-  CREATE_TIME: 'create_time',
-  UPDATE_TIME: 'update_time'
 }
 
 // 申请好友的工单状态，默认值1。1等待处理、2申请同意、3申请拒绝
@@ -50,13 +55,12 @@ const APPLY_CONTACT_TICKET_STATUS = {
 
 //好友关系表
 const CONTACTS_TABLE = {
+  ...COMMON_TABLE_FIELDS,
   ID: 'id',
   USER_ID: 'user_id',
   GROUP_ID: 'group_id',
   CONTACT_ID: 'contact_id',
   NOTE: 'note',// 好友备注
-  CREATE_TIME: 'create_time',
-  UPDATE_TIME: 'update_time'
 }
 
 module.exports = {
@@ -65,5 +69,6 @@ module.exports = {
   CONTACT_GROUP_TABLE,
   APPLY_CONTACT_TICKET_TABLE,
   APPLY_CONTACT_TICKET_STATUS,
-  CONTACTS_TABLE
+  CONTACTS_TABLE,
+  COMMON_TABLE_FIELDS
 };

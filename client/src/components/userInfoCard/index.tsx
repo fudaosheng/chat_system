@@ -94,13 +94,17 @@ export const UserInfoCard: React.FC<PopoverProps> = (props: PopoverProps) => {
 
   // 渲染其他用户信息
   const renderOtherInfo = () => {
-    const { birthday, sex, phone_num, id } = userInfo;
+    const { birthday, sex, phone_num, id, name } = userInfo;
     const sexInfo = sex ? (sex === SEX.MAN ? '男' : '女') : undefined;
     return (
       <>
         <div className={styles.otherInfoItem}>
           <span className={styles.label}>ID</span>
           <span className={styles.info}>{id || '请完善信息'}</span>
+        </div>
+        <div className={styles.otherInfoItem}>
+          <span className={styles.label}>昵称</span>
+          <span className={styles.info}>{name || '请完善信息'}</span>
         </div>
         <div className={styles.otherInfoItem}>
           <span className={styles.label}>手机</span>
