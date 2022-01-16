@@ -1,8 +1,20 @@
-import request, { BaseResponse } from ".";
+import request, { BaseResponse } from '.';
 
-interface GetContactListResp extends BaseResponse {
-    data: Array<DetailContactGroupInfo>;
+export interface DetailContactGroupInfo extends ContactGroup {
+  contactList: Array<UserInfo>;
 }
-export const getContactList = (): Promise<GetContactListResp> => request({
-    url: '/contacts/get/contact_list'
-})
+interface GetContactListResp extends BaseResponse {
+  data: Array<DetailContactGroupInfo>;
+}
+export const getContactList = (): Promise<GetContactListResp> =>
+  request({
+    url: '/contacts/get/contact_list',
+  });
+interface GetContactListByGroupIdsResp extends BaseResponse {
+  data: Array<{ groupId: number; contactList: Array<UserInfo> }>;
+}
+export const getContactListByGroupIds = (group_id_list: Array<Number>): Promise<GetContactListByGroupIdsResp> =>
+  request({
+    url: '/contacts/get/contact_list_by_group_ids',
+    data: { group_id_list },
+  });

@@ -1,3 +1,9 @@
-.groupList {
-    
+.contactTree {
+
+  :global {
+
+    .semi-tree-option-level-2 {
+      padding-left: 0;
+    }
+  }
 }

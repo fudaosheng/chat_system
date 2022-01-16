@@ -9,13 +9,18 @@ interface UserInfo {
   sex?: number;
   phone_num?: string;
 }
-// 详细的分组信息
-interface DetailContactGroupInfo {
-  id: number; //分组id
-  name: string; // 分组name
+interface UserInfoExtra extends UserInfo {
+  label: string;
+  key: string;
+  value: number;
+}
+// 分组信息，不包括用户信息
+interface ContactGroup {
+  id: number;
+  name: string;
+  user_id: number;
   create_time: string;
   update_time: string;
-  contact_list: Array<UserInfo>; //联系人列表
 }
 interface ContactGroupExtra extends ContactGroup {
   label: string;
@@ -23,8 +28,6 @@ interface ContactGroupExtra extends ContactGroup {
   value: number;
 }
 
-interface DetailContactGroupInfoExtra extends DetailContactGroupInfo {
-  label: string;
-  key: string;
-  value: number;
+interface DetailContactGroupInfoExtra extends ContactGroupExtra {
+  children: Array<UserInfoExtra>
 }

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom';
+import { nanoid } from 'nanoid'
 import { Spin } from '@douyinfe/semi-ui';
 import { AddContactGroup } from './components/addContactGroup';
 import styles from './index.module.scss';
@@ -8,8 +9,8 @@ import { AssistantList } from './components/assistantList';
 import { ApplyContactTicketList } from './subPages/applyContactTicketList';
 import { GlobalContext } from 'common/store';
 import { getApplyTicketList } from 'common/api/applyContactTicket';
-import { getContactList } from 'common/api/contacts';
-import { depthFirstSearch } from 'common/utils';
+import { getContactListByGroupIds } from 'common/api/contacts';
+import { getContactGroupList } from 'common/api/contactGroup';
 const interval = 1000 * 60; //轮询间隔
 
 export const Contacts: React.FC = () => {
@@ -48,14 +49,27 @@ export const Contacts: React.FC = () => {
   const getContactGroupListRequest = async (needLoading = true) => {
     needLoading && setLoading(true);
     try {
-      const { data } = await getContactList();
-      // 对联系人数据进行处理
-      const newContactGroupList = depthFirstSearch(
-        data,
-        item => ({ ...item, label: item.name, value: item.id, key: String(item.id) }),
-        { traversalKey: 'contact_list', key: 'children' }
-      ) as Array<DetailContactGroupInfoExtra>;
-      console.log(newContactGroupList);
+      // 查询用户分组列表
+      const { data: groupList = [] } = await getContactGroupList();
+      const groupIdList = groupList.map(i => i.id);
+      // 根据分组列表批量查询分组列表
+      const { data } = await getContactListByGroupIds(groupIdList);
+
+      // 将分组和联系人信息进行处理
+      const newContactGroupList = groupList?.map(item => ({
+        ...item,
+        label: item.name,
+        value: item.id,
+        key: nanoid(),
+        type: 'group',
+        children: (data?.find(i => i.groupId === item.id)?.contactList || []).map(i => ({
+          ...i,
+          label: i.name,
+          value: i.id,
+          key: nanoid(),
+          type: 'contact'
+        })),
+      }));
 
       setContactGroupList(newContactGroupList);
     } finally {
@@ -79,18 +93,20 @@ export const Contacts: React.FC = () => {
           <div className={styles.title}>系统助手</div>
           <AssistantList applyTicketList={applyTicketList} onChange={key => history.push(`${url}/${key}`)} />
           <div className={styles.title}>好友列表</div>
-          <ContactGroupList data={contactGroupList} />
+          <ContactGroupList data={contactGroupList} onChange={userId => history.push(`${url}/user_info/${userId}`)} />
         </div>
         <div className={styles.main}>
           <Switch>
-            <Route exact path={path}>
-              path:{path},url：{url}
-            </Route>
+            {/* 好友申请工单 */}
             <Route path={`${url}/apply_tickets`}>
               <ApplyContactTicketList
                 contactGroupList={contactGroupList as any}
                 onChange={requestApplyContactTicketCount}
               />
+            </Route>
+            {/* 用户详细信息 */}
+            <Route path={`${url}/user_info/:userId`}>
+              'sss'
             </Route>
           </Switch>
         </div>

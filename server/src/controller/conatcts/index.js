@@ -8,7 +8,7 @@ const { STATUS_CODE } = require('../../constance');
  * @auther fudaosheng
  */
 class ContactsController {
-  // 获取用户的好友信息
+  // 获取用户的好友信息，包含分组信息及分组下联系人
   async getContactList(ctx) {
     // 从token中拿用户信息
     const { userId } = ctx.user;
@@ -21,9 +21,8 @@ class ContactsController {
     );
     // 用户信息,包含备注信息
     const userTableSelectColumns =
-      `${getJSONOBJECTColumns(userTableCommonColumns, TABLE_NAMES.USERS)
-      }, ` +
-      '\'note\', ' +
+      `${getJSONOBJECTColumns(userTableCommonColumns, TABLE_NAMES.USERS)}, ` +
+      "'note', " +
       `${CONTACTS}.${CONTACTS_TABLE.NOTE}`;
 
     // 查询SQL语句
@@ -32,6 +31,38 @@ class ContactsController {
     const result = await connections.execute(SQL);
 
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0] });
+  }
+  // 批量查询用户分组下练习人信息
+  async getContactListByGroupId(ctx) {
+    const { group_id_list } = ctx.request.query;
+    const { userId } = ctx.user;
+
+    // 将string转成array，并对类型进行转换
+    const groupIdList = group_id_list.split(',').map(v => Number(v));
+
+    console.log(groupIdList);
+
+    // 用到的几个表
+    const { CONTACTS, USERS } = TABLE_NAMES;
+
+    // 用户信息,包含备注信息
+    const userTableSelectColumns =
+      `${getJSONOBJECTColumns(userTableCommonColumns, TABLE_NAMES.USERS)}, ` +
+      "'note', " +
+      `${CONTACTS}.${CONTACTS_TABLE.NOTE}`;
+
+    const SQL = `SELECT ${userTableSelectColumns} FROM ${CONTACTS} 
+    JOIN ${USERS} ON ${CONTACTS}.${CONTACTS_TABLE.CONTACT_ID} = ${USERS}.${USER_TABLE.ID} WHERE ${CONTACTS}.${CONTACTS_TABLE.USER_ID} = ${userId} AND ${CONTACTS}.group_id = 
+  `;
+
+    // 查询任务
+    const promiseList = groupIdList.map(groupId => connections.execute(SQL + groupId));
+    // 使用promise.all所有查询任务并行，提高性能
+    const result = await Promise.all(promiseList);
+    // 处理查询任务
+    const data = groupIdList.map((groupId, index) => ({ groupId, contactList: result[index][0] }));
+    console.log(data);
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data });
   }
 }
 
