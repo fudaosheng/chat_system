@@ -20,9 +20,10 @@ const initState: WebsocketState = {
 };
 
 export const WebsocketContext = createContext<ContextType>({ state: initState, dispatch: () => {} });
-WebsocketContext.displayName = 'WebsocketContext';
+WebsocketContext.displayName = 'websocketContext';
 
 export const WebsocketProvider: React.FC = memo(({ children }) => {
   const [state, dispatch] = useReducer(websocketReducer, initState);
+  
   return <WebsocketContext.Provider value={{ state, dispatch }}>{children}</WebsocketContext.Provider>;
 });

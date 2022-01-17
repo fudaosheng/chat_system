@@ -108,9 +108,7 @@ export const Contacts: React.FC = () => {
             </Route>
             {/* 用户详细信息 */}
             <Route path={`${url}/user_info/:userId`}>
-              <WebsocketProvider>
-                <UserInfo onChange={getContactGroupListRequest} />
-              </WebsocketProvider>
+              <UserInfo onChange={getContactGroupListRequest} />
             </Route>
           </Switch>
         </div>

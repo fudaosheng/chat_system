@@ -6,6 +6,10 @@
   .contacts {
     width: 240px;
     border-right: 1px solid var(--border-color);
+    .userCard {
+      padding: 12px;
+      cursor: pointer;
+    }
   }
   .emptyContacts {
     display: flex;

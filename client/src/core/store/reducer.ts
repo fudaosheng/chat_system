@@ -3,7 +3,7 @@ import produce from 'immer';
 import { WebsocketActionResp, WebsocketActionType } from '.';
 
 export const websocketReducer = (state: WebsocketState, action: WebsocketActionResp): WebsocketState => {
-  return produce(state, draft => {
+  const newState = produce(state, draft => {
     switch (action.type) {
       case WebsocketActionType.CREATE_CHAT: {
         // 在原来的会话列表中查找与receiver的会话
@@ -20,7 +20,11 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
           draft.chatList.splice(index, 1);
           draft.chatList.unshift(oldChat);
         }
+        break;
       }
+      default:
+        throw new Error();
     }
   });
+  return newState;
 };

@@ -1,0 +1,23 @@
+.conversations {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  .receiver {
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: 500;
+  }
+  .conversationList {
+      flex: 1;
+      padding: 0 24px;
+      overflow: scroll;
+      border: 1px solid black;
+  }
+  .editor {
+      height: 130px;
+      border: 1px solid green;
+  }
+}

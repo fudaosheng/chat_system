@@ -7,13 +7,14 @@ interface Props {
   userInfo: UserInfo;
   name?: ReactElement;
   size?: AvatarSize;
+  className?: string;
   onClick?: () => void;
 }
 
 export const UserCard: React.FC<Props> = (props: Props) => {
-  const { userInfo, name, size, onClick } = props;
+  const { userInfo, name, size, className = '', onClick } = props;
   return (
-    <div className={styles.userCard} onClick={onClick}>
+    <div className={`${styles.userCard} ${className}`} onClick={onClick}>
       <div className={styles.avatar}>
         <Avatar size={size} src={userInfo.avatar}>{userInfo.name.substring(0, 2)}</Avatar>
       </div>
