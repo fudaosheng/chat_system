@@ -1,12 +1,14 @@
 import { Spin, Avatar, Button, Toast } from '@douyinfe/semi-ui';
 import { editContactNote, getContactInfo } from 'common/api/contacts';
 import { IconComment, IconEdit, IconGlobe } from '@douyinfe/semi-icons';
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import styles from './index.module.scss';
 import { SEX } from 'common/constance';
 import { formatDate } from 'common/utils';
 import { Input } from '@douyinfe/semi-ui/lib/es/input';
+import { WebsocketContext } from 'core/store';
+import { WebsocketAction } from 'core/store/action';
 const day = 1000 * 60 * 60 * 24;
 
 interface Props {
@@ -14,6 +16,8 @@ interface Props {
 }
 export const UserInfo: React.FC<Props> = (props: Props) => {
   const { userId } = useParams<any>();
+  const history = useHistory();
+  const { dispatch } = useContext(WebsocketContext);
   const { onChange } = props;
   const [contactInfo, setContactInfo] = useState<UserInfo>({} as UserInfo);
   const [loading, setLoading] = useState(false);
@@ -54,6 +58,16 @@ export const UserInfo: React.FC<Props> = (props: Props) => {
       onChange && onChange();
     } finally {
     }
+  };
+
+  // 创建聊天会话
+  const handleCreateChat = () => {
+    if (!contactInfo.id) {
+      return;
+    }
+    dispatch(WebsocketAction.createChat(contactInfo));
+    // 跳转到会话列表
+    history.push(`/chat/${contactInfo.id}`);
   };
 
   // 渲染其他用户信息
@@ -127,7 +141,7 @@ export const UserInfo: React.FC<Props> = (props: Props) => {
           <div className={styles.main}>
             <div className={styles.name}>{contactInfo?.note || contactInfo.name}</div>
             <div className={styles.function}>
-              <Button icon={<IconComment />} type="tertiary" theme="borderless" />
+              <Button icon={<IconComment />} type="tertiary" theme="borderless" onClick={handleCreateChat} />
               <Button icon={<IconGlobe />} type="tertiary" theme="borderless" />
             </div>
           </div>

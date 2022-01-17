@@ -3,7 +3,7 @@ import React, { createContext, Dispatch, memo, useReducer } from 'react';
 import { websocketReducer } from './reducer';
 
 export enum WebsocketActionType {
-    CREATE_CHAT, //创建会话
+  CREATE_CHAT, //创建会话
 }
 export interface WebsocketActionResp {
   type: WebsocketActionType;
@@ -19,10 +19,10 @@ const initState: WebsocketState = {
   chatList: [],
 };
 
-const WebsocketContext = createContext<ContextType>({ state: initState, dispatch: () => {} });
+export const WebsocketContext = createContext<ContextType>({ state: initState, dispatch: () => {} });
 WebsocketContext.displayName = 'WebsocketContext';
 
-export const GlobalProvider: React.FC = memo(({ children }) => {
+export const WebsocketProvider: React.FC = memo(({ children }) => {
   const [state, dispatch] = useReducer(websocketReducer, initState);
   return <WebsocketContext.Provider value={{ state, dispatch }}>{children}</WebsocketContext.Provider>;
 });

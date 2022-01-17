@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom';
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
 import { Spin } from '@douyinfe/semi-ui';
 import { AddContactGroup } from './components/addContactGroup';
 import styles from './index.module.scss';
@@ -12,6 +12,7 @@ import { GlobalContext } from 'common/store';
 import { getApplyTicketList } from 'common/api/applyContactTicket';
 import { getContactListByGroupIds } from 'common/api/contacts';
 import { getContactGroupList } from 'common/api/contactGroup';
+import { WebsocketProvider } from 'core/store';
 const interval = 1000 * 60; //轮询间隔
 
 export const Contacts: React.FC = () => {
@@ -68,7 +69,7 @@ export const Contacts: React.FC = () => {
           label: i.name,
           value: i.id,
           key: nanoid(),
-          type: 'contact'
+          type: 'contact',
         })),
       }));
 
@@ -107,7 +108,9 @@ export const Contacts: React.FC = () => {
             </Route>
             {/* 用户详细信息 */}
             <Route path={`${url}/user_info/:userId`}>
-              <UserInfo onChange={getContactGroupListRequest} />
+              <WebsocketProvider>
+                <UserInfo onChange={getContactGroupListRequest} />
+              </WebsocketProvider>
             </Route>
           </Switch>
         </div>
