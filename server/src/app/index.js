@@ -4,6 +4,7 @@ const { registryMiddlewares } = require('../middleware/index');
 const { registryRoutes } = require('../router');
 const { registryServices } = require('../service');
 const { registryExtensions } = require('../extension');
+const wss = require('./websocket');
 
 const app = new Koa();
 
@@ -17,5 +18,6 @@ app.registryMiddlewares();
 app.registryRoutes();
 app.registryServices();
 app.registryExtensions();
+app.wss = wss;
 
 module.exports = app;
