@@ -17,7 +17,7 @@ export interface Chat {
   conversations: Array<Message>; //会话消息列表
 }
 export interface WebsocketState {
-  userId: number;
+  key: string; //唯一标识，目前利用userId作为唯一标识
   chatList: Array<Chat>;
 }
 
