@@ -20,7 +20,8 @@ export const Conversations: React.FC = () => {
   const chat = useMemo(() => chatList.find(i => i?.receiver?.id === Number(userId)), [chatList, userId]);
 
   // 发送消息
-  const handleSendMessage = () => {
+  // todo：发送消息时用blob发送，阻止回车换行
+  const handleSendMessage = (e: any) => {
     const { receiver } = chat || {};
     if (!receiver?.id) {
       return;
@@ -32,6 +33,8 @@ export const Conversations: React.FC = () => {
     console.log(result);
     // 清空输入框内容
     setValue('');
+    //阻止默认的换行
+    return e.stopPropagation();
   };
 
   return (

@@ -30,10 +30,31 @@ wss.on('connection', ws => {
   ws.on('message', data => {
     console.log('received: %s', data);
     try {
-      const { type, message } = JSON.parse(data);
+      const messageData = JSON.parse(data) || {};
+      const { fromId, receiverId, id, time, message, type } = messageData;
       // 初始化，设置唯一标识
-      if(type === MessageType.INIT) {
+      if (type === MessageType.INIT) {
         ws.key = message;
+      } else {
+        // 消息接收着的ws连接
+        let receiverClient;
+        
+        if(wss.clients) {
+          wss.clients.forEach(client => {
+            console.log(client.key, client.key === receiverId);
+            if(client.key && Number(client.key) === Number(receiverId)) {
+              receiverClient = client;
+            }
+          })
+        }
+        // 用户在线
+        if(receiverClient) {
+          // 将A的消息转发给B
+          receiverClient.send(JSON.stringify(messageData))
+        } else {
+          // 用户离线
+          console.log('receiver离线');
+        }
       }
     } catch (err) {
       console.log('receive error', err);
@@ -46,6 +67,6 @@ wss.on('connection', ws => {
 // 监听连接关闭
 wss.on('close', ws => {
   console.log('websocket connection closed');
-})
+});
 
 module.exports = wss;

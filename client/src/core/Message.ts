@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
  */
 
 export class Message {
-    public fromId: number; //这个消息的发送人
+    fromId: number; //这个消息的发送人
     receiverId: number; //消息接收人的Id
     id: String;// 消息id
     time: Number; //时间戳，消息的发送时间
