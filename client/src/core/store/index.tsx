@@ -1,9 +1,11 @@
 import { WebsocketState } from 'core/typings';
+import { getChatListWithStorage } from 'core/store/util';
 import React, { createContext, Dispatch, memo, useReducer } from 'react';
 import { websocketReducer } from './reducer';
 
 export enum WebsocketActionType {
   CREATE_CHAT, //创建会话
+  APPEND_MESSAGE, //将消息添加到会话列表
 }
 export interface WebsocketActionResp {
   type: WebsocketActionType;
@@ -15,7 +17,7 @@ interface ContextType {
 }
 
 const initState: WebsocketState = {
-  chatList: [],
+  chatList: getChatListWithStorage() || [],
 };
 
 export const WebsocketContext = createContext<ContextType>({ state: initState, dispatch: () => {} });

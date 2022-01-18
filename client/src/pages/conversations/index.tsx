@@ -1,5 +1,5 @@
 import { WebsocketContext } from 'core/store';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { TextArea } from '@douyinfe/semi-ui';
 import { IconEmoji } from '@douyinfe/semi-icons';
@@ -7,17 +7,46 @@ import styles from './index.module.scss';
 import { Message } from 'core/Message';
 import { sendMessage } from 'core';
 import { MessageType } from 'core/typings';
+import { WebsocketAction } from 'core/store/action';
+import { ConversationList } from 'components/conversationList';
+import { GlobalContext } from 'common/store';
 
 export const Conversations: React.FC = () => {
   const { userId } = useParams<any>();
   const {
+    state: { userInfo },
+  } = useContext(GlobalContext);
+  const {
     state: { chatList },
+    dispatch,
   } = useContext(WebsocketContext);
 
   const [value, setValue] = useState('');
 
+  // 接收消息
+  useEffect(() => {
+    const { ws } = window;
+    console.log(ws);
+    
+    if(!ws) {
+      return;
+    }
+    const handleReceiveMessage = (e: MessageEvent) => {
+      const data = JSON.parse(e.data);
+      console.log(data);
+      
+    }
+    ws.addEventListener('message', handleReceiveMessage);
+    return () => ws.removeEventListener('message', handleReceiveMessage);
+  }, [window.ws]);
+
   // 会话
   const chat = useMemo(() => chatList.find(i => i?.receiver?.id === Number(userId)), [chatList, userId]);
+
+  // 消息接收人列表
+  const receiverList = useMemo(() => {
+    return chat?.receiver ? [chat.receiver] : [];
+  }, [chat]);
 
   // 发送消息
   // todo：发送消息时用blob发送，阻止回车换行
@@ -27,14 +56,11 @@ export const Conversations: React.FC = () => {
       return;
     }
     // 构造一个消息对象
-    const message = new Message(receiver.id, value, MessageType.TEXT);
-    console.log(message);
+    const message = new Message(receiver.id, receiver.id, value, MessageType.TEXT);
     const result = sendMessage(message);
-    console.log(result);
+    dispatch(WebsocketAction.append(message.receiverId, message));
     // 清空输入框内容
     setValue('');
-    //阻止默认的换行
-    return e.stopPropagation();
   };
 
   return (
@@ -42,7 +68,9 @@ export const Conversations: React.FC = () => {
       <div className={styles.receiver}>
         <div>{chat?.receiver?.note || chat?.receiver?.name || ''}</div>
       </div>
-      <div className={styles.conversationList}></div>
+      <div className={styles.conversationList}>
+        <ConversationList userInfo={userInfo} receiverList={receiverList} conversationList={chat?.conversations} />
+      </div>
       <div className={styles.footer}>
         <div className={styles.funtionNav}>
           <IconEmoji size="large" />

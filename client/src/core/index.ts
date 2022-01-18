@@ -1,20 +1,22 @@
 import { Message } from './Message';
-import { handleReceiveMessage } from './receiveMessage';
 import { MessageType } from './typings';
 
 // 初始化websocket
-const initWebsocket = () => {
+export const initWebsocket = (key: string) => {
   const { ws } = window;
+  if(!ws) {
+    return;
+  }
+  ws._key = key;
   // 给服务端发消息，设置唯一标识
-  ws?.send(JSON.stringify({ type: MessageType.INIT, message: ws._key }));
+  ws.onopen = () => {
+    ws?.send(JSON.stringify({ type: MessageType.INIT, message: ws._key }));
+  };
 }
 
 // 处理websocket连接建立成功
 const handleWebsocketConnectionSuccess = (e: Event) => {
-  console.log('websocket connection success', e);
-  
-  // 初始化websocket
-  initWebsocket();
+  console.log('websocket connection success');
 };
 
 // 处理连接关闭
@@ -22,7 +24,7 @@ const handleWebsocketConnectionClose = (e: Event) => {
   console.log('websocket connection closed');
 }
 
-// 利用websocket发送消息
+// 利用websocket发送消息，JSON -> Blob
 export const sendMessage = (message: Message) => {
   const { ws } = window;
   // 给服务端发消息，设置唯一标识
@@ -33,23 +35,19 @@ export const sendMessage = (message: Message) => {
  *
  * @param key websocket的唯一标识
  */
-export const registryWebSocket = (key: string) => {
+export const registryWebSocket = () => {
   const ws = new WebSocket('ws://127.0.0.1:8080');
 
   ws.addEventListener('open', handleWebsocketConnectionSuccess);
-  ws.addEventListener('message', handleReceiveMessage);
   ws.addEventListener('close', handleWebsocketConnectionClose);
   
   window.ws = ws;
-  // 设置唯一标识
-  window.ws._key = key;
 };
 
 // 注销websocket
 export const destoryWebsocket = () => {
   const { ws } = window;
   ws?.removeEventListener('open', handleWebsocketConnectionSuccess);
-  ws?.removeEventListener('message', handleReceiveMessage);
   ws?.removeEventListener('close', handleWebsocketConnectionClose);
 
   // 关闭连接

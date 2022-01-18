@@ -5,18 +5,20 @@ export enum MessageType {
   RICH_TEXT = 'richText', //富文本
 }
 // 聊天消息
-export interface Message {
+export interface MessageStruct {
   fromId: number; //这个消息的发送人
   receiverId: number; //消息接收人的Id
-  id: String;// 消息id
-  time: Number; //时间戳，消息的发送时间
+  id: string;// 消息id
+  chatId: number;// 会话id
+  time: number; //时间戳，消息的发送时间
   message: string; //真正的消息体
   type: MessageType;
 }
 // 聊天会话
 export interface Chat {
+  id: number; //会话id
   receiver: UserInfo; //消息接收人详细信息
-  conversations: Array<Message>; //会话消息列表
+  conversations: Array<MessageStruct>; //会话消息列表
 }
 export interface WebsocketState {
   chatList: Array<Chat>;

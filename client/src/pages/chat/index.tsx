@@ -15,10 +15,6 @@ export const Chat: React.FC = () => {
     state: { chatList },
   } = useContext(WebsocketContext);
 
-  useEffect(() => {
-    console.log(window.ws);
-  }, [window.ws]);
-
   return (
     <div className={styles.chat}>
       <div className={classNames(styles.contacts, { [styles.emptyContacts]: !chatList.length })}>

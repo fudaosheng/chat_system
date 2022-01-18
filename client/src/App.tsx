@@ -5,7 +5,7 @@ import { Login } from 'components/login';
 import { LOCAL_STORAGE_USER_INFO } from 'common/constance/localStorage';
 import { GlobalContext } from 'common/store';
 import { GlobalAction } from 'common/store/action';
-import { destoryWebsocket, registryWebSocket } from 'core';
+import { destoryWebsocket, initWebsocket, registryWebSocket } from 'core';
 
 const App: React.FC = () => {
   const {
@@ -25,8 +25,7 @@ const App: React.FC = () => {
     if (!userInfo.id) {
       return;
     }
-    //注册websocket
-    registryWebSocket(String(userInfo.id));
+    initWebsocket(String(userInfo.id));
     // 注销websocket;
     return () => destoryWebsocket();
   }, [userInfo.id]);

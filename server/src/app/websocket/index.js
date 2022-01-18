@@ -36,12 +36,11 @@ wss.on('connection', ws => {
       if (type === MessageType.INIT) {
         ws.key = message;
       } else {
-        // 消息接收着的ws连接
+        // 消息接收者的ws连接
         let receiverClient;
         
         if(wss.clients) {
           wss.clients.forEach(client => {
-            console.log(client.key, client.key === receiverId);
             if(client.key && Number(client.key) === Number(receiverId)) {
               receiverClient = client;
             }
@@ -61,7 +60,7 @@ wss.on('connection', ws => {
     }
   });
 
-  ws.send('websocket nection success');
+  ws.send(JSON.stringify('websocket nection success'));
 });
 
 // 监听连接关闭

@@ -65,7 +65,7 @@ export const UserInfo: React.FC<Props> = (props: Props) => {
     if (!contactInfo.id) {
       return;
     }
-    dispatch(WebsocketAction.createChat(contactInfo));
+    dispatch(WebsocketAction.createChat(contactInfo.id, contactInfo));
     // 跳转到会话列表
     history.push(`/chat/${contactInfo.id}`);
   };
