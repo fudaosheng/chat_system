@@ -15,7 +15,6 @@ interface ContextType {
 }
 
 const initState: WebsocketState = {
-  key: '',
   chatList: [],
 };
 

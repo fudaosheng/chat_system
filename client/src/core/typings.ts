@@ -6,9 +6,11 @@ export enum MessageType {
 }
 // 聊天消息
 export interface Message {
-  userId: number; //这个消息的发送人
+  fromId: number; //这个消息的发送人
+  receiverId: number; //消息接收人的Id
+  id: String;// 消息id
   time: Number; //时间戳，消息的发送时间
-  message: string; //真正的消息
+  message: string; //真正的消息体
   type: MessageType;
 }
 // 聊天会话
@@ -17,7 +19,6 @@ export interface Chat {
   conversations: Array<Message>; //会话消息列表
 }
 export interface WebsocketState {
-  key: string; //唯一标识，目前利用userId作为唯一标识
   chatList: Array<Chat>;
 }
 

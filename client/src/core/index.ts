@@ -1,3 +1,4 @@
+import { Message } from './Message';
 import { handleReceiveMessage } from './receiveMessage';
 import { MessageType } from './typings';
 
@@ -19,6 +20,13 @@ const handleWebsocketConnectionSuccess = (e: Event) => {
 // 处理连接关闭
 const handleWebsocketConnectionClose = (e: Event) => {
   console.log('websocket connection closed');
+}
+
+// 利用websocket发送消息
+export const sendMessage = (message: Message) => {
+  const { ws } = window;
+  // 给服务端发消息，设置唯一标识
+  return ws?.send(JSON.stringify(message));
 }
 
 /**

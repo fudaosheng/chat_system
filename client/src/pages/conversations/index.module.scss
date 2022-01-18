@@ -2,22 +2,35 @@
   flex: 1;
   height: 100%;
   overflow: hidden;
-  border: 1px solid red;
   display: flex;
   flex-direction: column;
   .receiver {
       padding: 12px 24px;
       font-size: 18px;
       font-weight: 500;
+      border-bottom: 1px solid var(--border-color);
   }
   .conversationList {
       flex: 1;
       padding: 0 24px;
       overflow: scroll;
-      border: 1px solid black;
+    //   border: 1px solid black;
   }
-  .editor {
+  .footer {
       height: 130px;
-      border: 1px solid green;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      .funtionNav {
+        padding: 8px 24px;
+      }
+      .editor {
+        flex: 1;
+        .textArea {
+          background-color: #fff;
+          border-radius: none;
+          border: none;
+        }
+      }
   }
 }
