@@ -6,7 +6,7 @@ import { IconEmoji } from '@douyinfe/semi-icons';
 import styles from './index.module.scss';
 import { Message } from 'core/Message';
 import { sendMessage } from 'core';
-import { MessageType } from 'core/typings';
+import { MessageStruct, MessageType } from 'core/typings';
 import { WebsocketAction } from 'core/store/action';
 import { ConversationList } from 'components/conversationList';
 import { GlobalContext } from 'common/store';
@@ -26,15 +26,17 @@ export const Conversations: React.FC = () => {
   // 接收消息
   useEffect(() => {
     const { ws } = window;
-    console.log(ws);
-    
     if(!ws) {
       return;
     }
     const handleReceiveMessage = (e: MessageEvent) => {
-      const data = JSON.parse(e.data);
-      console.log(data);
-      
+      const data = JSON.parse(e.data) as MessageStruct;
+      // 修改chatId
+      if(data?.chatId && data?.fromId) {
+        data.chatId = data.fromId;
+      }
+      // 将接收到的消息放入消息栈
+      dispatch(WebsocketAction.append(data.chatId, data));
     }
     ws.addEventListener('message', handleReceiveMessage);
     return () => ws.removeEventListener('message', handleReceiveMessage);
