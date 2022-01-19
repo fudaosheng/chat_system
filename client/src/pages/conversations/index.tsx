@@ -1,7 +1,6 @@
 import { WebsocketContext } from 'core/store';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { TextArea } from '@douyinfe/semi-ui';
 import { IconEmoji } from '@douyinfe/semi-icons';
 import styles from './index.module.scss';
 import { Message } from 'core/Message';
@@ -10,6 +9,7 @@ import { MessageStruct, MessageType } from 'core/typings';
 import { WebsocketAction } from 'core/store/action';
 import { ConversationList } from 'components/conversationList';
 import { GlobalContext } from 'common/store';
+import { TextArea } from 'components/textArea';
 
 export const Conversations: React.FC = () => {
   const { userId } = useParams<any>();
@@ -20,8 +20,6 @@ export const Conversations: React.FC = () => {
     state: { chatList },
     dispatch,
   } = useContext(WebsocketContext);
-
-  const [value, setValue] = useState('');
 
   // 接收消息
   useEffect(() => {
@@ -52,17 +50,15 @@ export const Conversations: React.FC = () => {
 
   // 发送消息
   // todo：发送消息时用blob发送，阻止回车换行
-  const handleSendMessage = (e: any) => {
+  const handleSendMessage = (value: string) => {
     const { receiver } = chat || {};
     if (!receiver?.id) {
       return;
     }
     // 构造一个消息对象
     const message = new Message(receiver.id, receiver.id, value, MessageType.TEXT);
-    const result = sendMessage(message);
+    sendMessage(message);
     dispatch(WebsocketAction.append(message.receiverId, message));
-    // 清空输入框内容
-    setValue('');
   };
 
   return (
@@ -78,13 +74,7 @@ export const Conversations: React.FC = () => {
           <IconEmoji size="large" />
         </div>
         <div className={styles.editor}>
-          <TextArea
-            autoFocus
-            className={styles.textArea}
-            value={value}
-            onChange={v => setValue(v)}
-            onEnterPress={handleSendMessage}
-          />
+          <TextArea className={styles.textArea} sendMessage={handleSendMessage} />
         </div>
       </div>
     </div>
