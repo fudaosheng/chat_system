@@ -4,6 +4,7 @@ import React, { createContext, Dispatch, memo, useReducer } from 'react';
 import { websocketReducer } from './reducer';
 
 export enum WebsocketActionType {
+  REGISTRY_WEBSOCKET,
   CREATE_CHAT, //创建会话
   APPEND_MESSAGE, //将消息添加到会话列表
 }
@@ -17,6 +18,7 @@ interface ContextType {
 }
 
 const initState: WebsocketState = {
+  ws: undefined,
   chatList: getChatListWithStorage() || [],
 };
 

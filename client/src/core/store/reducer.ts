@@ -3,10 +3,16 @@ import { WebsocketState } from 'core/typings';
 import produce from 'immer';
 import { findIndex } from './util';
 import { WebsocketActionResp, WebsocketActionType } from '.';
+import { getContactInfo } from 'common/api/contacts';
 
 export const websocketReducer = (state: WebsocketState, action: WebsocketActionResp): WebsocketState => {
   const nextState = produce(state, draft => {
     switch (action.type) {
+      // 注册websocket
+      case WebsocketActionType.REGISTRY_WEBSOCKET: {
+        draft.ws = action.payload;
+        break;
+      }
       // 创建会话
       case WebsocketActionType.CREATE_CHAT: {
         const { chatId, receiver } = action.payload;
@@ -27,15 +33,13 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
         }
         break;
       }
-      // 忘消息栈中新增一条消息
+      // 往消息栈中新增一条消息
       case WebsocketActionType.APPEND_MESSAGE: {
-        const { chatId, message } = action.payload
+        const { chatId, message } = action.payload;
         const index = findIndex(chatId, draft.chatList);
+
         if(index !== -1) {
           draft.chatList[index].conversations.push(message);
-        } else {
-          console.log('需要新建会话');
-          
         }
         break;
       }

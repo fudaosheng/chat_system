@@ -6,21 +6,21 @@ import { nanoid } from 'nanoid';
  */
 
 export class Message implements MessageStruct {
-    fromId: number; //这个消息的发送人
-    receiverId: number; //消息接收人的Id
-    id: string;// 消息id
-    chatId: number;
-    time: number; //时间戳，消息的发送时间
-    message: string; //真正的消息体
-    type: MessageType;
+  fromId: number; //这个消息的发送人
+  receiverId: number; //消息接收人的Id
+  id: string; // 消息id
+  chatId: number;
+  time: number; //时间戳，消息的发送时间
+  message: string; //真正的消息体
+  type: MessageType;
 
-    constructor (chatId: number, receiverId: number, message: string, type: MessageType) {
-        this.fromId = Number(window?.ws?._key || 0);
-        this.receiverId = receiverId;
-        this.type = type;
-        this.message = message;
-        this.id = nanoid();
-        this.time = new Date().getTime();
-        this.chatId = chatId;
-    }
+  constructor(chatId: number, fromId: number, receiverId: number, message: string, type: MessageType) {
+    this.fromId = fromId;
+    this.receiverId = receiverId;
+    this.type = type;
+    this.message = message;
+    this.id = nanoid();
+    this.time = new Date().getTime();
+    this.chatId = chatId;
+  }
 }

@@ -1,15 +1,13 @@
 import { WebsocketContext } from 'core/store';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { IconEmoji } from '@douyinfe/semi-icons';
 import styles from './index.module.scss';
 import { Message } from 'core/Message';
 import { sendMessage } from 'core';
-import { MessageStruct, MessageType } from 'core/typings';
+import { MessageType } from 'core/typings';
 import { WebsocketAction } from 'core/store/action';
 import { ConversationList } from 'components/conversationList';
 import { GlobalContext } from 'common/store';
-import { TextArea } from 'components/textArea';
 import { Editor } from 'components/editor';
 
 export const Conversations: React.FC = () => {
@@ -18,28 +16,9 @@ export const Conversations: React.FC = () => {
     state: { userInfo },
   } = useContext(GlobalContext);
   const {
-    state: { chatList },
+    state: { chatList, ws },
     dispatch,
   } = useContext(WebsocketContext);
-
-  // 接收消息
-  useEffect(() => {
-    const { ws } = window;
-    if(!ws) {
-      return;
-    }
-    const handleReceiveMessage = (e: MessageEvent) => {
-      const data = JSON.parse(e.data) as MessageStruct;
-      // 修改chatId
-      if(data?.chatId && data?.fromId) {
-        data.chatId = data.fromId;
-      }
-      // 将接收到的消息放入消息栈
-      dispatch(WebsocketAction.append(data.chatId, data));
-    }
-    ws.addEventListener('message', handleReceiveMessage);
-    return () => ws.removeEventListener('message', handleReceiveMessage);
-  }, [window.ws]);
 
   // 会话
   const chat = useMemo(() => chatList.find(i => i?.receiver?.id === Number(userId)), [chatList, userId]);
@@ -53,12 +32,12 @@ export const Conversations: React.FC = () => {
   // todo：发送消息时用blob发送，阻止回车换行
   const handleSendMessage = (value: string) => {
     const { receiver } = chat || {};
-    if (!receiver?.id) {
+    if (!(receiver?.id && ws)) {
       return;
     }
     // 构造一个消息对象
-    const message = new Message(receiver.id, receiver.id, value, MessageType.TEXT);
-    sendMessage(message);
+    const message = new Message(receiver.id, userInfo.id, receiver.id, value, MessageType.TEXT);
+    sendMessage(ws, message);
     dispatch(WebsocketAction.append(message.receiverId, message));
   };
 

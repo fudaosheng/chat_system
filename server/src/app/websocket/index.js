@@ -33,7 +33,7 @@ wss.on('connection', ws => {
       const messageData = JSON.parse(data) || {};
       const { fromId, receiverId, id, time, message, type } = messageData;
       // 初始化，设置唯一标识
-      if (type === MessageType.INIT) {
+      if (type === MessageType.PING) {
         ws.key = message;
       } else {
         // 消息接收者的ws连接
