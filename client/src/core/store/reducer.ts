@@ -23,6 +23,7 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
           draft.chatList.unshift({
             receiver,
             id: receiver.id, //chatId
+            lastReadedMessageIndex: 0,
             conversations: [],
           });
         } else {
@@ -40,6 +41,15 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
 
         if(index !== -1) {
           draft.chatList[index].conversations.push(message);
+        }
+        break;
+      }
+      // 更新最后一个已读消息下标
+      case WebsocketActionType.UPDATE_LAST_READED_MESSAGE_INDEX: {
+        const { chatId } = action.payload;
+        const index = findIndex(chatId, draft.chatList);
+        if(index !== -1) {
+          draft.chatList[index].lastReadedMessageIndex = draft.chatList[index].conversations.length - 1
         }
         break;
       }

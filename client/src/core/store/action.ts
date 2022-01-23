@@ -22,5 +22,12 @@ export const WebsocketAction = {
       type: WebsocketActionType.APPEND_MESSAGE,
       payload: { chatId, message },
     };
+  },
+  // 更新最后一个已读消息下标
+  updateLastReadedMessageIndex(chatId: number): WebsocketActionResp {
+    return {
+      type: WebsocketActionType.UPDATE_LAST_READED_MESSAGE_INDEX,
+      payload: { chatId },
+    };
   }
 };

@@ -1,5 +1,5 @@
 import { WebsocketContext } from 'core/store';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { createRef, useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './index.module.scss';
 import { Message } from 'core/Message';
@@ -9,6 +9,8 @@ import { WebsocketAction } from 'core/store/action';
 import { ConversationList } from 'components/conversationList';
 import { GlobalContext } from 'common/store';
 import { Editor } from 'components/editor';
+import { debounce } from 'lodash';
+const debounceGap = 1000;
 
 export const Conversations: React.FC = () => {
   const { userId } = useParams<any>();
@@ -19,6 +21,7 @@ export const Conversations: React.FC = () => {
     state: { chatList, ws },
     dispatch,
   } = useContext(WebsocketContext);
+  const conversationsRef = createRef<HTMLDivElement>();
 
   // 会话
   const chat = useMemo(() => chatList.find(i => i?.receiver?.id === Number(userId)), [chatList, userId]);
@@ -27,6 +30,18 @@ export const Conversations: React.FC = () => {
   const receiverList = useMemo(() => {
     return chat?.receiver ? [chat.receiver] : [];
   }, [chat]);
+
+  useEffect(() => {
+    // 监听鼠标移动，处理消息是否已读
+    if(!(conversationsRef?.current && chat?.id)) {
+      return;
+    }
+    const updateLastReadedMessageIndex = debounce(() => {
+      dispatch(WebsocketAction.updateLastReadedMessageIndex(chat?.id));
+    }, debounceGap);
+    conversationsRef.current.addEventListener('mousemove', updateLastReadedMessageIndex);
+    return () => conversationsRef.current?.removeEventListener('mousemove', updateLastReadedMessageIndex);
+  }, [conversationsRef]);
 
   // 发送消息
   // todo：发送消息时用blob发送，阻止回车换行
@@ -42,7 +57,7 @@ export const Conversations: React.FC = () => {
   };
 
   return (
-    <div className={styles.conversations}>
+    <div className={styles.conversations} ref={conversationsRef}>
       <div className={styles.receiver}>
         <div>{chat?.receiver?.note || chat?.receiver?.name || ''}</div>
       </div>

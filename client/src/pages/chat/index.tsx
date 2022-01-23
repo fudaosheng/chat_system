@@ -1,16 +1,18 @@
+import React, { useContext } from 'react';
+import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import classNames from 'classnames';
+import { Badge } from '@douyinfe/semi-ui';
 import { EmptyContent, NoContacts } from 'components/empty';
 import { UserCard } from 'components/userCard';
 import { WebsocketContext } from 'core/store';
 import { Conversations } from 'pages/conversations';
-import React, { useEffect, useState } from 'react';
-import { useContext } from 'react';
-import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
+import { GlobalContext } from 'common/store';
 import styles from './index.module.scss';
 
 export const Chat: React.FC = () => {
   const { url } = useRouteMatch();
   const history = useHistory();
+  const { state: { userInfo }} = useContext(GlobalContext)
   const {
     state: { chatList },
   } = useContext(WebsocketContext);
@@ -19,14 +21,22 @@ export const Chat: React.FC = () => {
     <div className={styles.chat}>
       <div className={classNames(styles.contacts, { [styles.emptyContacts]: !chatList.length })}>
         {chatList.length
-          ? chatList.map(({ receiver }) => {
-              return (
+          ? chatList.map(({ receiver, conversations, lastReadedMessageIndex }) => {
+              const unReadMessageCount = conversations.slice(lastReadedMessageIndex + 1).filter(i => i.receiverId === userInfo.id).length;
+              const UserCardContent = (
                 <UserCard
                   key={receiver.id}
                   userInfo={receiver}
                   className={styles.userCard}
                   onClick={() => history.replace(`${url}/${receiver.id}`)}
                 />
+              );
+              return unReadMessageCount ? (
+                <Badge type="danger" count={unReadMessageCount} overflowCount={99}>
+                  {UserCardContent}
+                </Badge>
+              ) : (
+                UserCardContent
               );
             })
           : NoContacts}

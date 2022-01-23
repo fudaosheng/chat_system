@@ -7,8 +7,17 @@
     width: 240px;
     border-right: 1px solid var(--border-color);
     .userCard {
+      width: 100%;
       padding: 12px;
       cursor: pointer;
+    }
+    :global {
+      .semi-badge {
+        width: 100%;
+        .semi-badge-rightTop {
+          transform: translate(3%, 0%);
+        }
+      }
     }
   }
   .emptyContacts {

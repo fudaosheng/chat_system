@@ -18,6 +18,7 @@ export interface MessageStruct {
 export interface Chat {
   id: number; //会话id
   receiver: UserInfo; //消息接收人详细信息
+  lastReadedMessageIndex: number;// 上次阅读的最后一条消息下标
   conversations: Array<MessageStruct>; //会话消息列表
 }
 export interface WebsocketState {
