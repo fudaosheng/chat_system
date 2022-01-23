@@ -1,4 +1,4 @@
-const userController = require('../../controller/user');
+const userController = require('../../controller/userController');
 const KoaRouter = require('koa-router');
 
 const router = new KoaRouter({ prefix: '/api/user' });

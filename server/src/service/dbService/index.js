@@ -169,4 +169,4 @@ class DbService {
   }
 }
 
-module.exports = DbService;
+module.exports = new DbService();

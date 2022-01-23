@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-const contactsController = require('../../controller/conatcts');
+const contactsController = require('../../controller/conatctsController');
 
 const router = new KoaRouter({ prefix: '/api/contacts' });
 

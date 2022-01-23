@@ -1,7 +1,7 @@
 const KoaRouter = require('koa-router');
 const multer = require('@koa/multer');
 const { imgUploadPath } = require('../../constance');
-const fileController = require('../../controller/file');
+const fileController = require('../../controller/fileController');
 
 const router = new KoaRouter({ prefix: '/api/file' });
 

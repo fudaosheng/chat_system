@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-const applyContactTicketController = require('../../controller/applyContactTicket');
+const applyContactTicketController = require('../../controller/applyContactTicketController');
 
 const router = new KoaRouter({ prefix: '/api/apply_contact_ticket' });
 

@@ -7,4 +7,4 @@ class UserServer {
   }
 }
 
-module.exports = UserServer;
+module.exports = new UserServer();

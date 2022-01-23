@@ -10,8 +10,7 @@ function registryServices() {
         if(path === 'index.js') {
             return;
         }
-        const serviceClass = require(`.${_path.sep + path}`);
-        this.context.service[path] = new serviceClass(this.ctx);
+        this.context.service[path] = require(`.${_path.sep + path}`);
     })
 }
 
