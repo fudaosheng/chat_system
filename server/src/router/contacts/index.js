@@ -10,6 +10,8 @@ router.get('/get/contact_list_by_group_ids', contactsController.getContactListBy
 
 // 获取联系人详细信息
 router.get('/get/contact_info', contactsController.getContactInfo);
+// 批量查询联系人详细信息
+router.get('/get/bulk_contact_info', contactsController.getBulkContactInfoByIds);
 
 // 编辑好友备注
 router.post('/edit/contact_note', contactsController.editContactNote);

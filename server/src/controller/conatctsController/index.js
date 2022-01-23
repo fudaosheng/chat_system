@@ -70,25 +70,23 @@ class ContactsController {
   }
   // 查询联系人详细信息
   async getContactInfo(ctx) {
-    const { userId } = ctx.request.query;
-    console.log('userId', userId);
+    const { userId: contactId } = ctx.request.query;
+
+    const result = await ctx.service.contactService.getContactInfo(ctx.user.userId, contactId);
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result });
+  }
+  // 通过用户id批量查询联系人信息
+  async getBulkContactInfoByIds(ctx) {
+    const { ids = '' } = ctx.request.query;
+    const userId = ctx.user.userId;
+    const idList = ids.split(',').map(i => Number(i));
 
     // 用到的几个表
-    const { CONTACTS, USERS } = TABLE_NAMES;
+    const promiseList = idList.map(id => ctx.service.contactService.getContactInfo(userId, id));
 
-    // 用户信息,包含备注信息, create_time好友创建时间，update_time好友更新时间
-    const userTableSelectColumns = `${getTableSelectColumns(
-      userTableCommonColumns.filter(v => !Object.values(COMMON_TABLE_FIELDS).includes(v)),
-      TABLE_NAMES.USERS
-    )}, ${getTableSelectColumns(
-      [CONTACTS_TABLE.NOTE, CONTACTS_TABLE.CREATE_TIME, CONTACTS_TABLE.UPDATE_TIME],
-      TABLE_NAMES.CONTACTS
-    )}`;
-
-    const SQL = `SELECT ${userTableSelectColumns} FROM ${CONTACTS} 
-    JOIN ${USERS} ON ${CONTACTS}.${CONTACTS_TABLE.CONTACT_ID} = ${USERS}.${USER_TABLE.ID} WHERE ${CONTACTS}.${CONTACTS_TABLE.USER_ID} = ${ctx.user.userId} AND ${CONTACTS}.${CONTACTS_TABLE.CONTACT_ID} = ${userId}`;
-    const result = await connections.execute(SQL);
-    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0][0] });
+    const result = await Promise.all(promiseList);
+    console.log(result);
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result });
   }
   // 修改好友备注
   async editContactNote(ctx) {
