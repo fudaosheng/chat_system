@@ -5,6 +5,7 @@ import { websocketReducer } from './reducer';
 
 export enum WebsocketActionType {
   REGISTRY_WEBSOCKET,
+  RESET, // 重置所有数据
   CREATE_CHAT, //创建会话
   APPEND_MESSAGE, //将消息添加到会话列表
   UPDATE_LAST_READED_MESSAGE_INDEX, //更新最后一个已读消息下标

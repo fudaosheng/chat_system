@@ -1,7 +1,8 @@
 import { LOCAL_STORAGE_USER_INFO, LOCAL_STORAGE_USER_TOKEN } from 'common/constance/localStorage';
-import { defaultUserInfo } from '.';
+import { defaultUserInfo, initGlobalState } from '.';
 export enum GLOBAL_OPERATION_TYPE {
   SET_USER_INFO, //设置用户信息
+  CLEAR_USER_INFO, // 清除用户信息
 }
 
 export interface GlobalActionType {
@@ -21,10 +22,10 @@ export const GlobalAction = {
     };
   },
   clearUserInfo(): GlobalActionType {
-    localStorage.removeItem(LOCAL_STORAGE_USER_INFO);
-    localStorage.removeItem(LOCAL_STORAGE_USER_TOKEN);
+    // 清楚所有缓存
+    localStorage.clear();
     return {
-      type: GLOBAL_OPERATION_TYPE.SET_USER_INFO,
+      type: GLOBAL_OPERATION_TYPE.CLEAR_USER_INFO,
       payload: defaultUserInfo,
     };
   }

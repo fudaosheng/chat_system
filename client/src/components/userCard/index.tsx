@@ -16,7 +16,7 @@ export const UserCard: React.FC<Props> = (props: Props) => {
   return (
     <div className={`${styles.userCard} ${className}`} onClick={onClick}>
       <div className={styles.avatar}>
-        <Avatar size={size} src={userInfo.avatar}>{userInfo.name.substring(0, 2)}</Avatar>
+        <Avatar size={size} src={userInfo.avatar}>{userInfo?.name?.substring(0, 2)}</Avatar>
       </div>
       <div className={styles.userInfo}>
         <div className={styles.name}>{name || userInfo?.name}</div>

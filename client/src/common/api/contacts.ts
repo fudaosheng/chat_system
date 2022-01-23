@@ -24,6 +24,11 @@ export const getContactListByGroupIds = (group_id_list: Array<Number>): Promise<
 export const getContactInfo = (userId: number): Promise<BaseResponse & { data: UserInfo }> => request({
   url: '/contacts/get/contact_info',
   data: { userId }
+});
+// 批量查询联系人详细信息
+export const getBulkContactInfo = (ids: Array<number>): Promise<BaseResponse & { data: Array<UserInfo> }> => request({
+  url: '/contacts/get/bulk_contact_info',
+  data: { ids }
 })
 
 // 编辑好友备注

@@ -67,7 +67,7 @@ export const Login: React.FC = () => {
   const title = useMemo((): string => type === Type.LOGIN ? '登陆' : '注册', [type]);
 
   return (
-    <Modal key={userInfo?.token} height={500} visible={!localStorage.getItem(LOCAL_STORAGE_USER_TOKEN)} footer={null} title={title} closable={false}>
+    <Modal key={userInfo.token} height={500} visible={!localStorage.getItem(LOCAL_STORAGE_USER_TOKEN)} footer={null} title={title} closable={false}>
       <div className={styles.main}>
         <div className={styles.avatar}>
           <Avatar src={localStorage.getItem(LOCAL_STORAGE_LOGIN_AVATAR) || ''} style={{ width: 100, height: 100 }} />

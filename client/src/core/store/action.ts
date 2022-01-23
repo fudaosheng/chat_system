@@ -9,6 +9,12 @@ export const WebsocketAction = {
       payload: ws,
     }
   },
+  reset(): WebsocketActionResp {
+    return {
+      type: WebsocketActionType.RESET,
+      payload: {},
+    }
+  },
   // 创建会话
   createChat(chatId: number, receiver: UserInfo): WebsocketActionResp {
     return {
@@ -17,7 +23,7 @@ export const WebsocketAction = {
     };
   },
   // 将消息添加到会话列表
-  append(chatId: number, message: Message): WebsocketActionResp {
+  append(chatId: number, ...message: Array<Message>): WebsocketActionResp {
     return {
       type: WebsocketActionType.APPEND_MESSAGE,
       payload: { chatId, message },

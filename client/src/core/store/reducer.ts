@@ -3,7 +3,6 @@ import { WebsocketState } from 'core/typings';
 import produce from 'immer';
 import { findIndex } from './util';
 import { WebsocketActionResp, WebsocketActionType } from '.';
-import { getContactInfo } from 'common/api/contacts';
 
 export const websocketReducer = (state: WebsocketState, action: WebsocketActionResp): WebsocketState => {
   const nextState = produce(state, draft => {
@@ -11,6 +10,11 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       // 注册websocket
       case WebsocketActionType.REGISTRY_WEBSOCKET: {
         draft.ws = action.payload;
+        break;
+      }
+      case WebsocketActionType.RESET: {
+        draft.chatList = [];
+        draft.ws = undefined;
         break;
       }
       // 创建会话
@@ -36,11 +40,11 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       }
       // 往消息栈中新增一条消息
       case WebsocketActionType.APPEND_MESSAGE: {
-        const { chatId, message } = action.payload;
+        const { chatId, message = [] } = action.payload;
         const index = findIndex(chatId, draft.chatList);
 
         if(index !== -1) {
-          draft.chatList[index].conversations.push(message);
+          draft.chatList[index].conversations.push(...message);
         }
         break;
       }

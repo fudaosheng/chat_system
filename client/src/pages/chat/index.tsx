@@ -12,7 +12,9 @@ import styles from './index.module.scss';
 export const Chat: React.FC = () => {
   const { url } = useRouteMatch();
   const history = useHistory();
-  const { state: { userInfo }} = useContext(GlobalContext)
+  const {
+    state: { userInfo },
+  } = useContext(GlobalContext);
   const {
     state: { chatList },
   } = useContext(WebsocketContext);
@@ -21,11 +23,14 @@ export const Chat: React.FC = () => {
     <div className={styles.chat}>
       <div className={classNames(styles.contacts, { [styles.emptyContacts]: !chatList.length })}>
         {chatList.length
-          ? chatList.map(({ receiver, conversations, lastReadedMessageIndex }) => {
-              const unReadMessageCount = conversations.slice(lastReadedMessageIndex + 1).filter(i => i.receiverId === userInfo.id).length;
+          ? chatList.map(chat => {
+              const { id, receiver, conversations, lastReadedMessageIndex } = chat;
+              const unReadMessageCount = conversations
+                .slice(lastReadedMessageIndex + 1)
+                .filter(i => i.receiverId === userInfo.id).length;
               const UserCardContent = (
                 <UserCard
-                  key={receiver.id}
+                  key={id}
                   userInfo={receiver}
                   className={styles.userCard}
                   onClick={() => history.replace(`${url}/${receiver.id}`)}

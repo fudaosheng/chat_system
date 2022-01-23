@@ -11,14 +11,49 @@ import { WebsocketAction } from 'core/store/action';
 import { WebsocketContext } from 'core/store';
 import { findIndex } from 'core/store/util';
 import { getContactInfo } from 'common/api/contacts';
+import { getOfflineMessageList } from 'common/api/offlineMessage';
 
 const App: React.FC = () => {
   const {
     state: { userInfo },
     dispatch,
   } = useContext(GlobalContext);
-  const { state: { ws, chatList }, dispatch: websocketDispatch } = useContext(WebsocketContext);
+  const {
+    state: { ws, chatList },
+    dispatch: websocketDispatch,
+  } = useContext(WebsocketContext);
   const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
+
+  // 将消息放入消息栈
+  const appendMessage = (chatId: number, fromId: number, ...messageList: Array<MessageStruct>) => {
+    const index = findIndex(chatId, chatList);
+    if (index !== -1) {
+      websocketDispatch(WebsocketAction.append(chatId, ...messageList));
+      // 触发消息提示音
+      audioRef.current?.play();
+    } else {
+      // 接收到消息，但是此时消息列表中不存在该会话，需要先创建
+      fromId &&
+        getContactInfo(fromId)
+          .then(res => {
+            const { data: receiver } = res;
+            websocketDispatch(WebsocketAction.createChat(chatId, receiver));
+            websocketDispatch(WebsocketAction.append(chatId, ...messageList));
+            // 触发消息提示音
+          })
+          .catch(err => console.error(err));
+    }
+  };
+
+  const getOfflineMessageListReq = async () => {
+    // 离线消息列表
+    const { data = [] } = await getOfflineMessageList()
+    data?.forEach(offlineMessage => {
+      const { fromId, messageList } = offlineMessage;
+      appendMessage(fromId, fromId, ...messageList);
+    })
+  };
+
   useEffect(() => {
     // 从缓存中读取用户信息
     const userInfoJSON = localStorage.getItem(LOCAL_STORAGE_USER_INFO);
@@ -34,12 +69,21 @@ const App: React.FC = () => {
     websocketDispatch(WebsocketAction.registryWebsocket(ws));
   }, []);
 
+  // 获取离线消息
+  useEffect(() => {
+    if (!userInfo.id) {
+      return;
+    }
+    getOfflineMessageListReq();
+  }, [userInfo.id]);
+
+  // 接收消息
   useEffect(() => {
     if (!(userInfo.id && ws)) {
       return;
     }
     let timer: NodeJS.Timeout;
-    ping(ws, String(userInfo.id), _timer => timer = _timer);
+    ping(ws, String(userInfo.id), _timer => (timer = _timer));
 
     const handleReceiveMessage = (e: MessageEvent) => {
       const data = JSON.parse(e.data) as MessageStruct;
@@ -47,21 +91,8 @@ const App: React.FC = () => {
       if (data?.chatId && data?.fromId) {
         data.chatId = data.fromId;
       }
-      // 将接收到的消息放入消息栈
-      const index = findIndex(data.chatId, chatList);
-      if(index !== -1) {
-        websocketDispatch(WebsocketAction.append(data.chatId, data));
-        // 触发消息提示音
-        audioRef.current?.play();
-      } else {
-        // 接收到消息，但是此时消息列表中不存在该会话，需要先创建
-        data?.fromId && getContactInfo(data.fromId).then(res => {
-          const { data: receiver } = res;
-          websocketDispatch(WebsocketAction.createChat(data.chatId, receiver));
-          websocketDispatch(WebsocketAction.append(data.chatId, data));
-          // 触发消息提示音
-        }).catch(err => console.error(err));
-      }
+      // 将消息放入消息栈
+      appendMessage(data.chatId, data.fromId, data);
     };
     ws.addEventListener('message', handleReceiveMessage);
     return () => {

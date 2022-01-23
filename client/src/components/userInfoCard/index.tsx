@@ -11,6 +11,8 @@ import { setUserAvatar, setUserBio, updateUserInfo } from 'common/api/user';
 import { GlobalAction } from 'common/store/action';
 import { formatDate } from 'common/utils';
 import { SEX } from 'common/constance';
+import { WebsocketContext } from 'core/store';
+import { WebsocketAction } from 'core/store/action';
 
 const imageOnly = 'image/*';
 
@@ -25,6 +27,7 @@ export const UserInfoCard: React.FC<PopoverProps> = (props: PopoverProps) => {
     state: { userInfo },
     dispatch,
   } = useContext(GlobalContext);
+  const { dispatch: wsDispatch } = useContext(WebsocketContext);
 
   const { children, ...restProps } = props;
 
@@ -92,6 +95,12 @@ export const UserInfoCard: React.FC<PopoverProps> = (props: PopoverProps) => {
     );
   };
 
+  // 退出登陆
+  const handleLogout = () => {
+    dispatch(GlobalAction.clearUserInfo());
+    wsDispatch(WebsocketAction.reset());
+  }
+
   // 渲染其他用户信息
   const renderOtherInfo = () => {
     const { birthday, sex, phone_num, id, name } = userInfo;
@@ -118,7 +127,7 @@ export const UserInfoCard: React.FC<PopoverProps> = (props: PopoverProps) => {
           <span className={styles.label}>生日</span>
           <span className={styles.info}>{formatDate(new Date(birthday || ''), 'yyyy-MM-dd') || '请完善信息'}</span>
         </div>
-        <Button className={styles.logout} type="tertiary" onClick={() => dispatch(GlobalAction.clearUserInfo())}>
+        <Button className={styles.logout} type="tertiary" onClick={handleLogout}>
           退出登陆
         </Button>
       </>

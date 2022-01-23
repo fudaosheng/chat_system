@@ -9,6 +9,10 @@ export const reducer = (state: GlobalState, action: GlobalActionType): GlobalSta
         draft.userInfo = action.payload;
         break;
       }
+      case GLOBAL_OPERATION_TYPE.CLEAR_USER_INFO: {
+        draft.userInfo = action.payload;
+        break;
+      }
       default:
         throw new Error();
     }
