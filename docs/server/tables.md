@@ -88,3 +88,18 @@ CREATE TABLE `contacts` (
   CONSTRAINT `contacts_ibfk_3` FOREIGN KEY (`contact_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 ```
+
+# 离线消息列表
+```
+CREATE TABLE `offline_messages`(
+  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  fromId INT NOT NULL,
+  receiverId INT NOT NULL,
+  chatId INT NOT NULL,
+  message varchar(1000),
+  type ENUM('1','2','3','4'),
+  time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (fromId) REFERENCES users(id),
+  FOREIGN KEY (receiverId) REFERENCES users(id)
+)
+```

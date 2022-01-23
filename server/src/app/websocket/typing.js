@@ -1,9 +1,9 @@
 // 消息类型
 const MessageType = {
-  PING: 'ping', //心跳保活
-  TEXT: 'text', // 存文本
-  IMAGE: 'image', // 图片
-  RICH_TEXT: 'richText', // 富文本
+  PING: 1, //心跳保活
+  TEXT: 2, // 存文本
+  IMAGE: 3, // 图片
+  RICH_TEXT: 4, // 富文本
 };
 
 module.exports = {
