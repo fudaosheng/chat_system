@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import './App.css';
 import { AppRouter } from './router';
 import { Login } from 'components/login';
@@ -18,6 +18,7 @@ const App: React.FC = () => {
     dispatch,
   } = useContext(GlobalContext);
   const { state: { ws, chatList }, dispatch: websocketDispatch } = useContext(WebsocketContext);
+  const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
   useEffect(() => {
     // 从缓存中读取用户信息
     const userInfoJSON = localStorage.getItem(LOCAL_STORAGE_USER_INFO);
@@ -42,8 +43,6 @@ const App: React.FC = () => {
 
     const handleReceiveMessage = (e: MessageEvent) => {
       const data = JSON.parse(e.data) as MessageStruct;
-      console.log('receiveMessage:', data);
-
       // 修改chatId
       if (data?.chatId && data?.fromId) {
         data.chatId = data.fromId;
@@ -52,12 +51,15 @@ const App: React.FC = () => {
       const index = findIndex(data.chatId, chatList);
       if(index !== -1) {
         websocketDispatch(WebsocketAction.append(data.chatId, data));
+        // 触发消息提示音
+        audioRef.current?.play();
       } else {
         // 接收到消息，但是此时消息列表中不存在该会话，需要先创建
-        getContactInfo(data.fromId).then(res => {
+        data?.fromId && getContactInfo(data.fromId).then(res => {
           const { data: receiver } = res;
           websocketDispatch(WebsocketAction.createChat(data.chatId, receiver));
           websocketDispatch(WebsocketAction.append(data.chatId, data));
+          // 触发消息提示音
         }).catch(err => console.error(err));
       }
     };
@@ -73,6 +75,7 @@ const App: React.FC = () => {
     <div className="App">
       <AppRouter />
       <Login />
+      <audio src={require('common/resource/tip.wav').default} ref={audioRef} />
     </div>
   );
 };
