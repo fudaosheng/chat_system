@@ -10,6 +10,7 @@ import { WebsocketAction } from 'core/store/action';
 import { ConversationList } from 'components/conversationList';
 import { GlobalContext } from 'common/store';
 import { TextArea } from 'components/textArea';
+import { Editor } from 'components/editor';
 
 export const Conversations: React.FC = () => {
   const { userId } = useParams<any>();
@@ -70,11 +71,12 @@ export const Conversations: React.FC = () => {
         <ConversationList userInfo={userInfo} receiverList={receiverList} conversationList={chat?.conversations} />
       </div>
       <div className={styles.footer}>
-        <div className={styles.funtionNav}>
+        {/* <div className={styles.funtionNav}>
           <IconEmoji size="large" />
-        </div>
+        </div> */}
         <div className={styles.editor}>
-          <TextArea className={styles.textArea} sendMessage={handleSendMessage} />
+          {/* <TextArea className={styles.textArea} sendMessage={handleSendMessage} /> */}
+          <Editor className={styles.textArea} sendMessage={handleSendMessage} />
         </div>
       </div>
     </div>
