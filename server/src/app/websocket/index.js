@@ -1,5 +1,6 @@
 const { WebSocketServer } = require('ws');
 const { MessageType } = require('./typing');
+const offlineMessageService = require('../../service/offlineMessageService');
 
 const wss = new WebSocketServer({
   port: 8080,
@@ -53,6 +54,7 @@ wss.on('connection', ws => {
         } else {
           // 用户离线
           console.log('receiver离线');
+          offlineMessageService.appendOfflineMessage(messageData);
         }
       }
     } catch (err) {

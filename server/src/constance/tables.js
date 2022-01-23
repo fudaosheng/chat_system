@@ -11,6 +11,7 @@ const TABLE_NAMES = {
   CONTACT_GROUP: 'contact_group', // 联系人分组表
   APPLY_CONTACT_TICKET: 'apply_contact_ticket', //申请好友工单表
   CONTACTS: 'contacts', //好友关系表
+  OFFLINE_MESSAGES: 'offline_messages',
 };
 
 // user表字段
@@ -62,6 +63,16 @@ const CONTACTS_TABLE = {
   CONTACT_ID: 'contact_id',
   NOTE: 'note',// 好友备注
 }
+// 离线消息表
+const OFFLINE_MESSAGE_TABLE = {
+  ID: 'id',
+  FROM_ID: 'fromId',
+  RECEIVER_ID: 'receiverId',
+  CHAT_ID: 'chatId',
+  MESSAGE: 'message',
+  TYPE: 'type',
+  TIME: 'time',
+}
 
 module.exports = {
   TABLE_NAMES,
@@ -70,5 +81,6 @@ module.exports = {
   APPLY_CONTACT_TICKET_TABLE,
   APPLY_CONTACT_TICKET_STATUS,
   CONTACTS_TABLE,
-  COMMON_TABLE_FIELDS
+  COMMON_TABLE_FIELDS,
+  OFFLINE_MESSAGE_TABLE
 };

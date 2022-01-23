@@ -91,15 +91,18 @@ CREATE TABLE `contacts` (
 
 # 离线消息列表
 ```
-CREATE TABLE `offline_messages`(
-  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  fromId INT NOT NULL,
-  receiverId INT NOT NULL,
-  chatId INT NOT NULL,
-  message varchar(1000),
-  type ENUM('1','2','3','4'),
-  time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (fromId) REFERENCES users(id),
-  FOREIGN KEY (receiverId) REFERENCES users(id)
-)
+CREATE TABLE `offline_messages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fromId` int NOT NULL,
+  `receiverId` int NOT NULL,
+  `chatId` int NOT NULL,
+  `message` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `type` enum('1','2','3','4') DEFAULT NULL,
+  `time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fromId` (`fromId`),
+  KEY `receiverId` (`receiverId`),
+  CONSTRAINT `offline_messages_ibfk_1` FOREIGN KEY (`fromId`) REFERENCES `users` (`id`),
+  CONSTRAINT `offline_messages_ibfk_2` FOREIGN KEY (`receiverId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3
 ```
