@@ -3,6 +3,7 @@ import { WebsocketState } from 'core/typings';
 import produce from 'immer';
 import { findIndex } from './util';
 import { WebsocketActionResp, WebsocketActionType } from '.';
+import { unionBy } from 'lodash';
 
 export const websocketReducer = (state: WebsocketState, action: WebsocketActionResp): WebsocketState => {
   const nextState = produce(state, draft => {
@@ -44,7 +45,8 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
         const index = findIndex(chatId, draft.chatList);
 
         if(index !== -1) {
-          draft.chatList[index].conversations.push(...message);
+          // 每个消息都是唯一的，需要去重
+          draft.chatList[index].conversations = unionBy(draft.chatList[index].conversations, message, 'id');
         }
         break;
       }
