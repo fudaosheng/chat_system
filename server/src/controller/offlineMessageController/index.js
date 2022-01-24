@@ -19,6 +19,12 @@ class OfflineMessageController {
 
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0] });
   }
+  // 删除用户所有离线消息
+  async deleteAllOfflineMessage(ctx) {
+    const userId = ctx.user.userId;
+    await ctx.service.dbService.delete({ [OFFLINE_MESSAGE_TABLE.RECEIVER_ID]: userId }, TABLE_NAMES.OFFLINE_MESSAGES);
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS });
+  }
 }
 
 module.exports = new OfflineMessageController();

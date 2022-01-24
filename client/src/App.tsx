@@ -11,7 +11,7 @@ import { WebsocketAction } from 'core/store/action';
 import { WebsocketContext } from 'core/store';
 import { findIndex } from 'core/store/util';
 import { getContactInfo } from 'common/api/contacts';
-import { getOfflineMessageList } from 'common/api/offlineMessage';
+import { deleteAllOfflineMessage, getOfflineMessageList } from 'common/api/offlineMessage';
 
 const App: React.FC = () => {
   const {
@@ -47,11 +47,14 @@ const App: React.FC = () => {
 
   const getOfflineMessageListReq = async () => {
     // 离线消息列表
-    const { data = [] } = await getOfflineMessageList()
+    const { data = [] } = await getOfflineMessageList();
+    // 将离线消息放入消息队列
     data?.forEach(offlineMessage => {
       const { fromId, messageList } = offlineMessage;
       appendMessage(fromId, fromId, ...messageList);
-    })
+    });
+    // 删除该用户所有离线消息
+    deleteAllOfflineMessage();
   };
 
   useEffect(() => {
