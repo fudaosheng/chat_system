@@ -28,7 +28,7 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
           draft.chatList.unshift({
             receiver,
             id: receiver.id, //chatId
-            lastReadedMessageIndex: 0,
+            lastReadedMessageIndex: -1,
             conversations: [],
           });
         } else {

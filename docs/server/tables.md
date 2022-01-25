@@ -1,5 +1,5 @@
 # 图片表
-用于存放所有静态图片
+用于存放所有静态图片，永久存放
 ```
 CREATE TABLE `imgs` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -12,6 +12,25 @@ CREATE TABLE `imgs` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `filename` (`filename`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3
+```
+
+# 用户图片表
+每张图片都需要与user对应
+```
+CREATE TABLE `user_imgs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `filename` varchar(256) NOT NULL,
+  `mimetype` varchar(50) DEFAULT NULL,
+  `size` int DEFAULT NULL,
+  `encoding` varchar(50) DEFAULT NULL,
+  `user_id` int NOT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `filename` (`filename`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `user_imgs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 ```
 
 # User表

@@ -10,6 +10,8 @@ const uploadImgMulter = multer({ dest: imgUploadPath });
 
 // multer.single只允许文件名是img的文件
 router.post('/upload/img', uploadImgMulter.single('img') , fileController.uploadImg);
+// 用户上传图片
+router.post('/user/upload/img', uploadImgMulter.single('img') , fileController.userUploadImg)
 
 // 查找图片
 router.get('/get/img/:filename', fileController.getImgByFilename);

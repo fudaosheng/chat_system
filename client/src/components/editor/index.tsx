@@ -1,19 +1,22 @@
-import React, { createRef } from 'react';
+import React, { createRef, useCallback } from 'react';
 import { Picker } from 'emoji-mart';
-import { Popover } from '@douyinfe/semi-ui';
-import { IconEmoji } from '@douyinfe/semi-icons';
-import 'emoji-mart/css/emoji-mart.css'
+import { Popover, Upload, Toast, Button } from '@douyinfe/semi-ui';
+import { IconEmoji, IconImage } from '@douyinfe/semi-icons';
+import { customRequestArgs } from '@douyinfe/semi-ui/upload';
+import 'emoji-mart/css/emoji-mart.css';
 import { PopoverProps } from '@douyinfe/semi-ui/popover';
 import styles from './index.module.scss';
 import classNames from 'classnames';
 import { removeAllPlaceholderEle } from './util';
+import { userUploadImg } from 'common/api/file';
+import { MessageType } from 'core/typings';
 const eleName = 'custom-editor-placeholder';
 
 interface Props {
   trigger?: 'hover' | 'click';
   position?: PopoverProps['position'];
   className?: string;
-  sendMessage?: (value: string) => void;
+  sendMessage?: (value: string, type?: MessageType) => void;
 }
 export const Editor: React.FC<Props> = (props: Props) => {
   const { className = '', trigger = 'click', position = 'topLeft', sendMessage } = props;
@@ -81,20 +84,44 @@ export const Editor: React.FC<Props> = (props: Props) => {
     const range = window.getSelection()?.getRangeAt(0);
     range?.insertNode(document.createElement(eleName));
   };
+
+  // 自定义上传
+  const handleUploadImg = useCallback(
+    async (params: customRequestArgs) => {
+      try {
+        const { data } = await userUploadImg(params.fileInstance);
+        if(data.url) {
+          // 发送图片
+          sendMessage && sendMessage(data.url, MessageType.IMAGE);
+        }
+      } finally {
+      }
+    },
+    []
+  );
   return (
-    <div className={classNames({
-      [styles.editorWrap]: true,
-      [className]: true
-    })}>
+    <div
+      className={classNames({
+        [styles.editorWrap]: true,
+        [className]: true,
+      })}>
       <div className={styles.functionTab}>
         <Popover
           trigger={trigger}
           position={position}
           autoAdjustOverflow={false}
-          content={<Picker title="Pick your emoji…" set="apple" onSelect={handleSelectEmoji} />}
-        >
-          <IconEmoji size="large" />
+          content={<Picker title="Pick your emoji…" set="apple" onSelect={handleSelectEmoji} />}>
+          <Button icon={<IconEmoji size="large" />} theme="borderless" type="tertiary" />
         </Popover>
+        <Upload
+          action={''}
+          name="img"
+          accept={'image/*'}
+          showUploadList={false}
+          customRequest={handleUploadImg}
+          onError={() => Toast.error('上传失败')}>
+          <Button icon={ <IconImage size="large" />} theme="borderless" type="tertiary" />
+        </Upload>
       </div>
       <div
         ref={editorRef}

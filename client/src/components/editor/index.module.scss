@@ -4,10 +4,15 @@
   flex-direction: column;
   border: 1px solid var(--border-color);
   .functionTab {
-    padding: 6px 12px;
+    padding: 6px;
     display: flex;
     align-items: center;
     // border-bottom: 1px solid var(--border-color);
+    :global {
+      .semi-button {
+        margin: 0 4px;
+      }
+    }
   }
 
   .richEditor {

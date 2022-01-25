@@ -1,8 +1,8 @@
 // 公共的数据库字段
 const COMMON_TABLE_FIELDS = {
   CREATE_TIME: 'create_time',
-  UPDATE_TIME: 'update_time'
-}
+  UPDATE_TIME: 'update_time',
+};
 
 // 数据库表名
 const TABLE_NAMES = {
@@ -12,6 +12,22 @@ const TABLE_NAMES = {
   APPLY_CONTACT_TICKET: 'apply_contact_ticket', //申请好友工单表
   CONTACTS: 'contacts', //好友关系表
   OFFLINE_MESSAGES: 'offline_messages',
+  USER_IMGS: 'user_imgs',
+};
+
+// 图片表
+const IMGS_TABLE = {
+  ...COMMON_TABLE_FIELDS,
+  ID: 'id',
+  FILENAME: 'filename',
+  MIMETYPE: 'mimetype',
+  SIZE: 'size',
+  ENCODING: 'encoding',
+};
+// 用户图片表
+const USER_IMGS_TABLE = {
+  ...IMGS_TABLE,
+  USER_ID: 'user_id',
 };
 
 // user表字段
@@ -24,8 +40,8 @@ const USER_TABLE = {
   SEX: 'sex',
   PHONE_NUM: 'phone_num',
   AVATAR: 'avatar',
-  BIO: 'bio'
-}
+  BIO: 'bio',
+};
 
 // 分组表字段
 const CONTACT_GROUP_TABLE = {
@@ -33,7 +49,7 @@ const CONTACT_GROUP_TABLE = {
   ID: 'id',
   NAME: 'name',
   USER_ID: 'user_id',
-}
+};
 
 // 申请好友工单表
 const APPLY_CONTACT_TICKET_TABLE = {
@@ -45,14 +61,14 @@ const APPLY_CONTACT_TICKET_TABLE = {
   MESSAGE: 'message',
   NOTE: 'note', // 好友备注
   GROUP_ID: 'group_id',
-}
+};
 
 // 申请好友的工单状态，默认值1。1等待处理、2申请同意、3申请拒绝
 const APPLY_CONTACT_TICKET_STATUS = {
   PENDING: 1,
   AGREE: 2,
-  DISAGREE: 3
-}
+  DISAGREE: 3,
+};
 
 //好友关系表
 const CONTACTS_TABLE = {
@@ -61,8 +77,8 @@ const CONTACTS_TABLE = {
   USER_ID: 'user_id',
   GROUP_ID: 'group_id',
   CONTACT_ID: 'contact_id',
-  NOTE: 'note',// 好友备注
-}
+  NOTE: 'note', // 好友备注
+};
 // 离线消息表
 const OFFLINE_MESSAGE_TABLE = {
   ID: 'id',
@@ -72,7 +88,7 @@ const OFFLINE_MESSAGE_TABLE = {
   MESSAGE: 'message',
   TYPE: 'type',
   TIME: 'time',
-}
+};
 
 module.exports = {
   TABLE_NAMES,
@@ -82,5 +98,7 @@ module.exports = {
   APPLY_CONTACT_TICKET_STATUS,
   CONTACTS_TABLE,
   COMMON_TABLE_FIELDS,
-  OFFLINE_MESSAGE_TABLE
+  OFFLINE_MESSAGE_TABLE,
+  IMGS_TABLE,
+  USER_IMGS_TABLE
 };
