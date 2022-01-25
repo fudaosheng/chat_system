@@ -15,5 +15,7 @@ router.post('/user/upload/img', uploadImgMulter.single('img') , fileController.u
 
 // 查找图片
 router.get('/get/img/:filename', fileController.getImgByFilename);
+// 查找图片
+router.get('/user/get/img/:filename', fileController.getUserImgByFilename);
 
 module.exports = router;

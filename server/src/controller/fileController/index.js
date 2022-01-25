@@ -30,7 +30,7 @@ class FileController {
     if (successed) {
       const sep = path.sep;
       // 设置图片url地址, 不设置host + port，前端通过get请求获取图片
-      fileInfo.url = `${sep}api${sep}file${sep}get${sep}img${sep + filename}`;
+      fileInfo.url = `${sep}api${sep}file${sep}user${sep}get${sep}img${sep + filename}`;
     }
     return ctx.makeResp({
       code: successed ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR,
@@ -43,10 +43,26 @@ class FileController {
     // 根据filename查询图片
     const result = await ctx.service.dbService.query({ filename }, TABLE_NAMES.IMGS);
     const file = result[0];
+    if(!file) {
+      return;
+    }
     const filePath = imgUploadPath + path.sep + file.filename;
     ctx.response.set('Content-Type', file.mimetype);
     ctx.body = fs.createReadStream(filePath);
   }
+    // 获取图片信息
+    async getUserImgByFilename(ctx) {
+      const { filename } = ctx.params;
+      // 根据filename查询图片
+      const result = await ctx.service.dbService.query({ filename }, TABLE_NAMES.USER_IMGS);
+      const file = result[0];
+      if(!file) {
+        return;
+      }
+      const filePath = imgUploadPath + path.sep + file.filename;
+      ctx.response.set('Content-Type', file.mimetype);
+      ctx.body = fs.createReadStream(filePath);
+    }
 }
 
 module.exports = new FileController();

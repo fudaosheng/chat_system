@@ -86,19 +86,16 @@ export const Editor: React.FC<Props> = (props: Props) => {
   };
 
   // 自定义上传
-  const handleUploadImg = useCallback(
-    async (params: customRequestArgs) => {
-      try {
-        const { data } = await userUploadImg(params.fileInstance);
-        if(data.url) {
-          // 发送图片
-          sendMessage && sendMessage(data.url, MessageType.IMAGE);
-        }
-      } finally {
+  const handleUploadImg = async (params: customRequestArgs) => {
+    try {
+      const { data } = await userUploadImg(params.fileInstance);
+      if (data.url) {
+        // 发送图片
+        sendMessage && sendMessage(data.url, MessageType.IMAGE);
       }
-    },
-    []
-  );
+    } finally {
+    }
+  };
   return (
     <div
       className={classNames({
@@ -120,7 +117,7 @@ export const Editor: React.FC<Props> = (props: Props) => {
           showUploadList={false}
           customRequest={handleUploadImg}
           onError={() => Toast.error('上传失败')}>
-          <Button icon={ <IconImage size="large" />} theme="borderless" type="tertiary" />
+          <Button icon={<IconImage size="large" />} theme="borderless" type="tertiary" />
         </Upload>
       </div>
       <div

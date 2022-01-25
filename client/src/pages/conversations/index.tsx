@@ -45,13 +45,13 @@ export const Conversations: React.FC = () => {
 
   // 发送消息
   // todo：发送消息时用blob发送，阻止回车换行
-  const handleSendMessage = (value: string) => {
+  const handleSendMessage = (value: string, messageType?: MessageType) => {
     const { receiver } = chat || {};
     if (!(receiver?.id && ws)) {
       return;
     }
     // 构造一个消息对象
-    const message = new Message(receiver.id, userInfo.id, receiver.id, value, MessageType.TEXT);
+    const message = new Message(receiver.id, userInfo.id, receiver.id, value, messageType || MessageType.TEXT);
     sendMessage(ws, message);
     dispatch(WebsocketAction.append(message.receiverId, message));
   };

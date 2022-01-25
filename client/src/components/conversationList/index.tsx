@@ -1,4 +1,4 @@
-import { MessageStruct } from 'core/typings';
+import { MessageStruct, MessageType } from 'core/typings';
 import React, { createRef, useEffect, useMemo } from 'react';
 import { Avatar } from '@douyinfe/semi-ui';
 import { IconCommentStroked } from '@douyinfe/semi-icons';
@@ -28,6 +28,19 @@ export const ConversationList: React.FC<Props> = (props: Props) => {
     return map;
   }, [receiverList]);
 
+  const renderMessageContent = (data: MessageStruct) => {
+    const { message, type } = data;
+    let content = null;
+    switch (Number(type)) {
+      case MessageType.IMAGE:
+        content = <img src={message} alt="" />;
+        break;
+      default:
+        content = <pre>{message}</pre>;
+    }
+    return content;
+  };
+
   return (
     <ul className={styles.conversationList}>
       {conversationList.map(conversation => {
@@ -35,17 +48,20 @@ export const ConversationList: React.FC<Props> = (props: Props) => {
         // 是否是自己发出的消息
         const isSelfMessage = conversation.fromId === userInfo.id;
         return (
-          <li key={conversation.id} className={classNames({
-            [styles.conversation]: true,
-            [styles.selfConversation]: isSelfMessage,
-          })}>
+          <li
+            key={conversation.id}
+            className={classNames({
+              [styles.conversation]: true,
+              [styles.selfConversation]: isSelfMessage,
+            })}>
             <div className={styles.left}>
               <Avatar size="small" src={isSelfMessage ? userInfo.avatar : receiverInfoMap.get(fromId)?.avatar}></Avatar>
             </div>
-            <div className={classNames({
-              [styles.right]: true,
-              [styles.selfRight]: isSelfMessage
-            })}>
+            <div
+              className={classNames({
+                [styles.right]: true,
+                [styles.selfRight]: isSelfMessage,
+              })}>
               <div className={styles.top}>
                 <div className={styles.name}>{isSelfMessage ? userInfo.name : receiverInfoMap.get(fromId)?.name}</div>
                 <div className={styles.bio}>
@@ -53,9 +69,7 @@ export const ConversationList: React.FC<Props> = (props: Props) => {
                   {isSelfMessage ? userInfo.bio : receiverInfoMap.get(fromId)?.bio}
                 </div>
               </div>
-              <div className={styles.messageWrap}>
-                <pre>{conversation.message}</pre>
-              </div>
+              <div className={styles.messageWrap}>{renderMessageContent(conversation)}</div>
             </div>
           </li>
         );

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 require('colors');
 const { STATUS_CODE } = require('../constance');
 const { PUBLIC_KEY } = require('../constance/keys');
-const noNeedAuthenticationPath = ['/user/login', '/user/registry', '/file/upload/img', '/file/get/img'];
+const noNeedAuthenticationPath = ['/user/login', '/user/registry', '/file/upload/img', '/file/get/img', '/file/user/get/img'];
 
 const authenticate = async (ctx, next) => {
   const { url: rawUrl } = ctx.request;
