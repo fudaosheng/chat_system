@@ -4,6 +4,7 @@ import { Avatar } from '@douyinfe/semi-ui';
 import { IconCommentStroked } from '@douyinfe/semi-icons';
 import styles from './index.module.scss';
 import classNames from 'classnames';
+import { batchDeleteUserImgs } from 'common/api/file';
 const scrollPlaceholder = 'conversation_list_placeholder';
 interface Props {
   userInfo: UserInfo;
@@ -28,12 +29,25 @@ export const ConversationList: React.FC<Props> = (props: Props) => {
     return map;
   }, [receiverList]);
 
+  // 处理消息加载成功
+  const handleImageLoad = (data: MessageStruct) => {
+    const { receiverId, message } = data;
+    // 如果自己不是消息接收人不处理
+    if(Number(receiverId) !== userInfo.id || !message) {
+      return;
+    } 
+    // 自己是消息接收人，加载完成图片时删除图片
+    const imageName = message?.split('/')?.pop();
+    imageName && batchDeleteUserImgs([imageName]);
+  }
+
+
   const renderMessageContent = (data: MessageStruct) => {
     const { message, type } = data;
     let content = null;
     switch (Number(type)) {
       case MessageType.IMAGE:
-        content = <img src={message} alt="" />;
+        content = <img src={message} alt="" onLoad={() => handleImageLoad(data)} />;
         break;
       default:
         content = <pre>{message}</pre>;

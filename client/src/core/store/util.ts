@@ -16,3 +16,11 @@ export const getChatListWithStorage = () => {
 export const findIndex = (chatId: number, chatList: Array<Chat>) => {
   return chatList.findIndex(item => item?.id === chatId);
 }
+
+// 将会话置顶
+export const toTopChat = (index: number, chatList: Array<Chat>) => {
+  const oldChat = chatList[index];
+  chatList.splice(index, 1);
+  chatList.unshift(oldChat);
+  return chatList;
+}

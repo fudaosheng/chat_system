@@ -1,7 +1,7 @@
 import { LOCAL_STORAGE_CHAT_LIST } from 'common/constance/localStorage';
 import { WebsocketState } from 'core/typings';
 import produce from 'immer';
-import { findIndex } from './util';
+import { findIndex, toTopChat } from './util';
 import { WebsocketActionResp, WebsocketActionType } from '.';
 import { unionBy } from 'lodash';
 
@@ -18,7 +18,7 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
         draft.ws = undefined;
         break;
       }
-      // 创建会话
+      // 创建会话，添加消息时将当前会话置顶
       case WebsocketActionType.CREATE_CHAT: {
         const { chatId, receiver } = action.payload;
         // 在原来的会话列表中查找与receiver的会话
@@ -33,9 +33,7 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
           });
         } else {
           // 将原来会话置顶
-          const oldChat = draft.chatList[index];
-          draft.chatList.splice(index, 1);
-          draft.chatList.unshift(oldChat);
+          draft.chatList = toTopChat(index, draft.chatList);
         }
         break;
       }
@@ -45,6 +43,8 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
         const index = findIndex(chatId, draft.chatList);
 
         if(index !== -1) {
+          // 将原来会话置顶
+          draft.chatList = toTopChat(index, draft.chatList);
           // 每个消息都是唯一的，需要去重
           draft.chatList[index].conversations = unionBy(draft.chatList[index].conversations, message, 'id');
         }

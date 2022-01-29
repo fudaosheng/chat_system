@@ -12,6 +12,7 @@ import { WebsocketContext } from 'core/store';
 import { findIndex } from 'core/store/util';
 import { getContactInfo } from 'common/api/contacts';
 import { deleteAllOfflineMessage, getOfflineMessageList } from 'common/api/offlineMessage';
+import { Toast } from '@douyinfe/semi-ui';
 
 const App: React.FC = () => {
   const {
@@ -50,7 +51,7 @@ const App: React.FC = () => {
     const { data = [] } = await getOfflineMessageList();
     // 将离线消息放入消息队列
     data?.forEach(offlineMessage => {
-      const { fromId, messageList } = offlineMessage;
+      const { fromId, messageList = [] } = offlineMessage;
       appendMessage(fromId, fromId, ...messageList);
     });
     // 删除该用户所有离线消息
@@ -97,11 +98,17 @@ const App: React.FC = () => {
       // 将消息放入消息栈
       appendMessage(data.chatId, data.fromId, data);
     };
+    const handleWebsocketClosed = () => {
+      Toast.error('websocket关闭');
+      window.location.reload();
+    };
     ws.addEventListener('message', handleReceiveMessage);
+    ws.addEventListener('close', handleWebsocketClosed);
     return () => {
       timer && clearInterval(timer);
       destoryWebsocket(ws);
       ws.removeEventListener('message', handleReceiveMessage);
+      ws.removeEventListener('close', handleWebsocketClosed);
     };
   }, [userInfo.id, ws]);
 

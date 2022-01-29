@@ -18,4 +18,7 @@ router.get('/get/img/:filename', fileController.getImgByFilename);
 // 查找图片
 router.get('/user/get/img/:filename', fileController.getUserImgByFilename);
 
+// 删除批量用户图片
+router.post('/user/batch_delete_imgs', fileController.batchDeleteUserImgs);
+
 module.exports = router;

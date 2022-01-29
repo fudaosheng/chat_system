@@ -28,3 +28,10 @@ export const getImgByFilename = (filename: string) => {
     url: '/file/get/img/' + filename,
   });
 };
+
+// 批量删除用户图片
+export const batchDeleteUserImgs = (imageList: Array<string>) => request({
+  url: '/file/user/batch_delete_imgs',
+  method: 'POST',
+  data: { imageList }
+})
