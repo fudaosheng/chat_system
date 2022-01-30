@@ -125,3 +125,51 @@ CREATE TABLE `offline_messages` (
   CONSTRAINT `offline_messages_ibfk_2` FOREIGN KEY (`receiverId`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3
 ```
+
+// 群组表
+CREATE TABLE `chat_groups` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) DEFAULT NULL,
+  `announcement` varchar(400) DEFAULT NULL,
+  `avatar` varchar(100) DEFAULT NULL,
+  `owner_id` int NOT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `owner_id` (`owner_id`),
+  CONSTRAINT `chat_groups_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+
+// 群申请工单表
+CREATE TABLE `chat_group_apply_tickets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `applicant_user_id` int NOT NULL,
+  `group_id` int NOT NULL,
+  `target_user_id` int NOT NULL,
+  `status` enum('1','2','3') DEFAULT '1',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `applicant_user_id` (`applicant_user_id`),
+  KEY `group_id` (`group_id`),
+  KEY `target_user_id` (`target_user_id`),
+  CONSTRAINT `chat_group_apply_tickets_ibfk_1` FOREIGN KEY (`applicant_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chat_group_apply_tickets_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `chat_groups` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chat_group_apply_tickets_ibfk_3` FOREIGN KEY (`target_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+
+// 群成员表
+CREATE TABLE `chat_group_contacts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `group_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `identity` enum('1','2','3') DEFAULT '3',
+  `note` varchar(30) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `chat_group_contacts_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `chat_groups` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chat_group_contacts_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3

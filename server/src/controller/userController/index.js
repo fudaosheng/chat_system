@@ -108,8 +108,12 @@ class UserController {
 
     // 从context拿出userId
     const { userId } = ctx.user;
-    const result = await ctx.service.dbService.update(userInfo, { id: userId }, TABLE_NAMES.USERS);
-    return ctx.makeResp({ code: result.affectedRows !== undefined ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR });
+    try {
+      const result = await ctx.service.dbService.update(userInfo, { id: userId }, TABLE_NAMES.USERS);
+      return ctx.makeResp({ code: result.affectedRows !== undefined ? STATUS_CODE.SUCCESS : STATUS_CODE.ERROR });
+    } catch(err) {
+      return ctx.makeResp({ code: STATUS_CODE.ERROR, message: JSON.stringify(err) })
+    }
   }
   // 根据name模糊搜索用户
   async getUserListByName(ctx) {

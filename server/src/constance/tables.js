@@ -11,8 +11,11 @@ const TABLE_NAMES = {
   CONTACT_GROUP: 'contact_group', // 联系人分组表
   APPLY_CONTACT_TICKET: 'apply_contact_ticket', //申请好友工单表
   CONTACTS: 'contacts', //好友关系表
-  OFFLINE_MESSAGES: 'offline_messages',
-  USER_IMGS: 'user_imgs',
+  OFFLINE_MESSAGES: 'offline_messages', //好友离线消息列表
+  USER_IMGS: 'user_imgs', //用户图片
+  CHAT_GROUPS: 'chat_groups', //会话组
+  CHAT_GROUP_APPLY_TICKETS: 'chat_group_apply_tickets',// 群组申请工单
+  CHAT_GROUP_CONTACTS: 'chat_group_contacts', //群组成员表
 };
 
 // 图片表
@@ -89,6 +92,34 @@ const OFFLINE_MESSAGE_TABLE = {
   TYPE: 'type',
   TIME: 'time',
 };
+// 群聊表
+const CHAT_GROUPS_TABLE = {
+  ...COMMON_TABLE_FIELDS,
+  ID: 'id',
+  NAME: 'name',
+  ANNOUNCEMENT: 'announcement',
+  OWNER_ID: 'owner_id',
+  AVATAR: 'avatar'
+}
+// 群聊申请工单
+const CHAT_GROUP_APPLY_TICKETS = {
+  ...COMMON_TABLE_FIELDS,
+  ID: 'id',
+  APPLICANT_USER_ID: 'applicant_user_id',
+  TARGET_USER_ID: 'target_user_id',
+  STATUS: 'status',
+  MESSAGE: 'message',
+  NOTE: 'note', // 好友备注
+  GROUP_ID: 'group_id',
+}
+// 群聊成员表
+const CHAT_GROUP_CONTACTS = {
+  ...COMMON_TABLE_FIELDS,
+  GROUP_ID: 'group_id',
+  USER_ID: 'user_id',
+  IDENTITY: 'identity',
+  NOTE: 'note'
+}
 
 module.exports = {
   TABLE_NAMES,
