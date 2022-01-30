@@ -11,6 +11,10 @@
       padding: 12px;
       cursor: pointer;
     }
+    .active {
+      background-color: var(--shadow-color);
+      border-left: 3px solid var(--color-primary);
+    }
     :global {
       .semi-badge {
         width: 100%;

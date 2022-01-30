@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import classNames from 'classnames';
 import { Badge } from '@douyinfe/semi-ui';
@@ -18,6 +18,12 @@ export const Chat: React.FC = () => {
   const {
     state: { chatList },
   } = useContext(WebsocketContext);
+  const [activeContactId, setActiveContactId] = useState(-1);
+
+  const handleClickContactCard = (contactInfo: UserInfo) => {
+    history.replace(`${url}/${contactInfo.id}`);
+    setActiveContactId(contactInfo.id);
+  }
 
   return (
     <div className={styles.chat}>
@@ -32,8 +38,11 @@ export const Chat: React.FC = () => {
                 <UserCard
                   key={id}
                   userInfo={receiver}
-                  className={styles.userCard}
-                  onClick={() => history.replace(`${url}/${receiver.id}`)}
+                  className={classNames({
+                    [styles.userCard]: true,
+                    [styles.active]: activeContactId === receiver.id
+                  })}
+                  onClick={() => handleClickContactCard(receiver)}
                 />
               );
               return unReadMessageCount ? (
