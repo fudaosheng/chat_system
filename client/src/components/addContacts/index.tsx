@@ -33,6 +33,7 @@ export const AddButton: React.FC<ButtonProps> = (props: ButtonProps) => {
         key={createChatGroupModalVisible ? 1 : 0}
         visible={createChatGroupModalVisible}
         onCancel={() => setCreateChatGroupModalVisible(false)}
+        onOk={() => setCreateChatGroupModalVisible(false)}
       />
     </>
   );
