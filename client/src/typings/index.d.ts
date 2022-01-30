@@ -28,6 +28,7 @@ interface ContactGroupExtra extends ContactGroup {
   label: string;
   key: string;
   value: number;
+  type?: string;
 }
 
 interface DetailContactGroupInfoExtra extends ContactGroupExtra {

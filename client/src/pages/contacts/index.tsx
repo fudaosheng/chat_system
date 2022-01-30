@@ -10,7 +10,7 @@ import { ApplyContactTicketList } from './subPages/applyContactTicketList';
 import { UserInfo } from './subPages/userInfo';
 import { GlobalContext } from 'common/store';
 import { getApplyTicketList } from 'common/api/applyContactTicket';
-import { getContactListByGroupIds } from 'common/api/contacts';
+import { getContactListByGroupIds, makeTreeWithContactList } from 'common/api/contacts';
 import { getContactGroupList } from 'common/api/contactGroup';
 import { WebsocketProvider } from 'core/store';
 const interval = 1000 * 60; //轮询间隔
@@ -51,27 +51,8 @@ export const Contacts: React.FC = () => {
   const getContactGroupListRequest = async (needLoading = false) => {
     needLoading && setLoading(true);
     try {
-      // 查询用户分组列表
-      const { data: groupList = [] } = await getContactGroupList();
-      const groupIdList = groupList.map(i => i.id);
-      // 根据分组列表批量查询分组列表
-      const { data } = await getContactListByGroupIds(groupIdList);
-
       // 将分组和联系人信息进行处理
-      const newContactGroupList = groupList?.map(item => ({
-        ...item,
-        label: item.name,
-        value: item.id,
-        key: nanoid(),
-        type: 'group',
-        children: (data?.find(i => i.groupId === item.id)?.contactList || []).map(i => ({
-          ...i,
-          label: i.name,
-          value: i.id,
-          key: nanoid(),
-          type: 'contact',
-        })),
-      }));
+      const newContactGroupList = await makeTreeWithContactList();
 
       setContactGroupList(newContactGroupList);
     } finally {

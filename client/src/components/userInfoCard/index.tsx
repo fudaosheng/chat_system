@@ -16,7 +16,7 @@ import { WebsocketAction } from 'core/store/action';
 
 const imageOnly = 'image/*';
 
-const hoverMask = (
+export const hoverMask = (
   <div className={styles.iconCamera}>
     <IconCamera />
   </div>
