@@ -108,8 +108,6 @@ const CHAT_GROUP_APPLY_TICKETS_TABLE = {
   APPLICANT_USER_ID: 'applicant_user_id',
   TARGET_USER_ID: 'target_user_id',
   STATUS: 'status',
-  MESSAGE: 'message',
-  NOTE: 'note', // 好友备注
   GROUP_ID: 'group_id',
 }
 // 群聊申请的工单状态，默认值1。1等待处理、2申请同意、3申请拒绝
