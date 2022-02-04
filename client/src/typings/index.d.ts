@@ -32,5 +32,5 @@ interface ContactGroupExtra extends ContactGroup {
 }
 
 interface DetailContactGroupInfoExtra extends ContactGroupExtra {
-  children: Array<UserInfoExtra>
+  children: Array<UserInfoExtra>;
 }

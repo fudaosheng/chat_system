@@ -42,6 +42,10 @@ class ChatGroupApplyTicketsController {
   async getAllChatGroupApplyTickets(ctx) {
     const { userId } = ctx.user;
 
+    // 分页参数
+    const { pageSize, currentPage } = ctx.request.query;
+    const offset = (currentPage - 1) * pageSize;
+
     // 用到的几个表
     const { CHAT_GROUPS, USERS, CHAT_GROUP_APPLY_TICKETS } = TABLE_NAMES;
     // chat_group_apply_tickets选中的列
@@ -50,7 +54,13 @@ class ChatGroupApplyTicketsController {
       TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
     );
 
-    // 查询和自己相关的工单列表
+    // 查询条件
+    const queryCondition = `${CHAT_GROUP_APPLY_TICKETS_TABLE.APPLICANT_USER_ID} = ${userId} || ${CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID} = ${userId} `;
+
+    // 查询群聊申请工单数量SQL
+    const totalSQL = `SELECT COUNT(*) as total FROM ${CHAT_GROUP_APPLY_TICKETS} WHERE ${queryCondition}`;
+
+    // 查询和自己相关的工单列表的SQL
     const SQL = `SELECT ${chatGroupApplyTableSelectColumns}, JSON_OBJECT(${getJSONOBJECTColumns(
       userTableCommonColumns
     )}) applicant_user, JSON_OBJECT(${getJSONOBJECTColumns(
@@ -64,15 +74,30 @@ class ChatGroupApplyTicketsController {
     JOIN ${USERS} as tarUsers ON ${CHAT_GROUP_APPLY_TICKETS}.${
       CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID
     } = tarUsers.id 
-    JOIN ${CHAT_GROUPS} ON ${CHAT_GROUP_APPLY_TICKETS}.${
-      CHAT_GROUP_APPLY_TICKETS_TABLE.GROUP_ID
-    } = ${CHAT_GROUPS}.id  WHERE ${CHAT_GROUP_APPLY_TICKETS_TABLE.APPLICANT_USER_ID} = ${userId} || ${
-      CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID
-    } = ${userId};`;
+    JOIN ${CHAT_GROUPS} ON ${CHAT_GROUP_APPLY_TICKETS}.${CHAT_GROUP_APPLY_TICKETS_TABLE.GROUP_ID} = ${CHAT_GROUPS}.id  
+    WHERE ${queryCondition}
+    ORDER BY ${CHAT_GROUP_APPLY_TICKETS}.update_time DESC LIMIT ${offset}, ${pageSize};`;
 
-    const result = await connections.execute(SQL);
-    
-    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0] });
+    const [totalResp, ticketsResp] = await Promise.all([connections.execute(totalSQL), connections.execute(SQL)]);
+
+    return ctx.makeResp({
+      code: STATUS_CODE.SUCCESS,
+      data: {
+        applyTicketList: ticketsResp[0],
+        total: totalResp[0][0].total,
+      },
+    });
+  }
+  // 查询待自己处理的工单
+  async getApplyChatGroupTickets(ctx) {
+    const userId = ctx.user.userId;
+
+    const result = await ctx.service.dbService.query(
+      { [CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID]: userId },
+      TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
+    );
+
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result });
   }
 }
 

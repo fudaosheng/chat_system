@@ -1,37 +1,14 @@
-import React, { ReactElement, useContext, useEffect, useState } from 'react';
-import { IconUserAdd } from '@douyinfe/semi-icons';
+import React, { useState } from 'react';
 import styles from './index.module.scss';
 import { Avatar, Badge } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
-import { AvatarColor } from '@douyinfe/semi-ui/avatar';
-import { GlobalContext } from 'common/store';
-
-
-export interface SystemAssistant {
-  icon: ReactElement;
-  name: string;
-  key: string;
-  color: AvatarColor;
-}
-
-const assistantList: Array<SystemAssistant> = [
-  {
-    icon: <IconUserAdd />,
-    name: '好友验证助手',
-    key: 'apply_tickets',
-    color: 'orange',
-  },
-];
-
+import { SystemAssistant } from 'pages/contacts';
 interface Props {
-  applyTicketList: Array<ApplyTicket>;
+  assistantList: Array<SystemAssistant>
   onChange?: (key: string) => void;
 }
 export const AssistantList: React.FC<Props> = (props: Props) => {
-  const { applyTicketList = [], onChange } = props;
-  const {
-    state: { userInfo },
-  } = useContext(GlobalContext);
+  const { assistantList = [], onChange } = props;
   const [activeKey, setActiveKey] = useState('');
 
   const handleClick = (item: SystemAssistant) => {
@@ -49,8 +26,8 @@ export const AssistantList: React.FC<Props> = (props: Props) => {
           })}
           onClick={() => handleClick(item)}>
           <div className={styles.left}>
-            {applyTicketList.length ? (
-              <Badge count={applyTicketList.length} overflowCount={99} type="danger">
+            {item.count ? (
+              <Badge count={item.count} overflowCount={99} type="danger">
                 <Avatar color={item.color} size="small">
                   {item.icon}
                 </Avatar>
