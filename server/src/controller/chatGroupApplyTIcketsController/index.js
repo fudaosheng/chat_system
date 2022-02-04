@@ -5,6 +5,8 @@ const {
   CHAT_GROUP_APPLY_TICKET_STATUS,
   TABLE_NAMES,
   CHAT_GROUPS_TABLE,
+  CHAT_GROUP_CONTACTS_TABLE,
+  IDENTIRY_LEVEL,
 } = require('../../constance/tables');
 const { getTableSelectColumns, getJSONOBJECTColumns, userTableCommonColumns } = require('../../utils');
 
@@ -98,6 +100,52 @@ class ChatGroupApplyTicketsController {
     );
 
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result });
+  }
+  // 同意入群
+  async agreeApply(ctx) {
+    const { ticketId } = ctx.request.body;
+    const userId = ctx.user.userId;
+    try {
+      // 更新工单状态
+      await ctx.service.dbService.update(
+        { [CHAT_GROUP_APPLY_TICKETS_TABLE.STATUS]: CHAT_GROUP_APPLY_TICKET_STATUS.AGREE },
+        { [CHAT_GROUP_APPLY_TICKETS_TABLE.ID]: ticketId, [CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID]: userId },
+        TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
+      );
+
+      // 获取工单信息
+      const ticketDetail = await ctx.service.dbService.query(
+        { [CHAT_GROUP_APPLY_TICKETS_TABLE.ID]: ticketId },
+        TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
+      );
+      const { group_id, target_user_id } = ticketDetail[0];
+
+      // 向群聊联系人表中插入信息
+      await ctx.service.dbService.insert(
+        {
+          [CHAT_GROUP_CONTACTS_TABLE.GROUP_ID]: group_id,
+          [CHAT_GROUP_CONTACTS_TABLE.USER_ID]: target_user_id,
+          [CHAT_GROUP_CONTACTS_TABLE.IDENTITY]: IDENTIRY_LEVEL.DEFAULT,
+        },
+        TABLE_NAMES.CHAT_GROUP_CONTACTS
+      );
+
+      return ctx.makeResp({ code: STATUS_CODE.SUCCESS });
+    } catch (err) {
+      return ctx.makeResp({ code: STATUS_CODE.ERROR, data: JSON.stringify(err) });
+    }
+  }
+  // 拒绝入群
+  async disagreeApply(ctx) {
+    const { ticketId } = ctx.request.body;
+    const userId = ctx.user.userId;
+    // 更新工单状态
+    await ctx.service.dbService.update(
+      { [CHAT_GROUP_APPLY_TICKETS_TABLE.STATUS]: CHAT_GROUP_APPLY_TICKET_STATUS.DISAGREE },
+      { [CHAT_GROUP_APPLY_TICKETS_TABLE.ID]: ticketId, [CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID]: userId },
+      TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
+    );
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS });
   }
 }
 

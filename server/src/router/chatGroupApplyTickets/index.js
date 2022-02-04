@@ -13,4 +13,9 @@ router.get('/get_all_related_tickets', chatGroupApplyTicketsController.getAllCha
 // 查询待自己处理的申请工单
 router.get('/get/chat_group_apply_tickets', chatGroupApplyTIcketsController.getApplyChatGroupTickets);
 
+// 同意入群申请
+router.post('/agree', chatGroupApplyTIcketsController.agreeApply);
+// 拒绝入群申请
+router.post('/disagree', chatGroupApplyTIcketsController.disagreeApply);
+
 module.exports = router;
