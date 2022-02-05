@@ -37,7 +37,7 @@ class ChatGroupApplyTicketsController {
       return ctx.makeResp({ code: STATUS_CODE.ERROR, message: JSON.stringify(err?.message || err) });
     }
   }
-  // 查询和自己相关的群组申请工单
+  // 查询自己发出和待自己处理的申请工单
   async getAllChatGroupApplyTickets(ctx) {
     const { userId } = ctx.user;
 
@@ -54,7 +54,7 @@ class ChatGroupApplyTicketsController {
     );
 
     // 查询条件
-    const queryCondition = `${CHAT_GROUP_APPLY_TICKETS_TABLE.APPLICANT_USER_ID} = ${userId} || ${CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID} = ${userId} `;
+    const queryCondition = `${CHAT_GROUP_APPLY_TICKETS_TABLE.APPLICANT_USER_ID} = ${userId} || ${CHAT_GROUP_APPLY_TICKETS_TABLE.OPAERATOR_ID} = ${userId} `;
 
     // 查询群聊申请工单数量SQL
     const totalSQL = `SELECT COUNT(*) as total FROM ${CHAT_GROUP_APPLY_TICKETS} WHERE ${queryCondition}`;
@@ -93,7 +93,7 @@ class ChatGroupApplyTicketsController {
     // 查询SQL
     const result = await ctx.service.dbService.query(
       {
-        [CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID]: userId,
+        [CHAT_GROUP_APPLY_TICKETS_TABLE.OPAERATOR_ID]: userId,
         [CHAT_GROUP_APPLY_TICKETS_TABLE.STATUS]: CHAT_GROUP_APPLY_TICKET_STATUS.PENDING,
       },
       TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
@@ -107,12 +107,18 @@ class ChatGroupApplyTicketsController {
     const userId = ctx.user.userId;
     try {
       // 更新工单状态
-      await ctx.service.dbService.update(
+      const updateResult = await ctx.service.dbService.update(
         { [CHAT_GROUP_APPLY_TICKETS_TABLE.STATUS]: CHAT_GROUP_APPLY_TICKET_STATUS.AGREE },
-        { [CHAT_GROUP_APPLY_TICKETS_TABLE.ID]: ticketId, [CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID]: userId },
+        { 
+          [CHAT_GROUP_APPLY_TICKETS_TABLE.ID]: ticketId, 
+          [CHAT_GROUP_APPLY_TICKETS_TABLE.OPAERATOR_ID]: userId 
+        },
         TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
       );
-
+      // 未成功更新工单状态
+      if(!updateResult.affectedRows) {
+        throw Error('未知错误');
+      }
       // 获取工单信息
       const ticketDetail = await ctx.service.dbService.query(
         { [CHAT_GROUP_APPLY_TICKETS_TABLE.ID]: ticketId },

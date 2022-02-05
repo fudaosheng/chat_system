@@ -88,7 +88,7 @@ export const AddContactModal: React.FC<Props> = (props: Props) => {
     } 
     else if(data?.type === 'chatGroup') {
       // 申请入群
-      await batchCreateChatGroupApplyTickets(data.id, [(data as ChatGroup).owner_id]);
+      await batchCreateChatGroupApplyTickets(data.id, [userInfo.id], (data as ChatGroup).owner_id);
       Toast.success('入群申请已发送')
     }
   };

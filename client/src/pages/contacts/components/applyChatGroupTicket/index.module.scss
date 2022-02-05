@@ -47,17 +47,13 @@
 
   .customName {
     font-weight: initial;
+  }
+  .name,
+  .chatGroupName {
+    color: var(--semi-color-primary);
+  }
 
-    .name, .chatGroupName {
-      color: var(--semi-color-primary);
-    }
-
-    .tip {
-      color: initial;
-      margin: 0 6px;
-    }
-    .invite {
-      margin: 0 6px 0 0;
-    }
+  .tip {
+    color: initial;
   }
 }

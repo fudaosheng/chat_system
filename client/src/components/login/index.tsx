@@ -75,7 +75,7 @@ export const Login: React.FC = () => {
         <div className={styles.loginForm}>
           <Form labelPosition="left" validateFields={handleLoginValidate} onSubmit={handleLogin}>
             <Form.Input field="name" style={{ width: 250 }} label="名称" placeholder="请输入用户名" required />
-            <Form.Input field="password" style={{ width: 250 }} label="密码" placeholder="请输入密码" required />
+            <Form.Input type='password' field="password" style={{ width: 250 }} label="密码" placeholder="请输入密码" required />
             <div className={styles.submit}>
               <Button style={{ width: 290 }} type="primary" theme="solid" htmlType="submit" loading={loading}>
                 {type === Type.LOGIN ? '登陆' : '注册账号'}

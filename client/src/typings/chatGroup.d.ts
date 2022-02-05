@@ -16,6 +16,7 @@ interface ChatGroupApplyTicket {
   applicant_user_id: number;
   group_id: number;
   target_user_id: number;
+  operator_id: number;
   status: number;
   create_time: string;
   update_time: string;

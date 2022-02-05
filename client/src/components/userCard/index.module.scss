@@ -1,11 +1,11 @@
 @mixin flex-center {
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 .userCard {
   padding: 8px 12px;
   @include flex-center;
+  justify-content: space-between;
 
   .userInfo {
     flex: 1;
