@@ -13,6 +13,8 @@ import { GlobalContext } from 'common/store';
 import { getApplyTicketList } from 'common/api/applyContactTicket';
 import { makeTreeWithContactList } from 'common/api/contacts';
 import { getAllChatGroupApplyTickets } from 'common/api/chatGroupApplyTickets';
+import { getChatGroupList } from 'common/api/chatGroup';
+import { ChatGroupList } from './components/chatGroupList';
 const interval = 1000 * 60; //轮询间隔
 
 export interface SystemAssistant {
@@ -32,8 +34,10 @@ export const Contacts: React.FC = () => {
 
   // 联系人分组列表
   const [contactGroupList, setContactGroupList] = useState<Array<DetailContactGroupInfoExtra>>([]);
+  // 用户群聊列表
+  const [chatGroupList, setChatGroupList] = useState<Array<ChatGroup>>([]);
   const [loading, setLoading] = useState(false);
-  // 申请列表
+  // 联系人申请列表
   const [applyTicketList, setApplyTicketList] = useState<Array<ApplyTicket>>([]);
   // 群聊申请列表
   const [chatGroupApplyTicketList, setChatGroupApplyTicketList] = useState<Array<ChatGroupApplyTicket>>([]);
@@ -71,12 +75,26 @@ export const Contacts: React.FC = () => {
     }
   };
 
+  // 获取群聊列表
+  const getChatGroupListRequest = async () => {
+    try {
+      const { data = [] } = await getChatGroupList();
+      console.log('--', data);
+      
+      setChatGroupList(data);
+    } finally {
+
+    }
+  }
+
   useEffect(() => {
     if (!userInfo?.id) {
       return;
     }
     // 获取联系人 + 分组信息
     getContactGroupListRequest(true);
+    getChatGroupListRequest();
+    // 获取用户群聊列表
   }, [userInfo.id]);
 
   // 系统助手
@@ -109,6 +127,7 @@ export const Contacts: React.FC = () => {
           <AssistantList assistantList={assistantList} onChange={key => history.push(`${url}/${key}`)} />
           <div className={styles.title}>好友列表</div>
           <ContactGroupList data={contactGroupList} onChange={userId => history.push(`${url}/user_info/${userId}`)} />
+          <ChatGroupList title='群聊列表' chatGroupList={chatGroupList} />
         </div>
         <div className={styles.main}>
           <Switch>

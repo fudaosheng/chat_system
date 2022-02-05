@@ -1,5 +1,7 @@
 const { STATUS_CODE } = require('../../constance');
+const connections = require('../../app/database');
 const { CHAT_GROUPS_TABLE, TABLE_NAMES, CHAT_GROUP_CONTACTS_TABLE, IDENTIRY_LEVEL } = require('../../constance/tables');
+const { getTableSelectColumns } = require('../../utils');
 
 /**
  * 群聊controller
@@ -61,6 +63,17 @@ class ChatGroupController {
     const { name } = ctx.request.query;
     const result = await ctx.service.dbService.query({ [CHAT_GROUPS_TABLE.NAME]: name }, TABLE_NAMES.CHAT_GROUPS, { isLikeQuery: true });
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result })
+  }
+  // 获取用户的群聊列表
+  async getChatGroupList(ctx) {
+    const userId = ctx.user.userId;
+    const { CHAT_GROUP_CONTACTS, CHAT_GROUPS } = TABLE_NAMES;
+
+    const columns = getTableSelectColumns(Object.values(CHAT_GROUPS_TABLE), TABLE_NAMES.CHAT_GROUPS);
+    const SQL = `SELECT ${columns} FROM ${CHAT_GROUP_CONTACTS} JOIN ${CHAT_GROUPS} ON ${CHAT_GROUP_CONTACTS}.group_id = ${CHAT_GROUPS}.id WHERE user_id = ${userId};`;
+
+    const result = await connections.execute(SQL);
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0] });
   }
 }
 

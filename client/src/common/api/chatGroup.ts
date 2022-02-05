@@ -33,3 +33,12 @@ export const getChatGroupListByName = (name: string): Promise<GetChatGroupListBy
     url: '/chat_group/get_chat_group_list_by_name',
     data: { name },
   });
+
+export interface GetChatGroupListResp extends BaseResponse {
+  data: Array<ChatGroup>;
+}
+//获取用户群聊列表
+export const getChatGroupList = () =>
+  request({
+    url: '/chat_group/get_chat_group_list',
+  });
