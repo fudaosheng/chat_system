@@ -126,7 +126,8 @@ CREATE TABLE `offline_messages` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3
 ```
 
-// 群组表
+# 群组表
+```
 CREATE TABLE `chat_groups` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(30) DEFAULT NULL,
@@ -139,8 +140,10 @@ CREATE TABLE `chat_groups` (
   KEY `owner_id` (`owner_id`),
   CONSTRAINT `chat_groups_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+```
 
-// 群申请工单表
+# 群申请工单表
+```
 CREATE TABLE `chat_group_apply_tickets` (
   `id` int NOT NULL AUTO_INCREMENT,
   `applicant_user_id` int NOT NULL,
@@ -160,8 +163,10 @@ CREATE TABLE `chat_group_apply_tickets` (
   CONSTRAINT `chat_group_apply_tickets_ibfk_3` FOREIGN KEY (`target_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `chat_group_apply_tickets_ibfk_4` FOREIGN KEY (`operator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3
+```
 
-// 群成员表
+# 群成员表
+```
 CREATE TABLE `chat_group_contacts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `group_id` int NOT NULL,
@@ -176,3 +181,4 @@ CREATE TABLE `chat_group_contacts` (
   CONSTRAINT `chat_group_contacts_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `chat_groups` (`id`) ON DELETE CASCADE,
   CONSTRAINT `chat_group_contacts_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+```

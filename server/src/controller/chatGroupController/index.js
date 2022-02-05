@@ -28,7 +28,7 @@ class ChatGroupController {
         TABLE_NAMES.CHAT_GROUPS
       );
 
-      // 向群组成员表中插入群主身份
+      // 向群成员表中插入群主身份
       await ctx.service.dbService.insert(
         {
           [CHAT_GROUP_CONTACTS_TABLE.GROUP_ID]: chatGroup.insertId, //群id

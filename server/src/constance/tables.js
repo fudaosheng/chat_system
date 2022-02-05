@@ -1,5 +1,6 @@
 // 公共的数据库字段
 const COMMON_TABLE_FIELDS = {
+  ID: 'id',
   CREATE_TIME: 'create_time',
   UPDATE_TIME: 'update_time',
 };
@@ -131,7 +132,6 @@ const CHAT_GROUP_CONTACTS_TABLE = {
   IDENTITY: 'identity',
   NOTE: 'note'
 }
-
 module.exports = {
   TABLE_NAMES,
   USER_TABLE,
@@ -147,5 +147,5 @@ module.exports = {
   CHAT_GROUP_APPLY_TICKETS_TABLE,
   CHAT_GROUP_CONTACTS_TABLE,
   CHAT_GROUP_APPLY_TICKET_STATUS,
-  IDENTIRY_LEVEL
+  IDENTIRY_LEVEL,
 };
