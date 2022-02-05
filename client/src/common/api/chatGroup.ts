@@ -14,3 +14,22 @@ export const createChatGroup = (name: string, avatar = ''): Promise<CreateChatGr
     method: 'POST',
     data: { name, avatar },
   });
+
+export interface GetChatGroupByIdResp extends BaseResponse {
+  data: Array<ChatGroup>;
+}
+
+// 根据id搜索群
+export const getChatGroupById = (id: number): Promise<GetChatGroupByIdResp> =>
+  request({
+    url: '/chat_group/get_chat_group_by_id',
+    data: { id },
+  });
+export interface GetChatGroupListByName extends BaseResponse {
+  data: Array<ChatGroup>;
+}
+export const getChatGroupListByName = (name: string): Promise<GetChatGroupListByName> =>
+  request({
+    url: '/chat_group/get_chat_group_list_by_name',
+    data: { name },
+  });

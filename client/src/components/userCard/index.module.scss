@@ -1,8 +1,11 @@
-.userCard {
-  padding: 8px 12px;
+@mixin flex-center {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.userCard {
+  padding: 8px 12px;
+  @include flex-center;
 
   .userInfo {
     flex: 1;
@@ -12,6 +15,7 @@
       font-size: 16px;
       font-weight: 600;
       margin-bottom: 4px;
+      @include flex-center;
     }
 
     .bio {

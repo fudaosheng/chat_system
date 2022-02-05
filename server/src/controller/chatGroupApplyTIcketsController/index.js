@@ -18,18 +18,9 @@ class ChatGroupApplyTicketsController {
     // user id list
     const userIdList = typeof userIdListStr === 'string' ? userIdListStr.split(',') : userIdListStr;
 
-    // 申请工单
-    const ticket = {
-      [CHAT_GROUP_APPLY_TICKETS_TABLE.APPLICANT_USER_ID]: applicantUserId,
-      [CHAT_GROUP_APPLY_TICKETS_TABLE.GROUP_ID]: groupId,
-      [CHAT_GROUP_APPLY_TICKETS_TABLE.STATUS]: CHAT_GROUP_APPLY_TICKET_STATUS.PENDING,
-    };
     // 生成批量处理promise list
     const promiseList = (userIdList || []).map(id =>
-      ctx.service.dbService.insert(
-        { ...ticket, [CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID]: id },
-        TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
-      )
+      ctx.service.chatGroupApplyTicketService.createApplyTicket(groupId, applicantUserId, id)
     );
 
     // 向数据库插入数据
@@ -37,7 +28,7 @@ class ChatGroupApplyTicketsController {
       await Promise.all(promiseList);
       return ctx.makeResp({ code: STATUS_CODE.SUCCESS });
     } catch (err) {
-      return ctx.makeResp({ code: STATUS_CODE.ERROR, message: JSON.stringify(err) });
+      return ctx.makeResp({ code: STATUS_CODE.ERROR, message: JSON.stringify(err?.message || err) });
     }
   }
   // 查询和自己相关的群组申请工单

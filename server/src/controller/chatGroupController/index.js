@@ -51,7 +51,7 @@ class ChatGroupController {
     }
   }
   // 根据ID搜索群
-  async getChatGroupListById(ctx) {
+  async getChatGroupById(ctx) {
     const { id } = ctx.request.query;
     const result = await ctx.service.dbService.query({ [CHAT_GROUPS_TABLE.ID]: id }, TABLE_NAMES.CHAT_GROUPS);
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result })

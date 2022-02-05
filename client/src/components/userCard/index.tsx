@@ -5,7 +5,7 @@ import styles from './index.module.scss';
 
 interface Props {
   userInfo: UserInfo;
-  name?: ReactElement;
+  name?: ReactElement | string;
   size?: AvatarSize;
   className?: string;
   onClick?: () => void;
