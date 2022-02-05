@@ -35,3 +35,19 @@ export const getAllChatGroupApplyTickets = (): Promise<GetAllChatGroupApplyTicke
   request({
     url: '/chat_group_apply_ticket/get/chat_group_apply_tickets',
   });
+
+// 同意入群申请
+export const agreeChatGroupApply = (ticketId: number) =>
+  request({
+    url: '/chat_group_apply_ticket/agree',
+    method: 'POST',
+    data: { ticketId },
+  });
+
+// 拒绝入群申请
+export const disagreeChatGroupApply = (ticketId: number) =>
+  request({
+    url: '/chat_group_apply_ticket/disagree',
+    method: 'POST',
+    data: { ticketId },
+  });

@@ -85,7 +85,7 @@ export const ApplyContactTicketList: React.FC<Props> = (props: Props) => {
                 onChange={handleApplyTicketChange}
               />
             ) : (
-              <ApplyChatGroupTicket key={item.id} applyTicket={item as ChatGroupApplyTicketExtra} />
+              <ApplyChatGroupTicket key={item.id} applyTicket={item as ChatGroupApplyTicketExtra} onChange={handleApplyTicketChange} />
             )
           )}
         </div>

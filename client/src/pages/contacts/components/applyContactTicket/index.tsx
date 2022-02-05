@@ -41,8 +41,6 @@ export const ApplyContactTicket: React.FC<Props> = (props: Props) => {
       Toast.error('必须选择分组信息');
       return;
     }
-    console.log(contactGroup, note);
-    console.log('处理好友申请同意逻辑');
     setBtnLoading(true);
     try {
       await agreeAddContact({

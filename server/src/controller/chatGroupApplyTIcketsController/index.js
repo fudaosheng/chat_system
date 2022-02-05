@@ -93,9 +93,12 @@ class ChatGroupApplyTicketsController {
   // 查询待自己处理的工单
   async getApplyChatGroupTickets(ctx) {
     const userId = ctx.user.userId;
-
+    // 查询SQL
     const result = await ctx.service.dbService.query(
-      { [CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID]: userId },
+      {
+        [CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID]: userId,
+        [CHAT_GROUP_APPLY_TICKETS_TABLE.STATUS]: CHAT_GROUP_APPLY_TICKET_STATUS.PENDING,
+      },
       TABLE_NAMES.CHAT_GROUP_APPLY_TICKETS
     );
 

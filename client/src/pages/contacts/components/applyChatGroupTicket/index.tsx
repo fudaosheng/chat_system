@@ -1,5 +1,5 @@
 import { Button, Toast } from '@douyinfe/semi-ui';
-import { rejectAddContact } from 'common/api/applyContactTicket';
+import { agreeChatGroupApply, disagreeChatGroupApply } from 'common/api/chatGroupApplyTickets';
 import { APPLY_CHAT_GROUP_TICKET_STATUS } from 'common/constance';
 import { GlobalContext } from 'common/store';
 import { dateTimeFormat, formatDate } from 'common/utils';
@@ -29,6 +29,8 @@ export const ApplyChatGroupTicket: React.FC<Props> = (props: Props) => {
   const handleAgreeApply = async () => {
     setBtnLoading(true);
     try {
+      await agreeChatGroupApply(applyTicket.id);
+      onChange && onChange();
       Toast.success(`已成功添加${applyTicket?.applicant_user?.name}为好友`);
     } finally {
       setBtnLoading(false);
@@ -40,7 +42,7 @@ export const ApplyChatGroupTicket: React.FC<Props> = (props: Props) => {
     //拒绝添加联系人
     setBtnLoading(true);
     try {
-      await rejectAddContact(applyTicket.id);
+      await disagreeChatGroupApply(applyTicket.id);
       onChange && onChange();
       Toast.success(`已拒绝${applyTicket?.applicant_user?.name}的好友申请`);
     } finally {
