@@ -107,6 +107,7 @@ const CHAT_GROUP_APPLY_TICKETS_TABLE = {
   ID: 'id',
   APPLICANT_USER_ID: 'applicant_user_id',
   TARGET_USER_ID: 'target_user_id',
+  OPAERATOR_ID: 'operator_id', //处理人id
   STATUS: 'status',
   GROUP_ID: 'group_id',
 }

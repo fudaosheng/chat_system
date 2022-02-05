@@ -12,15 +12,21 @@ const { getTableSelectColumns, getJSONOBJECTColumns, userTableCommonColumns } = 
 
 class ChatGroupApplyTicketsController {
   // 批量创建群组申请工单
+  /**
+   * 
+   * @param {*} ctx 
+   *    operatorId可选，不传则userId就是处理人
+   * @returns 
+   */
   async batchCreateApplyTickets(ctx) {
-    const { groupId, userIdList: userIdListStr } = ctx.request.body;
+    const { groupId, userIdList: userIdListStr, operatorId } = ctx.request.body;
     const applicantUserId = ctx.user.userId;
     // user id list
     const userIdList = typeof userIdListStr === 'string' ? userIdListStr.split(',') : userIdListStr;
 
-    // 生成批量处理promise list
+    // 批量创建处理工单
     const promiseList = (userIdList || []).map(id =>
-      ctx.service.chatGroupApplyTicketService.createApplyTicket(groupId, applicantUserId, id)
+      ctx.service.chatGroupApplyTicketService.createApplyTicket(groupId, applicantUserId, id, operatorId)
     );
 
     // 向数据库插入数据

@@ -52,15 +52,16 @@ export const ApplyChatGroupTicket: React.FC<Props> = (props: Props) => {
 
   const renderName = useCallback(
     (name: string) => {
+      const message = target_user.id === userInfo.id ? '申请加入' : '邀请你加入';
       return (
         <div className={styles.customName}>
           <span className={styles.name}>{name}</span>
-          <span className={styles.tip}>邀请你加入</span>
+          <span className={styles.tip}>{message}</span>
           <span className={styles.chatGroupName}>{applyTicket?.chat_group?.name || ''}</span>
         </div>
       );
     },
-    [applyTicket]
+    [applyTicket, target_user, userInfo]
   );
   const renderStatus = () => {
     // 别人给自己发送好友申请，需要自己处理
@@ -82,15 +83,27 @@ export const ApplyChatGroupTicket: React.FC<Props> = (props: Props) => {
       ? '已同意'
       : '已拒绝';
   };
+  const renderInviteName = (name: string) => {
+    return (
+      <div className={styles.customName}>
+        <span className={`${styles.tip} ${styles.invite}`}>邀请</span>
+        <span className={styles.name}>{name}</span>
+        <span className={styles.tip}>加入</span>
+        <span className={styles.chatGroupName}>{applyTicket?.chat_group?.name || ''}</span>
+      </div>
+    );
+  }
   return (
     <div className={styles.ticket}>
       <div className={styles.time}>{formatDate(new Date(update_time), dateTimeFormat)}</div>
       <div className={styles.ticketInfo}>
         <div className={styles.top}>
           <div className={styles.userInfo}>
-            {/* 自己给别人发送的好友申请 */}
-            {userInfo.id === applicant_user.id && <UserCard userInfo={target_user} />}
-            {/* 别人给自己发送的好友申请 */}
+            {/* 拉人进群 */}
+            {userInfo.id === applicant_user.id && (
+              <UserCard userInfo={target_user} name={renderInviteName(target_user.name)} />
+            )}
+            {/* 入群申请 */}
             {target_user.id === userInfo.id && (
               <UserCard userInfo={applicant_user} name={renderName(applicant_user.name)} />
             )}

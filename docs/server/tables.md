@@ -149,14 +149,17 @@ CREATE TABLE `chat_group_apply_tickets` (
   `status` enum('1','2','3') DEFAULT '1',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `operator_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `applicant_user_id` (`applicant_user_id`),
   KEY `group_id` (`group_id`),
   KEY `target_user_id` (`target_user_id`),
+  KEY `operator_id` (`operator_id`),
   CONSTRAINT `chat_group_apply_tickets_ibfk_1` FOREIGN KEY (`applicant_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `chat_group_apply_tickets_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `chat_groups` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `chat_group_apply_tickets_ibfk_3` FOREIGN KEY (`target_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+  CONSTRAINT `chat_group_apply_tickets_ibfk_3` FOREIGN KEY (`target_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chat_group_apply_tickets_ibfk_4` FOREIGN KEY (`operator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3
 
 // 群成员表
 CREATE TABLE `chat_group_contacts` (
