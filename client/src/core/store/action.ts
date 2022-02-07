@@ -1,4 +1,5 @@
 import { Message } from 'core/Message';
+import { CHAT_TYPE } from 'core/typings';
 import { WebsocketActionResp, WebsocketActionType } from '.';
 
 export const WebsocketAction = {
@@ -16,10 +17,10 @@ export const WebsocketAction = {
     }
   },
   // 创建会话
-  createChat(chatId: number, receiver: UserInfo): WebsocketActionResp {
+  createChat(chatId: number, type: CHAT_TYPE, members: Array<UserInfo>, chatGroupInfo?: ChatGroup): WebsocketActionResp {
     return {
       type: WebsocketActionType.CREATE_CHAT,
-      payload: { chatId, receiver },
+      payload: { chatId, type, members, chatGroupInfo },
     };
   },
   // 将消息添加到会话列表

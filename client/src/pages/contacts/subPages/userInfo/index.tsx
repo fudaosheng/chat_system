@@ -9,6 +9,7 @@ import { formatDate } from 'common/utils';
 import { Input } from '@douyinfe/semi-ui/lib/es/input';
 import { WebsocketContext } from 'core/store';
 import { WebsocketAction } from 'core/store/action';
+import { CHAT_TYPE } from 'core/typings';
 const day = 1000 * 60 * 60 * 24;
 
 interface Props {
@@ -45,7 +46,6 @@ export const UserInfo: React.FC<Props> = (props: Props) => {
   // 保存好友备注
   const handleSaveNote = async (e: any) => {
     const value = e.target.value;
-    console.log(value);
     if (!value || value === ' ') {
       return;
     }
@@ -60,14 +60,14 @@ export const UserInfo: React.FC<Props> = (props: Props) => {
     }
   };
 
-  // 创建聊天会话
+  // 创建单聊会话
   const handleCreateChat = () => {
     if (!contactInfo.id) {
       return;
     }
-    dispatch(WebsocketAction.createChat(contactInfo.id, contactInfo));
+    dispatch(WebsocketAction.createChat(contactInfo.id, CHAT_TYPE.CHAT, [contactInfo]));
     // 跳转到会话列表
-    history.push(`/chat/${contactInfo.id}`);
+    history.push(`/chat/${CHAT_TYPE.CHAT}/${contactInfo.id}`);
   };
 
   // 渲染其他用户信息

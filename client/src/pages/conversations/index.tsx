@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import styles from './index.module.scss';
 import { Message } from 'core/Message';
 import { sendMessage } from 'core';
-import { MessageType } from 'core/typings';
+import { CHAT_TYPE, MessageType } from 'core/typings';
 import { WebsocketAction } from 'core/store/action';
 import { ConversationList } from 'components/conversationList';
 import { GlobalContext } from 'common/store';
@@ -13,7 +13,7 @@ import { debounce } from 'lodash';
 const debounceGap = 1000;
 
 export const Conversations: React.FC = () => {
-  const { userId } = useParams<any>();
+  const { chatId, chatType } = useParams<any>();
   const {
     state: { userInfo },
   } = useContext(GlobalContext);
@@ -24,16 +24,18 @@ export const Conversations: React.FC = () => {
   const conversationsRef = createRef<HTMLDivElement>();
 
   // 会话
-  const chat = useMemo(() => chatList.find(i => i?.receiver?.id === Number(userId)), [chatList, userId]);
+  const chat = useMemo(
+    () => chatList.find(i => i.id === Number(chatId) && i.type === chatType),
+    [chatList, chatId, chatType]
+  );
 
-  // 消息接收人列表
-  const receiverList = useMemo(() => {
-    return chat?.receiver ? [chat.receiver] : [];
-  }, [chat]);
+  const membersMap = useMemo(() => {
+    return new Map(chat?.members?.map(i => ([i.id, i])));
+  }, []);
 
   useEffect(() => {
     // 监听鼠标移动，处理消息是否已读
-    if(!(conversationsRef?.current && chat?.id)) {
+    if (!(conversationsRef?.current && chat?.id)) {
       return;
     }
     const updateLastReadedMessageIndex = debounce(() => {
@@ -46,23 +48,34 @@ export const Conversations: React.FC = () => {
   // 发送消息
   // todo：发送消息时用blob发送，阻止回车换行
   const handleSendMessage = (value: string, messageType?: MessageType) => {
-    const { receiver } = chat || {};
-    if (!(receiver?.id && ws)) {
+    const receiverId = chatType === CHAT_TYPE.CHAT ? membersMap.get(Number(chatId))?.id : chat?.chatGroupInfo?.id;
+    if (!(receiverId && ws)) {
       return;
     }
     // 构造一个消息对象
-    const message = new Message(receiver.id, userInfo.id, receiver.id, value, messageType || MessageType.TEXT);
+    const message = new Message(receiverId, userInfo.id, receiverId, value, messageType || MessageType.TEXT, chatType);
     sendMessage(ws, message);
     dispatch(WebsocketAction.append(message.receiverId, message));
   };
 
+  // 会话名称
+  const chatName = useMemo(() => {
+    if (chat?.type === CHAT_TYPE.CHAT) {
+      const receiver = membersMap.get(Number(chatId));
+      return receiver?.note || receiver?.name;
+    }
+    if (chat?.type === CHAT_TYPE.CHAT_GROUP) {
+      return chat.chatGroupInfo?.name;
+    }
+  }, [chat, membersMap]);
+
   return (
     <div className={styles.conversations} ref={conversationsRef}>
-      <div className={styles.receiver}>
-        <div>{chat?.receiver?.note || chat?.receiver?.name || ''}</div>
+      <div className={styles.chatName}>
+        <div>{chatName}</div>
       </div>
       <div className={styles.conversationList}>
-        <ConversationList userInfo={userInfo} receiverList={receiverList} conversationList={chat?.conversations} />
+        <ConversationList userInfo={userInfo} membersMap={membersMap} conversationList={chat?.conversations} />
       </div>
       <div className={styles.footer}>
         {/* <div className={styles.funtionNav}>
@@ -70,7 +83,10 @@ export const Conversations: React.FC = () => {
         </div> */}
         <div className={styles.editor}>
           {/* <TextArea className={styles.textArea} sendMessage={handleSendMessage} /> */}
-          <Editor className={styles.textArea} sendMessage={handleSendMessage} />
+          <Editor
+            className={styles.textArea}
+            sendMessage={handleSendMessage}
+          />
         </div>
       </div>
     </div>

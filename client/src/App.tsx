@@ -6,7 +6,7 @@ import { LOCAL_STORAGE_USER_INFO } from 'common/constance/localStorage';
 import { GlobalContext } from 'common/store';
 import { GlobalAction } from 'common/store/action';
 import { destoryWebsocket, ping, registryWebSocket } from 'core';
-import { MessageStruct } from 'core/typings';
+import { CHAT_TYPE, MessageStruct } from 'core/typings';
 import { WebsocketAction } from 'core/store/action';
 import { WebsocketContext } from 'core/store';
 import { findIndex } from 'core/store/util';
@@ -38,7 +38,7 @@ const App: React.FC = () => {
         getContactInfo(fromId)
           .then(res => {
             const { data: receiver } = res;
-            websocketDispatch(WebsocketAction.createChat(chatId, receiver));
+            websocketDispatch(WebsocketAction.createChat(chatId, CHAT_TYPE.CHAT, [receiver]));
             websocketDispatch(WebsocketAction.append(chatId, ...messageList));
             // 触发消息提示音
           })

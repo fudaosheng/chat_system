@@ -20,14 +20,16 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       }
       // 创建会话，添加消息时将当前会话置顶
       case WebsocketActionType.CREATE_CHAT: {
-        const { chatId, receiver } = action.payload;
+        const { chatId, type, members, chatGroupInfo } = action.payload;
         // 在原来的会话列表中查找与receiver的会话
         const index = findIndex(chatId, draft.chatList);
         // 新建会话
         if (index === -1) {
           draft.chatList.unshift({
-            receiver,
-            id: receiver.id, //chatId
+            type,
+            members,
+            chatGroupInfo,
+            id: chatId, //chatId
             lastReadedMessageIndex: -1,
             conversations: [],
           });

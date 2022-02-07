@@ -7,13 +7,14 @@ const { TABLE_NAMES, COMMON_TABLE_FIELDS, CONTACTS_TABLE, USER_TABLE } = require
 const { getTableSelectColumns, userTableCommonColumns } = require('../../utils');
 
 class ContactService {
+  // 获取联系人信息
   async getContactInfo(userId, contactId) {
     // 用到的几个表
     const { CONTACTS, USERS } = TABLE_NAMES;
 
     // 用户信息,包含备注信息, create_time好友创建时间，update_time好友更新时间
     const userTableSelectColumns = `${getTableSelectColumns(
-      userTableCommonColumns.filter(v => !Object.values(COMMON_TABLE_FIELDS).includes(v)),
+      userTableCommonColumns.filter(v => ![COMMON_TABLE_FIELDS.CREATE_TIME, COMMON_TABLE_FIELDS.UPDATE_TIME].includes(v)),
       TABLE_NAMES.USERS
     )}, ${getTableSelectColumns(
       [CONTACTS_TABLE.NOTE, CONTACTS_TABLE.CREATE_TIME, CONTACTS_TABLE.UPDATE_TIME],

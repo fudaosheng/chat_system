@@ -8,6 +8,7 @@ import { WebsocketContext } from 'core/store';
 import { Conversations } from 'pages/conversations';
 import { GlobalContext } from 'common/store';
 import styles from './index.module.scss';
+import { CHAT_TYPE } from 'core/typings';
 
 export const Chat: React.FC = () => {
   const { url } = useRouteMatch();
@@ -18,11 +19,12 @@ export const Chat: React.FC = () => {
   const {
     state: { chatList },
   } = useContext(WebsocketContext);
-  const [activeContactId, setActiveContactId] = useState(-1);
+  // 标记哪个是当前活跃的
+  const [active, setActive] = useState<{ id: number, type: CHAT_TYPE}>({ id: -1, type: CHAT_TYPE.CHAT });
 
-  const handleClickContactCard = (contactInfo: UserInfo) => {
-    history.replace(`${url}/${contactInfo.id}`);
-    setActiveContactId(contactInfo.id);
+  const handleClickContactCard = (id: number, type: CHAT_TYPE) => {
+    history.replace(`${url}/${type}/${id}`);
+    setActive({ id, type });
   }
 
   return (
@@ -30,19 +32,20 @@ export const Chat: React.FC = () => {
       <div className={classNames(styles.contacts, { [styles.emptyContacts]: !chatList.length })}>
         {chatList.length
           ? chatList.map(chat => {
-              const { id, receiver, conversations, lastReadedMessageIndex } = chat;
+              const { id, members = [], conversations, lastReadedMessageIndex, type, chatGroupInfo } = chat;
               const unReadMessageCount = conversations
                 .slice(lastReadedMessageIndex + 1)
                 .filter(i => i.receiverId === userInfo.id).length;
+              const receiver = type === CHAT_TYPE.CHAT ? members[members?.findIndex(i => i.id === Number(id))] : chatGroupInfo;
               const UserCardContent = (
                 <UserCard
                   key={id}
-                  userInfo={receiver}
+                  userInfo={receiver as UserInfo}
                   className={classNames({
                     [styles.userCard]: true,
-                    [styles.active]: activeContactId === receiver.id
+                    [styles.active]: active.id === receiver?.id && type === active.type
                   })}
-                  onClick={() => handleClickContactCard(receiver)}
+                  onClick={() => handleClickContactCard(receiver?.id as number, type)}
                 />
               );
               return unReadMessageCount ? (
@@ -58,7 +61,7 @@ export const Chat: React.FC = () => {
       <div className={styles.conversations}>
         {chatList.length ? (
           <Switch>
-            <Route path={`${url}/:userId`}>
+            <Route path={`${url}/:chatType/:chatId`}>
               <Conversations />
             </Route>
           </Switch>

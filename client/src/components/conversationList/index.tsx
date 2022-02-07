@@ -8,26 +8,17 @@ import { batchDeleteUserImgs } from 'common/api/file';
 const scrollPlaceholder = 'conversation_list_placeholder';
 interface Props {
   userInfo: UserInfo;
-  receiverList?: Array<UserInfo>; // 消息接收者信息列表
+  membersMap?: Map<number, UserInfo>; // 消息接收者信息列表
   conversationList?: Array<MessageStruct>;
 }
 export const ConversationList: React.FC<Props> = (props: Props) => {
-  const { userInfo, receiverList = [], conversationList = [] } = props;
+  const { userInfo, membersMap = new Map<number, UserInfo>(), conversationList = [] } = props;
   const ref = createRef<HTMLLIElement>();
 
   // 发送，接收到消息，自动滚动到底部
   useEffect(() => {
     ref?.current?.scrollIntoView();
   }, [conversationList, ref]);
-
-  // 生成接收者信息的Map
-  const receiverInfoMap = useMemo(() => {
-    const map = new Map<number, UserInfo>();
-    receiverList.forEach(item => {
-      map.set(item.id, item);
-    });
-    return map;
-  }, [receiverList]);
 
   // 处理消息加载成功
   const handleImageLoad = (data: MessageStruct) => {
@@ -69,7 +60,7 @@ export const ConversationList: React.FC<Props> = (props: Props) => {
               [styles.selfConversation]: isSelfMessage,
             })}>
             <div className={styles.left}>
-              <Avatar size="small" src={isSelfMessage ? userInfo.avatar : receiverInfoMap.get(fromId)?.avatar}></Avatar>
+              <Avatar size="small" src={isSelfMessage ? userInfo.avatar : membersMap.get(fromId)?.avatar}></Avatar>
             </div>
             <div
               className={classNames({
@@ -77,10 +68,10 @@ export const ConversationList: React.FC<Props> = (props: Props) => {
                 [styles.selfRight]: isSelfMessage,
               })}>
               <div className={styles.top}>
-                <div className={styles.name}>{isSelfMessage ? userInfo.name : receiverInfoMap.get(fromId)?.name}</div>
+                <div className={styles.name}>{isSelfMessage ? userInfo.name : membersMap.get(fromId)?.name}</div>
                 <div className={styles.bio}>
                   <IconCommentStroked className={styles.bioIcon} size="small" />
-                  {isSelfMessage ? userInfo.bio : receiverInfoMap.get(fromId)?.bio}
+                  {isSelfMessage ? userInfo.bio : membersMap.get(fromId)?.bio}
                 </div>
               </div>
               <div className={styles.messageWrap}>{renderMessageContent(conversation)}</div>

@@ -1,4 +1,4 @@
-import { MessageType, MessageStruct } from './typings';
+import { MessageType, MessageStruct, CHAT_TYPE } from './typings';
 import { nanoid } from 'nanoid';
 /**
  * 消息类
@@ -13,8 +13,9 @@ export class Message implements MessageStruct {
   time: number; //时间戳，消息的发送时间
   message: string; //真正的消息体
   type: MessageType;
+  chatType: CHAT_TYPE;
 
-  constructor(chatId: number, fromId: number, receiverId: number, message: string, type: MessageType) {
+  constructor(chatId: number, fromId: number, receiverId: number, message: string, type: MessageType, chatType: CHAT_TYPE) {
     this.fromId = fromId;
     this.receiverId = receiverId;
     this.type = type;
@@ -22,5 +23,6 @@ export class Message implements MessageStruct {
     this.id = nanoid();
     this.time = new Date().getTime();
     this.chatId = chatId;
+    this.chatType = chatType;
   }
 }

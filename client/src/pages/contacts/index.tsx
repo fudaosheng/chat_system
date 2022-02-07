@@ -80,7 +80,6 @@ export const Contacts: React.FC = () => {
   const getChatGroupListRequest = async () => {
     try {
       const { data = [] } = await getChatGroupList();
-      console.log('--', data);
       
       setChatGroupList(data);
     } finally {
