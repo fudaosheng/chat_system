@@ -150,7 +150,7 @@ export const Contacts: React.FC = () => {
             </Route>
             {/* 群聊详细信息 */}
             <Route path={`${url}/chat_group_info/:chatGroupId`}>
-              <ChatGroupInfo onChange={getContactGroupListRequest} />
+              <ChatGroupInfo />
             </Route>
           </Switch>
         </div>

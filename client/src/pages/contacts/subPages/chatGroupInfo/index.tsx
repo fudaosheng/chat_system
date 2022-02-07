@@ -10,16 +10,15 @@ import { Input } from '@douyinfe/semi-ui/lib/es/input';
 import { WebsocketContext } from 'core/store';
 import { WebsocketAction } from 'core/store/action';
 import { getChatGroupDetailInfo } from 'common/api/chatGroup';
+import { modifyChatGroupNote } from 'common/api/chatGroupContact';
 const day = 1000 * 60 * 60 * 24;
 
 interface Props {
-  onChange?: () => void; // 用户信息变化
 }
 export const ChatGroupInfo: React.FC<Props> = (props: Props) => {
   const { chatGroupId } = useParams<any>();
   const history = useHistory();
   const { dispatch } = useContext(WebsocketContext);
-  const { onChange } = props;
   const [chatGroupInfo, setChatGroupInfo] = useState<ChatGroupExtra>({} as ChatGroupExtra);
   const [loading, setLoading] = useState(false);
   // 编辑好友备注
@@ -30,8 +29,6 @@ export const ChatGroupInfo: React.FC<Props> = (props: Props) => {
     try {
       const { data } = await getChatGroupDetailInfo(Number(chatGroupId));
       setChatGroupInfo(data);
-      console.log('data', data);
-      
     } finally {
       setLoading(false);
     }
@@ -48,17 +45,14 @@ export const ChatGroupInfo: React.FC<Props> = (props: Props) => {
   // 保存好友备注
   const handleSaveNote = async (e: any) => {
     const value = e.target.value;
-    console.log(value);
     if (!value || value === ' ') {
       return;
     }
     try {
-      await editContactNote(chatGroupInfo.id, value);
+      await modifyChatGroupNote(chatGroupInfo.id, value);
       Toast.success('修改好友备注成功');
       setChatGroupInfo({ ...chatGroupInfo, note: value });
       setEditNote(false);
-      //更新好友列表
-      onChange && onChange();
     } finally {
     }
   };
@@ -131,7 +125,7 @@ export const ChatGroupInfo: React.FC<Props> = (props: Props) => {
             <Avatar src={chatGroupInfo.avatar} size="large" />
           </div>
           <div className={styles.main}>
-            <div className={styles.name}>{chatGroupInfo?.note || chatGroupInfo.name}</div>
+            <div className={styles.name}>{chatGroupInfo.name}</div>
             <div className={styles.id}>群号：{chatGroupInfo.id}</div>
             <div className={styles.function}>
               <Button icon={<IconComment />} type="tertiary" theme="borderless" onClick={handleCreateChat} />
