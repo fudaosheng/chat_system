@@ -11,10 +11,10 @@ import { WebsocketContext } from 'core/store';
 import { WebsocketAction } from 'core/store/action';
 import { getChatGroupDetailInfo } from 'common/api/chatGroup';
 import { modifyChatGroupNote } from 'common/api/chatGroupContact';
+import { CHAT_TYPE } from 'core/typings';
 const day = 1000 * 60 * 60 * 24;
 
-interface Props {
-}
+interface Props {}
 export const ChatGroupInfo: React.FC<Props> = (props: Props) => {
   const { chatGroupId } = useParams<any>();
   const history = useHistory();
@@ -62,9 +62,10 @@ export const ChatGroupInfo: React.FC<Props> = (props: Props) => {
     if (!chatGroupInfo.id) {
       return;
     }
-    // dispatch(WebsocketAction.createChat(chatGroupInfo.id, chatGroupInfo));
+    // todo: 获取群成员
+    dispatch(WebsocketAction.createChat(chatGroupInfo.id, CHAT_TYPE.CHAT_GROUP, [], chatGroupInfo));
     // // 跳转到会话列表
-    // history.push(`/chat/${chatGroupInfo.id}`);
+    history.push(`/chat/${CHAT_TYPE.CHAT_GROUP}/${chatGroupInfo.id}`);
   };
 
   // 渲染其他用户信息

@@ -1,36 +1,84 @@
-.conversations {
+@mixin flex-direction {
+  display: flex;
+  flex-direction: column;
+}
+.conversationPage {
   flex: 1;
   height: 100%;
   overflow: hidden;
   display: flex;
-  flex-direction: column;
-  .chatName {
+
+  .conversations {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+    @include flex-direction;
+
+    .chatName {
       padding: 12px 24px;
       font-size: 18px;
       font-weight: 500;
       border-bottom: 1px solid var(--border-color);
-  }
-  .conversationList {
+      position: relative;
+      .collapseWrapper {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        :global {
+          .semi-button {
+            height: 100%;
+          }
+        }
+      }
+    }
+
+    .conversationList {
       flex: 1;
       padding: 0 24px;
       overflow: scroll;
-    //   border: 1px solid black;
-  }
-  .footer {
+      //   border: 1px solid black;
+    }
+
+    .footer {
       height: 130px;
       border-top: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
+      @include flex-direction;
+
       .funtionNav {
         padding: 8px 24px;
       }
+
       .editor {
         flex: 1;
+
         .textArea {
           background-color: #fff;
           border-radius: none;
           border: none;
         }
       }
+    }
+  }
+  .sider {
+    background-color: #f6f7f9;
+    width: 200px;
+    padding: 12px;
+    font-size: 12px;
+    @include flex-direction;
+    overflow: hidden;
+    .title {
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .membersWrapper {
+      flex: 1;
+      margin-top: 24px;
+      @include flex-direction;
+      .members {
+        flex: 1;
+        overflow: scroll;
+      }
+    }
   }
 }

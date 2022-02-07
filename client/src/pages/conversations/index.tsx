@@ -1,5 +1,6 @@
 import { WebsocketContext } from 'core/store';
 import React, { createRef, useContext, useEffect, useMemo, useState } from 'react';
+import { CSSTransition } from 'react-transition-group';
 import { useParams } from 'react-router-dom';
 import styles from './index.module.scss';
 import { Message } from 'core/Message';
@@ -10,6 +11,8 @@ import { ConversationList } from 'components/conversationList';
 import { GlobalContext } from 'common/store';
 import { Editor } from 'components/editor';
 import { debounce } from 'lodash';
+import { Button } from '@douyinfe/semi-ui';
+import { IconChevronRight, IconChevronLeft } from '@douyinfe/semi-icons';
 const debounceGap = 1000;
 
 export const Conversations: React.FC = () => {
@@ -21,6 +24,7 @@ export const Conversations: React.FC = () => {
     state: { chatList, ws },
     dispatch,
   } = useContext(WebsocketContext);
+  const [isOpen, setIsOpen] = useState(false);
   const conversationsRef = createRef<HTMLDivElement>();
 
   // 会话
@@ -30,7 +34,7 @@ export const Conversations: React.FC = () => {
   );
 
   const membersMap = useMemo(() => {
-    return new Map(chat?.members?.map(i => ([i.id, i])));
+    return new Map(chat?.members?.map(i => [i.id, i]));
   }, []);
 
   useEffect(() => {
@@ -70,25 +74,44 @@ export const Conversations: React.FC = () => {
   }, [chat, membersMap]);
 
   return (
-    <div className={styles.conversations} ref={conversationsRef}>
-      <div className={styles.chatName}>
-        <div>{chatName}</div>
-      </div>
-      <div className={styles.conversationList}>
-        <ConversationList userInfo={userInfo} membersMap={membersMap} conversationList={chat?.conversations} />
-      </div>
-      <div className={styles.footer}>
-        {/* <div className={styles.funtionNav}>
+    <div className={styles.conversationPage}>
+      <div className={styles.conversations} ref={conversationsRef}>
+        <div className={styles.chatName}>
+          <div>{chatName}</div>
+          <div className={styles.collapseWrapper}>
+            {chat?.type === CHAT_TYPE.CHAT_GROUP &&
+              (isOpen ? (
+                <Button theme="borderless" icon={<IconChevronRight size="large" />} onClick={() => setIsOpen(false)} />
+              ) : (
+                <Button theme="borderless" icon={<IconChevronLeft size="large" />} onClick={() => setIsOpen(true)} />
+              ))}
+          </div>
+        </div>
+        <div className={styles.conversationList}>
+          <ConversationList userInfo={userInfo} membersMap={membersMap} conversationList={chat?.conversations} />
+        </div>
+        <div className={styles.footer}>
+          {/* <div className={styles.funtionNav}>
           <IconEmoji size="large" />
         </div> */}
-        <div className={styles.editor}>
-          {/* <TextArea className={styles.textArea} sendMessage={handleSendMessage} /> */}
-          <Editor
-            className={styles.textArea}
-            sendMessage={handleSendMessage}
-          />
+          <div className={styles.editor}>
+            {/* <TextArea className={styles.textArea} sendMessage={handleSendMessage} /> */}
+            <Editor className={styles.textArea} sendMessage={handleSendMessage} />
+          </div>
         </div>
       </div>
+      <CSSTransition in={isOpen} timeout={300} classNames="slideInRight" unmountOnExit>
+        <div className={styles.sider}>
+          <div className={styles.announcementWrapper}>
+            <div className={styles.title}>群公告</div>
+            <div>暂无群公告</div>
+          </div>
+          <div className={styles.membersWrapper}>
+            <div className={styles.title}>群成员</div>
+            <div className={styles.members}></div>
+          </div>
+        </div>
+      </CSSTransition>
     </div>
   );
 };
