@@ -1,4 +1,4 @@
-import React, { createRef, useCallback } from 'react';
+import React, { createRef, useState } from 'react';
 import { Picker } from 'emoji-mart';
 import { Popover, Upload, Toast, Button } from '@douyinfe/semi-ui';
 import { IconEmoji, IconImage } from '@douyinfe/semi-icons';
@@ -7,50 +7,43 @@ import 'emoji-mart/css/emoji-mart.css';
 import { PopoverProps } from '@douyinfe/semi-ui/popover';
 import styles from './index.module.scss';
 import classNames from 'classnames';
-import { removeAllPlaceholderEle } from './util';
 import { userUploadImg } from 'common/api/file';
-import { MessageType } from 'core/typings';
-const eleName = 'custom-editor-placeholder';
 
 interface Props {
   trigger?: 'hover' | 'click';
   position?: PopoverProps['position'];
+  couldUploadImage?: boolean;
   className?: string;
-  sendMessage?: (value: string, type?: MessageType) => void;
+  onEnterPress?: (e: HTMLDivElement) => void;
+  onChange?: (e: HTMLDivElement) => void;
+  onUploadImageSuccess?: (url: string) => void;
 }
 export const Editor: React.FC<Props> = (props: Props) => {
-  const { className = '', trigger = 'click', position = 'topLeft', sendMessage } = props;
+  const {
+    className = '',
+    trigger = 'click',
+    position = 'topLeft',
+    couldUploadImage = true,
+    onEnterPress,
+    onChange,
+    onUploadImageSuccess,
+  } = props;
   const editorRef = createRef<HTMLDivElement>();
+  const [range, setRange] = useState<Range>();
 
   const handleSelectEmoji = (e: any) => {
-    // 获取鼠标选区
-    const range = window.getSelection()?.getRangeAt(0);
-    if (!editorRef?.current || !range) {
-      return;
-    }
     const emoji = e.native;
     const emojoEle = document.createTextNode(emoji);
-    if (trigger === 'click') {
-      // 占位符
-      const placeholderEle = editorRef.current.getElementsByTagName(eleName)[0];
-      if (!placeholderEle) {
-        return;
-      }
-      // 插入emoji
-      editorRef.current.insertBefore(emojoEle, placeholderEle);
-      // 设置range位置
-      range.setStartBefore(placeholderEle);
-      range.collapse();
+    // 获取鼠标选区
+    const realRange = trigger === 'hover' ? window.getSelection()?.getRangeAt(0) : range;
+    // 判断选区是否在编辑器范围内
+    if (realRange && editorRef.current?.contains(realRange.commonAncestorContainer)) {
+      realRange.insertNode(emojoEle);
+      realRange.collapse();
     }
-    if (trigger === 'hover') {
-      // 判断选区是否在编辑器范围内
-      if (range && editorRef.current?.contains(range.commonAncestorContainer)) {
-        range.insertNode(emojoEle);
-        range.collapse();
-      }
-    }
+    editorRef.current && onChange && onChange(editorRef.current);
     // focus
-    editorRef.current.focus();
+    editorRef?.current?.focus();
   };
 
   // todo：ctrl + enter有时需要两次enter健换行
@@ -58,7 +51,7 @@ export const Editor: React.FC<Props> = (props: Props) => {
     if (e.keyCode === 13 && !(e.ctrlKey || e.shiftKey)) {
       // 阻止换行
       e.preventDefault();
-      sendMessage && sendMessage(e.target.innerText);
+      onEnterPress && onEnterPress(e);
       e.target.innerHTML = '';
     }
     // shift | ctrl + enter重写换行
@@ -72,17 +65,15 @@ export const Editor: React.FC<Props> = (props: Props) => {
         e.ctrlKey && range.collapse();
       }
     }
+    onChange && onChange(e);
   };
 
   const handleBlur = (e: any) => {
     if (trigger === 'hover') {
       return;
     }
-    // 删除之前插入的自定义标签
-    editorRef?.current && removeAllPlaceholderEle(editorRef.current, eleName);
-    // 插入自定义标签
     const range = window.getSelection()?.getRangeAt(0);
-    range?.insertNode(document.createElement(eleName));
+    setRange(range);
   };
 
   // 自定义上传
@@ -91,7 +82,7 @@ export const Editor: React.FC<Props> = (props: Props) => {
       const { data } = await userUploadImg(params.fileInstance);
       if (data.url) {
         // 发送图片
-        sendMessage && sendMessage(data.url, MessageType.IMAGE);
+        onUploadImageSuccess && onUploadImageSuccess(data.url);
       }
     } finally {
     }
@@ -110,15 +101,17 @@ export const Editor: React.FC<Props> = (props: Props) => {
           content={<Picker title="Pick your emoji…" set="apple" onSelect={handleSelectEmoji} />}>
           <Button icon={<IconEmoji size="large" />} theme="borderless" type="tertiary" />
         </Popover>
-        <Upload
-          action={''}
-          name="img"
-          accept={'image/*'}
-          showUploadList={false}
-          customRequest={handleUploadImg}
-          onError={() => Toast.error('上传失败')}>
-          <Button icon={<IconImage size="large" />} theme="borderless" type="tertiary" />
-        </Upload>
+        {couldUploadImage && (
+          <Upload
+            action={''}
+            name="img"
+            accept={'image/*'}
+            showUploadList={false}
+            customRequest={handleUploadImg}
+            onError={() => Toast.error('上传失败')}>
+            <Button icon={<IconImage size="large" />} theme="borderless" type="tertiary" />
+          </Upload>
+        )}
       </div>
       <div
         ref={editorRef}
@@ -127,7 +120,6 @@ export const Editor: React.FC<Props> = (props: Props) => {
         contentEditable
         data-placeholder="请输入内容"
         onBlur={handleBlur}
-        onFocus={() => editorRef?.current && removeAllPlaceholderEle(editorRef.current, eleName)}
         onKeyDown={handleKeyDown}
       />
     </div>

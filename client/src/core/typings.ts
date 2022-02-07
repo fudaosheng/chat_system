@@ -25,7 +25,7 @@ export interface Chat {
   id: number; //会话id
   lastReadedMessageIndex: number;// 上次阅读的最后一条消息下标
   conversations: Array<MessageStruct>; //会话消息列表
-  chatGroupInfo?: ChatGroup;// 群信息,单聊没有
+  chatGroupInfo?: ChatGroupExtra;// 群信息,单聊没有
   members: Array<UserInfo>; //成员信息，不包括自己
   type: CHAT_TYPE; // 会话类型
 }

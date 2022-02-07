@@ -12,7 +12,9 @@ import { GlobalContext } from 'common/store';
 import { Editor } from 'components/editor';
 import { debounce } from 'lodash';
 import { Button } from '@douyinfe/semi-ui';
-import { IconChevronRight, IconChevronLeft } from '@douyinfe/semi-icons';
+import { IconChevronRight, IconChevronLeft, IconEdit } from '@douyinfe/semi-icons';
+import { IDENTITY_LEVEL } from 'common/constance';
+import { ReleaseAnnoucement } from './releaseAnnouncement';
 const debounceGap = 1000;
 
 export const Conversations: React.FC = () => {
@@ -26,6 +28,8 @@ export const Conversations: React.FC = () => {
   } = useContext(WebsocketContext);
   const [isOpen, setIsOpen] = useState(false);
   const conversationsRef = createRef<HTMLDivElement>();
+  // 发布群公告modal
+  const [releaseAnnoucementModalVisible, setReleaseAnnoucementModalVisible] = useState(false);
 
   // 会话
   const chat = useMemo(
@@ -95,8 +99,7 @@ export const Conversations: React.FC = () => {
           <IconEmoji size="large" />
         </div> */}
           <div className={styles.editor}>
-            {/* <TextArea className={styles.textArea} sendMessage={handleSendMessage} /> */}
-            <Editor className={styles.textArea} sendMessage={handleSendMessage} />
+            <Editor className={styles.textArea} onEnterPress={(e: any) => handleSendMessage(e.target.innerText)} onUploadImageSuccess={url => handleSendMessage(url, MessageType.IMAGE)} />
           </div>
         </div>
       </div>
@@ -104,7 +107,13 @@ export const Conversations: React.FC = () => {
         <div className={styles.sider}>
           <div className={styles.announcementWrapper}>
             <div className={styles.title}>群公告</div>
-            <div>暂无群公告</div>
+            <div>
+              暂无群公告
+              {chat?.chatGroupInfo?.identity && chat?.chatGroupInfo?.identity !== IDENTITY_LEVEL.DEFAULT && (
+                <Button type="tertiary" theme="borderless" icon={<IconEdit />} className={styles.btn} onClick={() => setReleaseAnnoucementModalVisible(true)} />
+              )}
+              <ReleaseAnnoucement visible={releaseAnnoucementModalVisible} onCancel={() => setReleaseAnnoucementModalVisible(false)} />
+            </div>
           </div>
           <div className={styles.membersWrapper}>
             <div className={styles.title}>群成员</div>

@@ -19,5 +19,10 @@
     flex: 1;
     padding: 0 12px 12px 12px;
     outline: none;
+    &:empty::before {
+      content: attr(data-placeholder);
+      color: var(--text-color2);
+      pointer-events: none;
+    }
   }
 }
