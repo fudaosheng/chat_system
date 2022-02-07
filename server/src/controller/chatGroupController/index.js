@@ -56,13 +56,15 @@ class ChatGroupController {
   async getChatGroupById(ctx) {
     const { id } = ctx.request.query;
     const result = await ctx.service.dbService.query({ [CHAT_GROUPS_TABLE.ID]: id }, TABLE_NAMES.CHAT_GROUPS);
-    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result })
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result });
   }
   // 根据群名称模糊搜索群
   async getChatGroupListByName(ctx) {
     const { name } = ctx.request.query;
-    const result = await ctx.service.dbService.query({ [CHAT_GROUPS_TABLE.NAME]: name }, TABLE_NAMES.CHAT_GROUPS, { isLikeQuery: true });
-    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result })
+    const result = await ctx.service.dbService.query({ [CHAT_GROUPS_TABLE.NAME]: name }, TABLE_NAMES.CHAT_GROUPS, {
+      isLikeQuery: true,
+    });
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result });
   }
   // 获取用户的群聊列表
   async getChatGroupList(ctx) {
@@ -74,6 +76,21 @@ class ChatGroupController {
 
     const result = await connections.execute(SQL);
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0] });
+  }
+  // 获取群详细信息
+  async getChatGroupDetailInfo(ctx) {
+    const { id } = ctx.request.query;
+    const userId = ctx.user.userId;
+    // chat_group表中选择的列
+    const chatGroupSelectColums = getTableSelectColumns(Object.values(CHAT_GROUPS_TABLE), TABLE_NAMES.CHAT_GROUPS);
+    // chat_group_contact中选择的列
+    const chatGroupContactSelectColumns = getTableSelectColumns(
+      [CHAT_GROUP_CONTACTS_TABLE.IDENTITY, CHAT_GROUP_CONTACTS_TABLE.NOTE],
+      TABLE_NAMES.CHAT_GROUP_CONTACTS
+    );
+    const SQL = `SELECT ${chatGroupSelectColums}, ${chatGroupContactSelectColumns} FROM ${TABLE_NAMES.CHAT_GROUPS} JOIN ${TABLE_NAMES.CHAT_GROUP_CONTACTS} ON ${TABLE_NAMES.CHAT_GROUPS}.id = ${TABLE_NAMES.CHAT_GROUP_CONTACTS}.group_id WHERE ${TABLE_NAMES.CHAT_GROUPS}.id = ${id} AND ${TABLE_NAMES.CHAT_GROUP_CONTACTS}.user_id = ${userId}`;
+    const result = await connections.execute(SQL);
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0][0] });
   }
 }
 

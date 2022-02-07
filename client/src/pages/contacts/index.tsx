@@ -15,6 +15,7 @@ import { makeTreeWithContactList } from 'common/api/contacts';
 import { getAllChatGroupApplyTickets } from 'common/api/chatGroupApplyTickets';
 import { getChatGroupList } from 'common/api/chatGroup';
 import { ChatGroupList } from './components/chatGroupList';
+import { ChatGroupInfo } from './subPages/chatGroupInfo';
 const interval = 1000 * 60; //轮询间隔
 
 export interface SystemAssistant {
@@ -127,7 +128,7 @@ export const Contacts: React.FC = () => {
           <AssistantList assistantList={assistantList} onChange={key => history.push(`${url}/${key}`)} />
           <div className={styles.title}>好友列表</div>
           <ContactGroupList data={contactGroupList} onChange={userId => history.push(`${url}/user_info/${userId}`)} />
-          <ChatGroupList title='群聊列表' chatGroupList={chatGroupList} />
+          <ChatGroupList title='群聊列表' chatGroupList={chatGroupList} onClick={chatGroup => history.push(`${url}/chat_group_info/${chatGroup.id}`)} />
         </div>
         <div className={styles.main}>
           <Switch>
@@ -146,6 +147,10 @@ export const Contacts: React.FC = () => {
             {/* 用户详细信息 */}
             <Route path={`${url}/user_info/:userId`}>
               <UserInfo onChange={getContactGroupListRequest} />
+            </Route>
+            {/* 群聊详细信息 */}
+            <Route path={`${url}/chat_group_info/:chatGroupId`}>
+              <ChatGroupInfo onChange={getContactGroupListRequest} />
             </Route>
           </Switch>
         </div>

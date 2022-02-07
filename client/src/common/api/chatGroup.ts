@@ -42,3 +42,11 @@ export const getChatGroupList = () =>
   request({
     url: '/chat_group/get_chat_group_list',
   });
+export interface GetChatGroupDetailInfoResp extends BaseResponse {
+  data: ChatGroupExtra;
+}
+export const getChatGroupDetailInfo = (id: number): Promise<GetChatGroupDetailInfoResp> =>
+  request({
+    url: '/chat_group/get_chat_group_detail_info',
+    data: { id },
+  });

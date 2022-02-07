@@ -15,4 +15,6 @@ router.get('/get_chat_group_list_by_name', chatGroupController.getChatGroupListB
 
 //获取用户的群聊列表
 router.get('/get_chat_group_list', chatGroupController.getChatGroupList);
+// 获取群聊详细信息
+router.get('/get_chat_group_detail_info', chatGroupController.getChatGroupDetailInfo);
 module.exports = router;

@@ -10,6 +10,10 @@ interface ChatGroup {
   owner_id: number;
   update_time: string;
 }
+interface ChatGroupExtra extends ChatGroup {
+  identity: string;
+  note?: string;
+}
 //群聊申请工单
 interface ChatGroupApplyTicket {
   id: number;
