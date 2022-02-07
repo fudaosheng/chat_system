@@ -1,5 +1,5 @@
 import { LOCAL_STORAGE_CHAT_LIST } from 'common/constance/localStorage';
-import { Chat } from 'core/typings';
+import { Chat, CHAT_TYPE } from 'core/typings';
 
 // 从缓存中获取消息列表
 export const getChatListWithStorage = () => {
@@ -13,8 +13,8 @@ export const getChatListWithStorage = () => {
   return chatList;
 };
 
-export const findIndex = (chatId: number, chatList: Array<Chat>) => {
-  return chatList.findIndex(item => item?.id === chatId);
+export const findIndex = (chatId: number, chatType: CHAT_TYPE, chatList: Array<Chat>) => {
+  return chatList.findIndex(item => item?.id === chatId && item.type === chatType);
 }
 
 // 将会话置顶

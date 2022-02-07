@@ -75,6 +75,12 @@
       .btn {
         margin-left: 8px;
       }
+      .announcement {
+        margin-top: 6px;
+        pre {
+          overflow: scroll;
+        }
+      }
     }
     .membersWrapper {
       flex: 1;

@@ -50,3 +50,11 @@ export const getChatGroupDetailInfo = (id: number): Promise<GetChatGroupDetailIn
     url: '/chat_group/get_chat_group_detail_info',
     data: { id },
   });
+
+//修改群公告
+export const modifyAnnouncement = (id: number, announcement: string) =>
+  request({
+    url: '/chat_group/modify_announcement',
+    method: 'POST',
+    data: { id, announcement },
+  });

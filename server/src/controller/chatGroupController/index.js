@@ -92,6 +92,16 @@ class ChatGroupController {
     const result = await connections.execute(SQL);
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0][0] });
   }
+  // 修改群公告
+  async modifyChatGroupAnnouncement(ctx) {
+    const { id, announcement } = ctx.request.body;
+    await ctx.service.dbService.update(
+      { [CHAT_GROUPS_TABLE.ANNOUNCEMENT]: announcement },
+      { [CHAT_GROUPS_TABLE.ID]: id },
+      TABLE_NAMES.CHAT_GROUPS
+    );
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS });
+  }
 }
 
 module.exports = new ChatGroupController();

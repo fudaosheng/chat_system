@@ -26,10 +26,10 @@ const App: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
 
   // 将消息放入消息栈
-  const appendMessage = (chatId: number, fromId: number, ...messageList: Array<MessageStruct>) => {
-    const index = findIndex(chatId, chatList);
+  const appendMessage = (chatId: number, fromId: number, type: CHAT_TYPE, ...messageList: Array<MessageStruct>) => {
+    const index = findIndex(chatId, type, chatList);
     if (index !== -1) {
-      websocketDispatch(WebsocketAction.append(chatId, ...messageList));
+      websocketDispatch(WebsocketAction.append(chatId, type, ...messageList));
       // 触发消息提示音
       audioRef.current?.play();
     } else {
@@ -39,20 +39,21 @@ const App: React.FC = () => {
           .then(res => {
             const { data: receiver } = res;
             websocketDispatch(WebsocketAction.createChat(chatId, CHAT_TYPE.CHAT, [receiver]));
-            websocketDispatch(WebsocketAction.append(chatId, ...messageList));
+            websocketDispatch(WebsocketAction.append(chatId, type, ...messageList));
             // 触发消息提示音
           })
           .catch(err => console.error(err));
     }
   };
 
+  // 单聊离线消息
   const getOfflineMessageListReq = async () => {
     // 离线消息列表
     const { data = [] } = await getOfflineMessageList();
     // 将离线消息放入消息队列
     data?.forEach(offlineMessage => {
       const { fromId, messageList = [] } = offlineMessage;
-      appendMessage(fromId, fromId, ...messageList);
+      appendMessage(fromId, fromId, CHAT_TYPE.CHAT, ...messageList);
     });
     // 删除该用户所有离线消息
     deleteAllOfflineMessage();
@@ -96,7 +97,7 @@ const App: React.FC = () => {
         data.chatId = data.fromId;
       }
       // 将消息放入消息栈
-      appendMessage(data.chatId, data.fromId, data);
+      appendMessage(data.chatId, data.fromId, data.chatType, data);
     };
     const handleWebsocketClosed = () => {
       Toast.error('websocket关闭');

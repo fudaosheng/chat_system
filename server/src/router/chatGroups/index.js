@@ -1,5 +1,6 @@
 const KoaRouter = require('koa-router');
 const chatGroupController = require('../../controller/chatGroupController');
+const chatGroupCheckPermission = require('../../middleware/chatGroupCheckPermission');
 
 
 const router = new KoaRouter({ prefix: '/api/chat_group' });
@@ -17,4 +18,7 @@ router.get('/get_chat_group_list_by_name', chatGroupController.getChatGroupListB
 router.get('/get_chat_group_list', chatGroupController.getChatGroupList);
 // 获取群聊详细信息
 router.get('/get_chat_group_detail_info', chatGroupController.getChatGroupDetailInfo);
+// 修改群备注
+router.post('/modify_announcement', chatGroupCheckPermission, chatGroupController.modifyChatGroupAnnouncement);
+
 module.exports = router;

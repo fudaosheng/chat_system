@@ -24,17 +24,24 @@ export const WebsocketAction = {
     };
   },
   // 将消息添加到会话列表
-  append(chatId: number, ...message: Array<Message>): WebsocketActionResp {
+  append(chatId: number, type: CHAT_TYPE, ...message: Array<Message>): WebsocketActionResp {
     return {
       type: WebsocketActionType.APPEND_MESSAGE,
-      payload: { chatId, message },
+      payload: { chatId, type, message },
     };
   },
   // 更新最后一个已读消息下标
-  updateLastReadedMessageIndex(chatId: number): WebsocketActionResp {
+  updateLastReadedMessageIndex(chatId: number, type: CHAT_TYPE): WebsocketActionResp {
     return {
       type: WebsocketActionType.UPDATE_LAST_READED_MESSAGE_INDEX,
-      payload: { chatId },
+      payload: { chatId, type },
+    };
+  },
+  // 修改群公告
+  updateChatGroupAnnouncement(chatId: number, announcement: string): WebsocketActionResp {
+    return {
+      type: WebsocketActionType.UPDATE_CHAR_GROUP_ANNOUNCEMENT,
+      payload: { chatId, announcement },
     };
   }
 };

@@ -1,5 +1,5 @@
 import { LOCAL_STORAGE_CHAT_LIST } from 'common/constance/localStorage';
-import { WebsocketState } from 'core/typings';
+import { CHAT_TYPE, WebsocketState } from 'core/typings';
 import produce from 'immer';
 import { findIndex, toTopChat } from './util';
 import { WebsocketActionResp, WebsocketActionType } from '.';
@@ -22,7 +22,7 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       case WebsocketActionType.CREATE_CHAT: {
         const { chatId, type, members, chatGroupInfo } = action.payload;
         // 在原来的会话列表中查找与receiver的会话
-        const index = findIndex(chatId, draft.chatList);
+        const index = findIndex(chatId, type, draft.chatList);
         // 新建会话
         if (index === -1) {
           draft.chatList.unshift({
@@ -41,8 +41,8 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       }
       // 往消息栈中新增一条消息
       case WebsocketActionType.APPEND_MESSAGE: {
-        const { chatId, message = [] } = action.payload;
-        const index = findIndex(chatId, draft.chatList);
+        const { chatId, type, message = [] } = action.payload;
+        const index = findIndex(chatId, type, draft.chatList);
 
         if(index !== -1) {
           // 将原来会话置顶
@@ -54,10 +54,19 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       }
       // 更新最后一个已读消息下标
       case WebsocketActionType.UPDATE_LAST_READED_MESSAGE_INDEX: {
-        const { chatId } = action.payload;
-        const index = findIndex(chatId, draft.chatList);
+        const { chatId, type } = action.payload;
+        const index = findIndex(chatId, type, draft.chatList);
         if(index !== -1) {
           draft.chatList[index].lastReadedMessageIndex = draft.chatList[index].conversations.length - 1
+        }
+        break;
+      }
+      // 更新群公告
+      case WebsocketActionType.UPDATE_CHAR_GROUP_ANNOUNCEMENT: {
+        const { chatId, announcement } = action.payload;
+        const index = findIndex(chatId, CHAT_TYPE.CHAT_GROUP, draft.chatList);
+        if(index > -1 && draft.chatList[index]?.chatGroupInfo) {
+          (draft.chatList[index].chatGroupInfo as ChatGroupExtra).announcement = announcement;
         }
         break;
       }

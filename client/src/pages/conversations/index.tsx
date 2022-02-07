@@ -15,6 +15,7 @@ import { Button } from '@douyinfe/semi-ui';
 import { IconChevronRight, IconChevronLeft, IconEdit } from '@douyinfe/semi-icons';
 import { IDENTITY_LEVEL } from 'common/constance';
 import { ReleaseAnnoucement } from './releaseAnnouncement';
+import { modifyAnnouncement } from 'common/api/chatGroup';
 const debounceGap = 1000;
 
 export const Conversations: React.FC = () => {
@@ -28,8 +29,10 @@ export const Conversations: React.FC = () => {
   } = useContext(WebsocketContext);
   const [isOpen, setIsOpen] = useState(false);
   const conversationsRef = createRef<HTMLDivElement>();
+  const editorRef = createRef<HTMLDivElement>();
   // 发布群公告modal
   const [releaseAnnoucementModalVisible, setReleaseAnnoucementModalVisible] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
 
   // 会话
   const chat = useMemo(
@@ -47,7 +50,7 @@ export const Conversations: React.FC = () => {
       return;
     }
     const updateLastReadedMessageIndex = debounce(() => {
-      dispatch(WebsocketAction.updateLastReadedMessageIndex(chat?.id));
+      dispatch(WebsocketAction.updateLastReadedMessageIndex(chat?.id, chatType));
     }, debounceGap);
     conversationsRef.current.addEventListener('mousemove', updateLastReadedMessageIndex);
     return () => conversationsRef.current?.removeEventListener('mousemove', updateLastReadedMessageIndex);
@@ -63,7 +66,16 @@ export const Conversations: React.FC = () => {
     // 构造一个消息对象
     const message = new Message(receiverId, userInfo.id, receiverId, value, messageType || MessageType.TEXT, chatType);
     sendMessage(ws, message);
-    dispatch(WebsocketAction.append(message.receiverId, message));
+    dispatch(WebsocketAction.append(message.receiverId, chatType, message));
+  };
+
+  // 处理编辑器回车事件
+  const handleEnterPress = (e: any) => {
+    // 阻止换行
+    e?.preventDefault();
+    handleSendMessage(e.target.innerHTML);
+    // 清空内容
+    e.target.innerHTML = '';
   };
 
   // 会话名称
@@ -76,6 +88,21 @@ export const Conversations: React.FC = () => {
       return chat.chatGroupInfo?.name;
     }
   }, [chat, membersMap]);
+
+  // 修改群公告
+  const handleReleaseAnnoucement = async (annoucement: string) => {
+    if (!(chat?.id && annoucement)) {
+      return;
+    }
+    try {
+      setBtnLoading(true);
+      await modifyAnnouncement(chat?.id, annoucement);
+      dispatch(WebsocketAction.updateChatGroupAnnouncement(chat.id, annoucement));
+    } finally {
+      setBtnLoading(false);
+      setReleaseAnnoucementModalVisible(false);
+    }
+  };
 
   return (
     <div className={styles.conversationPage}>
@@ -99,7 +126,12 @@ export const Conversations: React.FC = () => {
           <IconEmoji size="large" />
         </div> */}
           <div className={styles.editor}>
-            <Editor className={styles.textArea} onEnterPress={(e: any) => handleSendMessage(e.target.innerText)} onUploadImageSuccess={url => handleSendMessage(url, MessageType.IMAGE)} />
+            <Editor
+              ref={editorRef}
+              className={styles.textArea}
+              onEnterPress={handleEnterPress}
+              onUploadImageSuccess={url => handleSendMessage(url, MessageType.IMAGE)}
+            />
           </div>
         </div>
       </div>
@@ -107,12 +139,23 @@ export const Conversations: React.FC = () => {
         <div className={styles.sider}>
           <div className={styles.announcementWrapper}>
             <div className={styles.title}>群公告</div>
-            <div>
-              暂无群公告
+            <div className={styles.announcement}>
+              <pre>{chat?.chatGroupInfo?.announcement || '暂无群公告'}</pre>
               {chat?.chatGroupInfo?.identity && chat?.chatGroupInfo?.identity !== IDENTITY_LEVEL.DEFAULT && (
-                <Button type="tertiary" theme="borderless" icon={<IconEdit />} className={styles.btn} onClick={() => setReleaseAnnoucementModalVisible(true)} />
+                <Button
+                  type="tertiary"
+                  theme="borderless"
+                  icon={<IconEdit />}
+                  className={styles.btn}
+                  onClick={() => setReleaseAnnoucementModalVisible(true)}
+                />
               )}
-              <ReleaseAnnoucement visible={releaseAnnoucementModalVisible} onCancel={() => setReleaseAnnoucementModalVisible(false)} />
+              <ReleaseAnnoucement
+                confirmLoading={btnLoading}
+                visible={releaseAnnoucementModalVisible}
+                onCancel={() => setReleaseAnnoucementModalVisible(false)}
+                onOk={handleReleaseAnnoucement}
+              />
             </div>
           </div>
           <div className={styles.membersWrapper}>
