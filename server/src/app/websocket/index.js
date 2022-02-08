@@ -3,10 +3,8 @@ const { MessageType } = require('./typing');
 require('colors');
 const sendMessage = require('./sendMessage');
 const chatGroupContactService = require('../../service/chatGroupContactService');
-const CHAT_TYPE = {
-  CHAT: 'chat', // 单聊
-  CHAT_GROUP: 'chatGroup', // 群聊
-};
+const { CHAT_TYPE } = require('../../constance');
+
 
 const wss = new WebSocketServer({
   port: 8080,
@@ -41,7 +39,7 @@ wss.on('connection', ws => {
       const { type, chatType } = message;
       // 初始化，设置唯一标识
       if (type === MessageType.PING) {
-        ws.key = message;
+        ws.key = message.message;
       }
       // 单聊消息
       if (chatType === CHAT_TYPE.CHAT) {

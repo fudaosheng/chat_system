@@ -11,8 +11,15 @@ import { WebsocketAction } from 'core/store/action';
 import { WebsocketContext } from 'core/store';
 import { findIndex } from 'core/store/util';
 import { getContactInfo } from 'common/api/contacts';
-import { deleteAllOfflineMessage, getOfflineMessageList } from 'common/api/offlineMessage';
+import {
+  deleteAllOfflineMessage,
+  getChatGroupOfflineMessageList,
+  getOfflineMessageList,
+} from 'common/api/offlineMessage';
 import { Toast } from '@douyinfe/semi-ui';
+import { getChatGroupDetailInfo } from 'common/api/chatGroup';
+import { getChatGroupMembers } from 'common/api/chatGroupContact';
+const AUDIO_ID = 'chat_system_audio';
 
 const App: React.FC = () => {
   const {
@@ -23,37 +30,56 @@ const App: React.FC = () => {
     state: { ws, chatList },
     dispatch: websocketDispatch,
   } = useContext(WebsocketContext);
-  const audioRef = useRef<HTMLAudioElement>({} as HTMLAudioElement);
+  const audioRef = useRef<HTMLAudioElement>();
 
   // 将消息放入消息栈
-  const appendMessage = (chatId: number, fromId: number, type: CHAT_TYPE, ...messageList: Array<MessageStruct>) => {
+  const appendMessage = (chatId: number, type: CHAT_TYPE, ...messageList: Array<MessageStruct>) => {
     const index = findIndex(chatId, type, chatList);
     if (index !== -1) {
       websocketDispatch(WebsocketAction.append(chatId, type, ...messageList));
       // 触发消息提示音
-      audioRef.current?.play();
+      audioRef?.current?.play()?.catch(e => console.log(e));
     } else {
       // 接收到消息，但是此时消息列表中不存在该会话，需要先创建
-      fromId &&
-        getContactInfo(fromId)
-          .then(res => {
-            const { data: receiver } = res;
-            websocketDispatch(WebsocketAction.createChat(chatId, CHAT_TYPE.CHAT, [receiver]));
-            websocketDispatch(WebsocketAction.append(chatId, type, ...messageList));
-            // 触发消息提示音
-          })
-          .catch(err => console.error(err));
+      if (type === CHAT_TYPE.CHAT) {
+        chatId &&
+          getContactInfo(chatId)
+            .then(res => {
+              const { data: receiver } = res;
+              websocketDispatch(WebsocketAction.createChat(chatId, CHAT_TYPE.CHAT, [receiver]));
+              websocketDispatch(WebsocketAction.append(chatId, CHAT_TYPE.CHAT, ...messageList));
+              // 触发消息提示音
+              audioRef?.current?.play()?.catch(e => console.log(e));
+            })
+            .catch(err => console.error(err));
+      }
+      if (type === CHAT_TYPE.CHAT_GROUP) {
+        Promise.all([getChatGroupDetailInfo(chatId), getChatGroupMembers(chatId)]).then(res => {
+          websocketDispatch(
+            WebsocketAction.createChat(chatId, CHAT_TYPE.CHAT_GROUP, res?.[1]?.data || [], res?.[0]?.data)
+          );
+          websocketDispatch(WebsocketAction.append(chatId, CHAT_TYPE.CHAT_GROUP, ...messageList));
+          audioRef?.current?.play()?.catch(e => console.log(e));
+        });
+      }
     }
   };
 
-  // 单聊离线消息
+  // 离线消息
   const getOfflineMessageListReq = async () => {
-    // 离线消息列表
-    const { data = [] } = await getOfflineMessageList();
+    // 获取离线消息列表
+    const [resp1, resp2] = await Promise.all([getOfflineMessageList(), getChatGroupOfflineMessageList()]);
+    // 单聊消息列表
+    const { data = [] } = resp1;
+    // 群聊消息列表
+    const { data: chatGroupData = [] } = resp2;
+    const offlineMessageList = data
+      ?.map(i => ({ ...i, chatType: CHAT_TYPE.CHAT }))
+      .concat(chatGroupData?.map(i => ({ ...i, chatType: CHAT_TYPE.CHAT_GROUP })));
     // 将离线消息放入消息队列
-    data?.forEach(offlineMessage => {
-      const { fromId, messageList = [] } = offlineMessage;
-      appendMessage(fromId, fromId, CHAT_TYPE.CHAT, ...messageList);
+    offlineMessageList?.forEach(offlineMessage => {
+      const { chatId, messageList = [], chatType } = offlineMessage;
+      appendMessage(chatId, chatType, ...messageList);
     });
     // 删除该用户所有离线消息
     deleteAllOfflineMessage();
@@ -93,11 +119,11 @@ const App: React.FC = () => {
     const handleReceiveMessage = (e: MessageEvent) => {
       const data = JSON.parse(e.data) as MessageStruct;
       // 修改chatId
-      if (data?.chatId && data?.fromId) {
+      if (data?.chatType === CHAT_TYPE.CHAT && data?.chatId && data?.fromId) {
         data.chatId = data.fromId;
       }
       // 将消息放入消息栈
-      appendMessage(data.chatId, data.fromId, data.chatType, data);
+      appendMessage(data.chatId, data.chatType, data);
     };
     const handleWebsocketClosed = () => {
       Toast.error('websocket关闭');
@@ -113,11 +139,20 @@ const App: React.FC = () => {
     };
   }, [userInfo.id, ws]);
 
+  useEffect(() => {
+    const audio = document.getElementById(AUDIO_ID);
+    const handleCanplaythrough = () => {
+      audioRef.current = audio as HTMLAudioElement;
+    };
+    audio?.addEventListener('canplaythrough', handleCanplaythrough);
+    return () => audio?.removeEventListener('canplaythrough', handleCanplaythrough);
+  }, []);
+
   return (
     <div className="App">
       <AppRouter />
       <Login />
-      <audio src={require('common/resource/tip.wav').default} ref={audioRef} />
+      <audio src={require('common/resource/tip.wav').default} id={AUDIO_ID} />
     </div>
   );
 };

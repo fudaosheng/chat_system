@@ -92,6 +92,7 @@ const OFFLINE_MESSAGE_TABLE = {
   MESSAGE: 'message',
   TYPE: 'type',
   TIME: 'time',
+  CHAT_TYPE: 'chatType'
 };
 // 群聊表
 const CHAT_GROUPS_TABLE = {

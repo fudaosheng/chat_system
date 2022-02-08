@@ -118,12 +118,13 @@ CREATE TABLE `offline_messages` (
   `message` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `type` enum('1','2','3','4') DEFAULT NULL,
   `time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `chatType` enum('chat','chatGroup') DEFAULT 'chat',
   PRIMARY KEY (`id`),
   KEY `fromId` (`fromId`),
   KEY `receiverId` (`receiverId`),
   CONSTRAINT `offline_messages_ibfk_1` FOREIGN KEY (`fromId`) REFERENCES `users` (`id`),
   CONSTRAINT `offline_messages_ibfk_2` FOREIGN KEY (`receiverId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB AUTO_INCREMENT=175 DEFAULT CHARSET=utf8mb3
 ```
 
 # 群组表

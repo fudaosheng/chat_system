@@ -20,9 +20,15 @@ const SORT_TYPE = {
 }
 
 const imgUploadPath = path.resolve(__dirname, '../../resource/img');
+// 消息会话类型
+const CHAT_TYPE = {
+  CHAT: 'chat', // 单聊
+  CHAT_GROUP: 'chatGroup', // 群聊
+};
 
 module.exports = {
   STATUS_CODE,
   imgUploadPath,
-  SORT_TYPE
+  SORT_TYPE,
+  CHAT_TYPE
 }

@@ -3,7 +3,7 @@ import { BaseResponse, request } from '.';
 
 interface GetOfflineMessageListResp extends BaseResponse {
   data: Array<{
-    fromId: number;
+    chatId: number;
     messageList: Array<MessageStruct>;
   }>;
 }
@@ -12,6 +12,12 @@ interface GetOfflineMessageListResp extends BaseResponse {
 export const getOfflineMessageList = (): Promise<GetOfflineMessageListResp> =>
   request({
     url: '/offline_message/list',
+  });
+
+// 获取用户所有群聊的离线消息，以chatId分组
+export const getChatGroupOfflineMessageList = (): Promise<GetOfflineMessageListResp> =>
+  request({
+    url: '/offline_message/chat_group_message_list',
   });
 
 // 删除用户的所有离线消息
