@@ -46,7 +46,7 @@ export const Conversations: React.FC = () => {
 
   const membersMap = useMemo(() => {
     return new Map(chat?.members?.map(i => [i.id, i]));
-  }, []);
+  }, [chat]);
 
       // 监听鼠标移动，处理消息是否已读
   useEffect(() => {
@@ -75,6 +75,7 @@ export const Conversations: React.FC = () => {
   const handleSendMessage = (value: string, messageType?: MessageType) => {
     const receiverId = chatType === CHAT_TYPE.CHAT ? membersMap.get(Number(chatId))?.id : chat?.chatGroupInfo?.id;
     if (!(receiverId && ws)) {
+      console.error('发送消息错误', 'receiverId', receiverId, 'ws', ws);
       return;
     }
     // 构造一个消息对象

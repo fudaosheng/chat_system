@@ -43,12 +43,13 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       case WebsocketActionType.APPEND_MESSAGE: {
         const { chatId, type, message = [] } = action.payload;
         const index = findIndex(chatId, type, draft.chatList);
+        console.log('send message index', index);
 
-        if(index !== -1) {
+        if (index !== -1) {
+          // append消息，并且要保证每个消息都是唯一的，需要去重
+          draft.chatList[index].conversations = unionBy(draft.chatList[index].conversations, message, 'id');
           // 将原来会话置顶
           draft.chatList = toTopChat(index, draft.chatList);
-          // 每个消息都是唯一的，需要去重
-          draft.chatList[index].conversations = unionBy(draft.chatList[index].conversations, message, 'id');
         }
         break;
       }
@@ -56,8 +57,8 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       case WebsocketActionType.UPDATE_LAST_READED_MESSAGE_INDEX: {
         const { chatId, type } = action.payload;
         const index = findIndex(chatId, type, draft.chatList);
-        if(index !== -1) {
-          draft.chatList[index].lastReadedMessageIndex = draft.chatList[index].conversations.length - 1
+        if (index !== -1) {
+          draft.chatList[index].lastReadedMessageIndex = draft.chatList[index].conversations.length - 1;
         }
         break;
       }
@@ -65,7 +66,7 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       case WebsocketActionType.UPDATE_CHAR_GROUP_ANNOUNCEMENT: {
         const { chatId, announcement } = action.payload;
         const index = findIndex(chatId, CHAT_TYPE.CHAT_GROUP, draft.chatList);
-        if(index > -1 && draft.chatList[index]?.chatGroupInfo) {
+        if (index > -1 && draft.chatList[index]?.chatGroupInfo) {
           (draft.chatList[index].chatGroupInfo as ChatGroupExtra).announcement = announcement;
         }
         break;
@@ -74,7 +75,7 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
       case WebsocketActionType.UPDATE_CHAT_GROUP_MEMBERS: {
         const { chatId, members } = action.payload;
         const index = findIndex(chatId, CHAT_TYPE.CHAT_GROUP, draft.chatList);
-        if(index > -1) {
+        if (index > -1) {
           draft.chatList[index].members = members;
         }
         break;
@@ -83,10 +84,10 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
         throw new Error();
     }
   });
-  if(nextState.chatList !== state.chatList) {
+  if (nextState.chatList !== state.chatList) {
     try {
       localStorage.setItem(LOCAL_STORAGE_CHAT_LIST, JSON.stringify(nextState.chatList));
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
   }
