@@ -1,6 +1,8 @@
 const { WebSocketServer } = require('ws');
 const { MessageType } = require('./typing');
-const offlineMessageService = require('../../service/offlineMessageService');
+require('colors');
+const sendMessage = require('./sendMessage');
+const chatGroupContactService = require('../../service/chatGroupContactService');
 const CHAT_TYPE = {
   CHAT: 'chat', // 单聊
   CHAT_GROUP: 'chatGroup', // 群聊
@@ -33,38 +35,30 @@ const wss = new WebSocketServer({
 // 监听连接创建成功
 wss.on('connection', ws => {
   ws.on('message', data => {
-    console.log('received: %s', data);
+    console.log(`wss received message: ${data}`.green);
     try {
-      const messageData = JSON.parse(data) || {};
-      const { fromId, receiverId, id, time, message, type, chatType } = messageData;
+      const message = JSON.parse(data) || {};
+      const { type, chatType } = message;
       // 初始化，设置唯一标识
       if (type === MessageType.PING) {
         ws.key = message;
-      } else {
-        // 消息接收者的ws连接
-        let receiverClient;
-
-        if (wss.clients) {
-          wss.clients.forEach(client => {
-            if (client.key && Number(client.key) === Number(receiverId)) {
-              receiverClient = client;
-            }
-          });
-        }
-        if (chatType === CHAT_TYPE.CHAT) {
-          // 用户在线
-          if (receiverClient) {
-            // 将A的消息转发给B
-            receiverClient.send(JSON.stringify(messageData));
-          } else {
-            // 用户离线
-            console.log('receiver离线');
-            offlineMessageService.appendOfflineMessage(messageData);
-          }
-        }
-        if(chatType === CHAT_TYPE.CHAT_GROUP) {
-          console.log('群聊会话');
-        }
+      }
+      // 单聊消息
+      if (chatType === CHAT_TYPE.CHAT) {
+        sendMessage(wss.clients, message);
+      }
+      // 群聊消息
+      if (chatType === CHAT_TYPE.CHAT_GROUP) {
+        // 获取群成员的ID列表
+        chatGroupContactService.getChatGroupMemberIds(message.chatId).then(result => {
+          // 群成员用户id, type = Arrar<{id: number}>
+          const memberIds = result[0];
+          Array.isArray(memberIds) &&
+            memberIds.forEach(({ id }) => {
+              // 批量给群成员推送消息
+              id !== message.fromId && sendMessage(wss.clients, { ...message, receiverId: id });
+            });
+        });
       }
     } catch (err) {
       console.log('receive error', err);
