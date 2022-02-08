@@ -10,6 +10,7 @@ export enum WebsocketActionType {
   APPEND_MESSAGE, //将消息添加到会话列表
   UPDATE_LAST_READED_MESSAGE_INDEX, //更新最后一个已读消息下标
   UPDATE_CHAR_GROUP_ANNOUNCEMENT, //更新群公告
+  UPDATE_CHAT_GROUP_MEMBERS, //更新群成员
 }
 export interface WebsocketActionResp {
   type: WebsocketActionType;

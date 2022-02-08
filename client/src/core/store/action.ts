@@ -43,5 +43,12 @@ export const WebsocketAction = {
       type: WebsocketActionType.UPDATE_CHAR_GROUP_ANNOUNCEMENT,
       payload: { chatId, announcement },
     };
+  },
+  // 更新群成员
+  updateChatGroupMembers(chatId: number, members: Array<ChatGroupMember>): WebsocketActionResp {
+    return {
+      type: WebsocketActionType.UPDATE_CHAT_GROUP_MEMBERS,
+      payload: { chatId, members },
+    };
   }
 };

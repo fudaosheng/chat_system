@@ -14,8 +14,12 @@
     .name {
       font-size: 16px;
       font-weight: 600;
-      margin-bottom: 4px;
       @include flex-center;
+      &SmallStyle {
+        font-size: 14px;
+        font-weight: 400;
+        margin-bottom: 0px;
+      }
     }
 
     .bio {

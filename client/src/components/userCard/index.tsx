@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import { Avatar } from '@douyinfe/semi-ui';
 import { AvatarSize } from '@douyinfe/semi-ui/avatar';
 import styles from './index.module.scss';
+import classNames from 'classnames';
 
 interface Props {
   userInfo: UserInfo;
@@ -19,7 +20,10 @@ export const UserCard: React.FC<Props> = (props: Props) => {
         <Avatar size={size} src={userInfo.avatar}>{userInfo?.name?.substring(0, 2)}</Avatar>
       </div>
       <div className={styles.userInfo}>
-        <div className={styles.name}>{name || userInfo?.name}</div>
+        <div className={classNames({
+          [styles.name]: true,
+          [styles.nameSmallStyle]: size === "small"
+        })}>{name || userInfo?.name}</div>
         <div className={styles.bio}>{userInfo?.bio}</div>
       </div>
     </div>

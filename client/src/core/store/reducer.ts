@@ -70,6 +70,15 @@ export const websocketReducer = (state: WebsocketState, action: WebsocketActionR
         }
         break;
       }
+      // 更新群公告
+      case WebsocketActionType.UPDATE_CHAT_GROUP_MEMBERS: {
+        const { chatId, members } = action.payload;
+        const index = findIndex(chatId, CHAT_TYPE.CHAT_GROUP, draft.chatList);
+        if(index > -1) {
+          draft.chatList[index].members = members;
+        }
+        break;
+      }
       default:
         throw new Error();
     }

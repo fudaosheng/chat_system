@@ -16,6 +16,8 @@ import { IconChevronRight, IconChevronLeft, IconEdit } from '@douyinfe/semi-icon
 import { IDENTITY_LEVEL } from 'common/constance';
 import { ReleaseAnnoucement } from './releaseAnnouncement';
 import { modifyAnnouncement } from 'common/api/chatGroup';
+import { getChatGroupMembers } from 'common/api/chatGroupContact';
+import { MemberList } from './memberList';
 const debounceGap = 1000;
 
 export const Conversations: React.FC = () => {
@@ -33,6 +35,8 @@ export const Conversations: React.FC = () => {
   // 发布群公告modal
   const [releaseAnnoucementModalVisible, setReleaseAnnoucementModalVisible] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
+  // 群成员
+  const [members, setMembers] = useState<Array<ChatGroupMember>>([])
 
   // 会话
   const chat = useMemo(
@@ -44,8 +48,8 @@ export const Conversations: React.FC = () => {
     return new Map(chat?.members?.map(i => [i.id, i]));
   }, []);
 
+      // 监听鼠标移动，处理消息是否已读
   useEffect(() => {
-    // 监听鼠标移动，处理消息是否已读
     if (!(conversationsRef?.current && chat?.id)) {
       return;
     }
@@ -55,6 +59,16 @@ export const Conversations: React.FC = () => {
     conversationsRef.current.addEventListener('mousemove', updateLastReadedMessageIndex);
     return () => conversationsRef.current?.removeEventListener('mousemove', updateLastReadedMessageIndex);
   }, [conversationsRef]);
+
+    // 获取群成员
+    useEffect(() => {
+      if(chatId && chatType === CHAT_TYPE.CHAT_GROUP) {
+        getChatGroupMembers(Number(chatId)).then(res => {
+          setMembers(res?.data || []);
+          dispatch(WebsocketAction.updateChatGroupMembers(Number(chatId), res?.data || []));
+        })
+      }
+    }, [chatId, chatType]);
 
   // 发送消息
   // todo：发送消息时用blob发送，阻止回车换行
@@ -160,7 +174,9 @@ export const Conversations: React.FC = () => {
           </div>
           <div className={styles.membersWrapper}>
             <div className={styles.title}>群成员</div>
-            <div className={styles.members}></div>
+            <div className={styles.members}>
+              <MemberList members={members} />
+            </div>
           </div>
         </div>
       </CSSTransition>

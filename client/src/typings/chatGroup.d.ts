@@ -38,3 +38,8 @@ interface ChatGroupApplyTicketExtra extends ChatGroupApplyTicket {
   create_time: string;
   update_time: string;
 }
+// 群成员
+interface ChatGroupMember extends UserInfo {
+  identity: string; // 群身份
+  note: string;// 群名片
+}

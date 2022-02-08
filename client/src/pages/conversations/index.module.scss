@@ -87,6 +87,7 @@
       margin-top: 24px;
       @include flex-direction;
       .members {
+        margin-top: 6px;
         flex: 1;
         overflow: scroll;
       }
