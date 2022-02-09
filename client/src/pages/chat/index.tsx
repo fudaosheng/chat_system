@@ -39,7 +39,7 @@ export const Chat: React.FC = () => {
               const receiver = type === CHAT_TYPE.CHAT ? members[members?.findIndex(i => i.id === Number(id))] : chatGroupInfo;
               const UserCardContent = (
                 <UserCard
-                  key={id}
+                  key={id + type}
                   userInfo={receiver as UserInfo}
                   className={classNames({
                     [styles.userCard]: true,

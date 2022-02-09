@@ -76,11 +76,13 @@ class DbService {
    *   isLikeQuery = false, 是否是模糊查询，默认精确查询
    *   columns: [col1, col2, col3]，要查询的列
    *   orderBy: [fieldname, ASC|DESC], // 排序
+   *   limit: number, 分页查询的limit
+   *   offset: number, 分页查询的offset
    * }
    * @returns array<Record<string, unknown>>
    */
   async query(query, db, opt = {}) {
-    const { isLikeQuery = false, columns = [], orderBy = [] } = opt;
+    const { isLikeQuery = false, columns = [], orderBy = [], limit, offset } = opt;
 
     if (objNotEmpty(query) && isDb(db)) {
       // 查询条件
@@ -91,6 +93,12 @@ class DbService {
       // 排序
       if(orderBy.length) {
         SQL += ' ORDER BY ' + orderBy.join(' ');
+      }
+      if(limit && typeof limit === 'number') {
+        SQL += ` LIMIT ${limit}`;
+      }
+      if(offset && typeof offset === 'number') {
+        SQL += ` OFFSET ${offset}`
       }
       const values = Object.values(query);
 
