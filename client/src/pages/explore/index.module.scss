@@ -1,0 +1,15 @@
+.explore {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    .sider {
+        display: flex;
+        flex-direction: column;
+    }
+    .momentList {
+        width: 600px;
+        height: 100%;
+        border: 1px solid green;
+    }
+}
