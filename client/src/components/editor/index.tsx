@@ -20,10 +20,11 @@ interface Props {
   className?: string;
   placeholder?: string;
   onEnterPress?: (e: HTMLDivElement) => void;
-  onChange?: (e: HTMLDivElement) => void;
+  onChange?: (value: string) => void;
   onUploadImageSuccess?: (url: string) => void;
 }
-export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => { //必须要传ref
+export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
+  //必须要传ref
   const {
     className = '',
     trigger = 'click',
@@ -41,12 +42,11 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => { //必�
     const emojoEle = document.createTextNode(emoji);
     // 获取鼠标选区
     const realRange = trigger === 'hover' ? window.getSelection()?.getRangeAt(0) : range;
-
     // 判断选区是否在编辑器范围内
     if (realRange && (ref as MutableRefObject<HTMLDivElement>)?.current?.contains(realRange.commonAncestorContainer)) {
       realRange.insertNode(emojoEle);
       realRange.collapse();
-      onChange && onChange((ref as MutableRefObject<HTMLDivElement>)?.current);
+      onChange && onChange((ref as MutableRefObject<HTMLDivElement>)?.current?.innerHTML);
     }
     // focus
     (ref as MutableRefObject<HTMLDivElement>)?.current?.focus();
@@ -68,7 +68,10 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => { //必�
         e.ctrlKey && range.collapse();
       }
     }
-    onChange && onChange(e);
+  };
+
+  const handleKeyUp = (e: any) => {
+    onChange && onChange(e?.target?.innerText);
   };
 
   const handleBlur = (e: any) => {
@@ -124,6 +127,7 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => { //必�
         data-placeholder={placeholder}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
       />
     </div>
   );
