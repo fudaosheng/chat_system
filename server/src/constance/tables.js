@@ -17,6 +17,7 @@ const TABLE_NAMES = {
   CHAT_GROUPS: 'chat_groups', //会话组
   CHAT_GROUP_APPLY_TICKETS: 'chat_group_apply_tickets',// 群组申请工单
   CHAT_GROUP_CONTACTS: 'chat_group_contacts', //群组成员表
+  MOMENTS: 'moments', //动态表
 };
 
 // 图片表
@@ -133,6 +134,13 @@ const CHAT_GROUP_CONTACTS_TABLE = {
   IDENTITY: 'identity',
   NOTE: 'note'
 }
+// 动态表
+const MOMENTS_TABLE = {
+  ...COMMON_TABLE_FIELDS,
+  CONTENT: 'content',
+  IMGS_LIST: 'imgs_list',
+  USER_ID: 'user_id',
+}
 module.exports = {
   TABLE_NAMES,
   USER_TABLE,
@@ -149,4 +157,5 @@ module.exports = {
   CHAT_GROUP_CONTACTS_TABLE,
   CHAT_GROUP_APPLY_TICKET_STATUS,
   IDENTIRY_LEVEL,
+  MOMENTS_TABLE
 };
