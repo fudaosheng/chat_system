@@ -3,6 +3,9 @@
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border-color);
+  &Reverse {
+    flex-direction: column-reverse;
+  }
   .functionTab {
     padding: 6px 0;
     display: flex;
@@ -23,6 +26,9 @@
       content: attr(data-placeholder);
       color: var(--text-color2);
       pointer-events: none;
+    }
+    &Reverse {
+      padding: 12px;
     }
   }
 }

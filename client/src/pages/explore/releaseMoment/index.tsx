@@ -67,6 +67,7 @@ export const ReleaseMoment: React.FC<Props> = (props: Props) => {
       <div className={styles.content}>
         <Editor
           className={styles.editor}
+          isFunctionTabAtBottom
           couldUploadImage={false}
           ref={editorRef}
           placeholder="这一刻的想法……"

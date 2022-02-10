@@ -16,6 +16,7 @@ import { userUploadImg } from 'common/api/file';
 interface Props {
   trigger?: 'hover' | 'click';
   position?: PopoverProps['position'];
+  isFunctionTabAtBottom?: boolean; //为true功能tab在底部
   couldUploadImage?: boolean;
   className?: string;
   placeholder?: string;
@@ -29,6 +30,7 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     className = '',
     trigger = 'click',
     position = 'topLeft',
+    isFunctionTabAtBottom = false,
     placeholder = '请输入内容',
     couldUploadImage = true,
     onEnterPress,
@@ -97,9 +99,13 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     <div
       className={classNames({
         [styles.editorWrap]: true,
+        [styles.editorWrapReverse]: isFunctionTabAtBottom,
         [className]: true,
       })}>
-      <div className={styles.functionTab}>
+      <div
+        className={classNames({
+          [styles.functionTab]: true,
+        })}>
         <Popover
           trigger={trigger}
           position={position}
@@ -122,7 +128,10 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
       <div
         ref={ref}
         tabIndex={10}
-        className={styles.richEditor}
+        className={classNames({
+          [styles.richEditor]: true,
+          [styles.richEditorReverse]: isFunctionTabAtBottom,
+        })}
         contentEditable
         data-placeholder={placeholder}
         onBlur={handleBlur}
