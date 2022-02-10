@@ -4,7 +4,7 @@ import { GlobalContext } from 'common/store';
 import React, { useContext, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { ReleaseMoment } from './releaseMoment';
-import { getUserMomentList } from 'common/api/moments';
+import { getFriendsMomentList, getUserMomentList } from 'common/api/moments';
 import { MomentCard } from './momentCard';
 enum MenuType {
   FRIENDS,
@@ -35,22 +35,23 @@ export const Explore: React.FC = () => {
   // 发表动态modal visible
   const [releaseMomentModalVisible, setReleaseMomentModalVisible] = useState(false);
   // 动态列表
-  const [momentList, setMomentList] = useState<Array<Moment>>([]);
+  const [momentList, setMomentList] = useState<Array<MomentExtra>>([]);
   const [loading, setLoading] = useState(false);
   // 分页数据
   const [currentPage, setCurrentPage] = useState(defaultPagination.currentPage);
   const [pageSize, setPageSize] = useState(defaultPagination.pageSize);
   const [total, setTotal] = useState(0);
 
-  const fetchMomentList = async (_currentPage = currentPage, _pageSize = pageSize) => {
-    const request = activeMenu === MenuType.FRIENDS ? getUserMomentList : getUserMomentList;
+  // 获取动态列表
+  const fetchMomentList = async (_currentPage = currentPage, _pageSize = pageSize, _activeMenu = activeMenu) => {
+    const request = _activeMenu === MenuType.FRIENDS ? getFriendsMomentList : getUserMomentList;
     try {
       setLoading(true);
       const {
         data: { total, list = [] },
       } = await request(_currentPage, _pageSize);
-      console.log(list);
-      setMomentList(list);
+      const newMomentList = (_activeMenu === MenuType.FRIENDS ? list : list?.map(i => ({ ...i, user_info: userInfo }))) as Array<MomentExtra>;
+      setMomentList(newMomentList);
       setTotal(total);
     } finally {
       setLoading(false);
@@ -68,7 +69,7 @@ export const Explore: React.FC = () => {
     setActiveMenu(menuValue);
     setCurrentPage(defaultPagination.currentPage);
     setPageSize(defaultPagination.pageSize);
-    fetchMomentList(defaultPagination.currentPage, defaultPagination.pageSize);
+    fetchMomentList(defaultPagination.currentPage, defaultPagination.pageSize, menuValue);
   };
 
   // 处理翻页
@@ -83,6 +84,12 @@ export const Explore: React.FC = () => {
     // 从新请求数据
     fetchMomentList(newCurPage, newPageSize);
   };
+
+  // 发布动态成功
+  const handleReleaseMomentSuccess = () => {
+    setReleaseMomentModalVisible(false);
+    fetchMomentList();
+  }
 
   return (
     <div className={styles.explore}>
@@ -102,7 +109,7 @@ export const Explore: React.FC = () => {
         <div className={styles.momentListWrapper}>
           <div className={styles.momentList}>
             {momentList?.map(moment => (
-              <MomentCard key={moment.id} moment={{ ...moment, user_info: userInfo }} />
+              <MomentCard key={moment.id} moment={moment} />
             ))}
           </div>
           <div className={styles.paginationWrapper}>
@@ -129,7 +136,11 @@ export const Explore: React.FC = () => {
           />
         </Tooltip>
       </div>
-      <ReleaseMoment visible={releaseMomentModalVisible} onCancel={() => setReleaseMomentModalVisible(false)} />
+      <ReleaseMoment
+        visible={releaseMomentModalVisible}
+        onCancel={() => setReleaseMomentModalVisible(false)}
+        onOk={handleReleaseMomentSuccess}
+      />
     </div>
   );
 };

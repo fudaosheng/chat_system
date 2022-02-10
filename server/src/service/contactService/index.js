@@ -26,6 +26,12 @@ class ContactService {
     const result = await connections.execute(SQL);
     return result[0][0];
   }
+  // 获取用户的所有联系人的ID列表
+  async getContactIdList(userId) {
+    const SQL = `SELECT contact_id id FROM ${TABLE_NAMES.CONTACTS} WHERE user_id = ${userId};`;
+    const result = await connections.execute(SQL);
+    return result[0].map(i => i.id);
+  }
 }
 
 module.exports = new ContactService();
