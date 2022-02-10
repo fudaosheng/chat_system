@@ -18,6 +18,7 @@ const TABLE_NAMES = {
   CHAT_GROUP_APPLY_TICKETS: 'chat_group_apply_tickets',// 群组申请工单
   CHAT_GROUP_CONTACTS: 'chat_group_contacts', //群组成员表
   MOMENTS: 'moments', //动态表
+  MOMENT_LIKE: 'moment_like', //动态点赞表
 };
 
 // 图片表
@@ -141,6 +142,19 @@ const MOMENTS_TABLE = {
   IMGS_LIST: 'imgs_list',
   USER_ID: 'user_id',
 }
+// 动态点赞表动态类型
+const MOMENT_TYPE = {
+  MOMENT: 1, //动态
+  COMMENT: 2, //动态评论
+}
+
+// 动态点赞表
+const MOMENT_LIKE_TABLE = {
+  ...COMMON_TABLE_FIELDS,
+  USER_ID: 'user_id',
+  MOMENT_ID: 'moment_id',
+  MOMENT_TYPE: 'moment_type'
+}
 module.exports = {
   TABLE_NAMES,
   USER_TABLE,
@@ -157,5 +171,7 @@ module.exports = {
   CHAT_GROUP_CONTACTS_TABLE,
   CHAT_GROUP_APPLY_TICKET_STATUS,
   IDENTIRY_LEVEL,
-  MOMENTS_TABLE
+  MOMENTS_TABLE,
+  MOMENT_LIKE_TABLE,
+  MOMENT_TYPE
 };

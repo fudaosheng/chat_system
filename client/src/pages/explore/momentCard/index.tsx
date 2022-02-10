@@ -1,4 +1,5 @@
 import { Avatar } from '@douyinfe/semi-ui';
+import { IconLikeThumb, IconDislikeThumb, IconComment } from '@douyinfe/semi-icons';
 import { dateTimeFormat, formatDate } from 'common/utils';
 import React from 'react';
 import styles from './index.module.scss';
@@ -18,11 +19,18 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
         <div className={styles.content}>{moment.content}</div>
         <div className={styles.imgList}>
           {moment?.imgs_list?.map(img => (
-            <div className={styles.imgItem} key={img}><Avatar shape="square" src={img} /></div>
+            <div className={styles.imgItem} key={img}>
+              <Avatar shape="square" src={img} />
+            </div>
           ))}
         </div>
-        <div className={styles.createAt}>
-            发布时间：{formatDate(new Date(moment.create_time), dateTimeFormat)}
+        <div className={styles.footer}>
+          <div className={styles.createAt}>发布时间：{formatDate(new Date(moment.create_time), dateTimeFormat)}</div>
+          <div className={styles.btnGroup}>
+             <IconLikeThumb size="large" />
+             {/* <IconDislikeThumb size="large" /> */}
+             <IconComment size="large" />
+          </div>
         </div>
       </div>
     </div>

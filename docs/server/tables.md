@@ -196,3 +196,19 @@ CREATE TABLE `moments` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `moments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+
+# 动态或动态评论点赞表 
+```
+CREATE TABLE `moment_like` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `moment_id` int NOT NULL,
+  `moment_type` enum('1','2') DEFAULT '1',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `moment_id` (`moment_id`),
+  CONSTRAINT `moment_like_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `moment_like_ibfk_2` FOREIGN KEY (`moment_id`) REFERENCES `moments` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+```
