@@ -4,7 +4,7 @@ import { GlobalContext } from 'common/store';
 import React, { useContext, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { ReleaseMoment } from './releaseMoment';
-import { getFriendsMomentList, getUserMomentList } from 'common/api/moments';
+import { getFriendsMomentList, getUserMomentList } from 'common/api/moment/moments';
 import { MomentCard } from './momentCard';
 enum MenuType {
   FRIENDS,

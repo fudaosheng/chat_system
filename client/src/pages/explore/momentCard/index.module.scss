@@ -56,6 +56,9 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        .like {
+          color: var(--semi-color-primary);
+        }
 
         :global {
 
@@ -64,7 +67,7 @@
             cursor: pointer;
 
             :hover {
-              color: var(--semi-color-primary);;
+              color: var(--semi-color-primary);
             }
           }
         }

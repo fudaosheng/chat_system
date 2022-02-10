@@ -1,14 +1,24 @@
 import { Avatar } from '@douyinfe/semi-ui';
+import classNames from 'classnames';
 import { IconLikeThumb, IconDislikeThumb, IconComment } from '@douyinfe/semi-icons';
 import { dateTimeFormat, formatDate } from 'common/utils';
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './index.module.scss';
+import { debounce } from 'lodash';
+import { likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLike';
 
 interface Props {
   moment: MomentExtra;
 }
 export const MomentCard: React.FC<Props> = (props: Props) => {
   const { moment } = props;
+  const [isLike, setIsLike] = useState(false);
+
+  // 点赞或取消点赞
+  const handleLikeOrUnlikeMoment = debounce(() => {
+    isLike ? unlikeMoment(moment.id, MomentType.MOMENT) : likeMoment(moment.id, MomentType.MOMENT);
+    setIsLike(!isLike);
+  }, 1000, { leading: true });
   return (
     <div className={styles.momentCard}>
       <div className={styles.left}>
@@ -27,9 +37,15 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
         <div className={styles.footer}>
           <div className={styles.createAt}>发布时间：{formatDate(new Date(moment.create_time), dateTimeFormat)}</div>
           <div className={styles.btnGroup}>
-             <IconLikeThumb size="large" />
-             {/* <IconDislikeThumb size="large" /> */}
-             <IconComment size="large" />
+            <IconLikeThumb
+              className={classNames({
+                [styles.like]: isLike,
+              })}
+              size="large"
+              onClick={handleLikeOrUnlikeMoment}
+            />
+            {/* <IconDislikeThumb size="large" /> */}
+            <IconComment size="large" />
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import request, { BaseResponse } from '.';
+import request, { BaseResponse } from '..';
 
 export const createMoment = (content: string, imgs_list?: Array<string>) =>
   request({

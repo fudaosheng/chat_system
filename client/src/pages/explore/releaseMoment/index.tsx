@@ -2,7 +2,7 @@ import { Modal } from '@douyinfe/semi-ui';
 import { ModalReactProps } from '@douyinfe/semi-ui/modal';
 import { FileItem } from '@douyinfe/semi-ui/upload';
 import { batchDeleteUserImgs } from 'common/api/file';
-import { createMoment } from 'common/api/moments';
+import { createMoment } from 'common/api/moment/moments';
 import { GlobalContext } from 'common/store';
 import { Editor } from 'components/editor';
 import { UploadImages } from 'components/uploadImages';
