@@ -1,4 +1,4 @@
-import request from '..';
+import request, { BaseResponse } from '..';
 export enum MomentType {
   MOMENT = 1,
   COMMENT = 2,
@@ -16,3 +16,14 @@ export const unlikeMoment = (momentId: number, momentType: MomentType) =>
     method: 'POST',
     data: { momentId, momentType },
   });
+
+interface GetMomomentLikeStatus extends BaseResponse {
+  data: Array<MomentLikeRecord>
+}
+
+export const getMomomentLikeRecord = (momentId: number, momentType: MomentType): Promise<GetMomomentLikeStatus> =>
+request({
+  url: '/moment_like/get_like_moment_record',
+  method: 'GET',
+  data: { momentId, momentType },
+});

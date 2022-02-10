@@ -2,10 +2,10 @@ import { Avatar } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
 import { IconLikeThumb, IconDislikeThumb, IconComment } from '@douyinfe/semi-icons';
 import { dateTimeFormat, formatDate } from 'common/utils';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { debounce } from 'lodash';
-import { likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLike';
+import { getMomomentLikeRecord, likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLike';
 
 interface Props {
   moment: MomentExtra;
@@ -13,6 +13,12 @@ interface Props {
 export const MomentCard: React.FC<Props> = (props: Props) => {
   const { moment } = props;
   const [isLike, setIsLike] = useState(false);
+
+  useEffect(() => {
+    moment.id && getMomomentLikeRecord(moment.id, MomentType.MOMENT).then(res => {
+      setIsLike(res?.data?.length > 0);
+    })
+  }, [moment.id]);
 
   // 点赞或取消点赞
   const handleLikeOrUnlikeMoment = debounce(() => {
@@ -39,6 +45,7 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
           <div className={styles.btnGroup}>
             <IconLikeThumb
               className={classNames({
+                [styles.likeBtn]: true,
                 [styles.like]: isLike,
               })}
               size="large"

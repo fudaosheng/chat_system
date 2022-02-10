@@ -56,8 +56,21 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
+
         .like {
           color: var(--semi-color-primary);
+        }
+
+        .likeBtn {
+
+          :hover {
+            // color: var(--semi-color-primary);
+            transform: translateY(-10%);
+          }
+
+          :active {
+            transform: translateY(20%);
+          }
         }
 
         :global {
@@ -65,10 +78,6 @@
           .semi-icon {
             margin-left: 32px;
             cursor: pointer;
-
-            :hover {
-              color: var(--semi-color-primary);
-            }
           }
         }
       }
