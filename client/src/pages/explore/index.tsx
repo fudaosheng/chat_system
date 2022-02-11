@@ -137,6 +137,7 @@ export const Explore: React.FC = () => {
         </Tooltip>
       </div>
       <ReleaseMoment
+        key={releaseMomentModalVisible ? 1 : 0}
         visible={releaseMomentModalVisible}
         onCancel={() => setReleaseMomentModalVisible(false)}
         onOk={handleReleaseMomentSuccess}

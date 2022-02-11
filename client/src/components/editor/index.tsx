@@ -1,13 +1,12 @@
-import React, { forwardRef, useState, MutableRefObject } from 'react';
+import React, { forwardRef, useState, MutableRefObject, createRef } from 'react';
 import { Picker } from 'emoji-mart';
 import { Popover, Upload, Toast, Button } from '@douyinfe/semi-ui';
 import { IconEmoji, IconImage } from '@douyinfe/semi-icons';
-import { customRequestArgs } from '@douyinfe/semi-ui/upload';
+import { UploadProps } from '@douyinfe/semi-ui/upload';
 import 'emoji-mart/css/emoji-mart.css';
 import { PopoverProps } from '@douyinfe/semi-ui/popover';
 import styles from './index.module.scss';
 import classNames from 'classnames';
-import { userUploadImg } from 'common/api/file';
 
 /**
  * 富文本编辑组件
@@ -17,12 +16,11 @@ interface Props {
   trigger?: 'hover' | 'click';
   position?: PopoverProps['position'];
   isFunctionTabAtBottom?: boolean; //为true功能tab在底部
-  couldUploadImage?: boolean;
   className?: string;
   placeholder?: string;
+  uploadProps?: UploadProps;
   onEnterPress?: (e: HTMLDivElement) => void;
   onChange?: (value: string) => void;
-  onUploadImageSuccess?: (url: string) => void;
 }
 export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
   //必须要传ref
@@ -32,12 +30,14 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     position = 'topLeft',
     isFunctionTabAtBottom = false,
     placeholder = '请输入内容',
-    couldUploadImage = true,
+    uploadProps,
     onEnterPress,
     onChange,
-    onUploadImageSuccess,
   } = props;
+  // range选区
   const [range, setRange] = useState<Range>();
+  const uploadRef = createRef<Upload>();
+  const uploadTriggerRef = createRef<HTMLDivElement>();
 
   const handleSelectEmoji = (e: any) => {
     const emoji = e.native;
@@ -48,7 +48,7 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     if (realRange && (ref as MutableRefObject<HTMLDivElement>)?.current?.contains(realRange.commonAncestorContainer)) {
       realRange.insertNode(emojoEle);
       realRange.collapse();
-      onChange && onChange((ref as MutableRefObject<HTMLDivElement>)?.current?.innerHTML);
+      onChange && onChange((ref as MutableRefObject<HTMLDivElement>)?.current?.innerText);
     }
     // focus
     (ref as MutableRefObject<HTMLDivElement>)?.current?.focus();
@@ -83,61 +83,46 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     const range = window.getSelection()?.getRangeAt(0);
     setRange(range);
   };
-
-  // 自定义上传
-  const handleUploadImg = async (params: customRequestArgs) => {
-    try {
-      const { data } = await userUploadImg(params.fileInstance);
-      if (data.url) {
-        // 发送图片
-        onUploadImageSuccess && onUploadImageSuccess(data.url);
-      }
-    } finally {
-    }
-  };
   return (
     <div
       className={classNames({
         [styles.editorWrap]: true,
-        [styles.editorWrapReverse]: isFunctionTabAtBottom,
         [className]: true,
       })}>
       <div
         className={classNames({
-          [styles.functionTab]: true,
+          [styles.main]: true,
+          [styles.mainReverse]: isFunctionTabAtBottom,
         })}>
-        <Popover
-          trigger={trigger}
-          position={position}
-          // autoAdjustOverflow={false}
-          content={<Picker title="Pick your emoji…" set="apple" onSelect={handleSelectEmoji} />}>
-          <Button icon={<IconEmoji size="large" />} theme="borderless" type="tertiary" />
-        </Popover>
-        {couldUploadImage && (
-          <Upload
-            action={''}
-            name="img"
-            accept={'image/*'}
-            showUploadList={false}
-            customRequest={handleUploadImg}
-            onError={() => Toast.error('上传失败')}>
-            <Button icon={<IconImage size="large" />} theme="borderless" type="tertiary" />
-          </Upload>
-        )}
+        <div className={styles.functionTab}>
+          <Popover
+            trigger={trigger}
+            position={position}
+            // autoAdjustOverflow={false}
+            content={<Picker title="Pick your emoji…" set="apple" onSelect={handleSelectEmoji} />}>
+            <Button icon={<IconEmoji size="large" />} theme="borderless" type="tertiary" />
+          </Popover>
+          {uploadProps && <Button icon={<IconImage size="large" />} theme="borderless" type="tertiary" onClick={() => uploadTriggerRef.current?.click()} />}
+        </div>
+        <div
+          ref={ref}
+          tabIndex={10}
+          className={classNames({
+            [styles.richEditor]: true,
+            [styles.richEditorReverse]: isFunctionTabAtBottom,
+          })}
+          contentEditable
+          data-placeholder={placeholder}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+        />
       </div>
-      <div
-        ref={ref}
-        tabIndex={10}
-        className={classNames({
-          [styles.richEditor]: true,
-          [styles.richEditorReverse]: isFunctionTabAtBottom,
-        })}
-        contentEditable
-        data-placeholder={placeholder}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-        onKeyUp={handleKeyUp}
-      />
+      <div className={styles.fileList}>
+        <Upload className={styles.upload} ref={uploadRef} onError={() => Toast.error('上传失败')} {...uploadProps}>
+          <div ref={uploadTriggerRef}></div>
+        </Upload>
+      </div>
     </div>
   );
 });

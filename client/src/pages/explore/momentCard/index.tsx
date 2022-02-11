@@ -9,23 +9,28 @@ import { likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLi
 import { Editor } from 'components/editor';
 import { useOnClickOutSide } from 'common/hooks/useOnClickOutSide';
 import { GlobalContext } from 'common/store';
+import { useUploadFiles } from 'common/hooks/useUploadFiles';
 
 interface Props {
   moment: MomentExtra;
 }
 export const MomentCard: React.FC<Props> = (props: Props) => {
-  const { state: { userInfo } } = useContext(GlobalContext);
+  const {
+    state: { userInfo },
+  } = useContext(GlobalContext);
   const { moment } = props;
   // 是否喜欢该动态
   const [isLike, setIsLike] = useState(false);
   // 评论下拉框是否显示
   const [commentCollapseIsOpen, setCommentCollapseIsOpen] = useState(false);
   const editorRef = createRef<HTMLDivElement>();
+  const editorContainerRef = createRef<HTMLDivElement>();
+  const { fileList, handleRemoveImg, handleUploadSuccess } = useUploadFiles();
 
-  useOnClickOutSide<HTMLDivElement>(editorRef, () => setCommentCollapseIsOpen(false));
+  useOnClickOutSide<HTMLDivElement>(editorContainerRef, () => setCommentCollapseIsOpen(false));
 
   useEffect(() => {
-    setIsLike(moment?.like_user_ids?.some(i => i.id === userInfo.id))
+    setIsLike(moment?.like_user_ids?.some(i => i.id === userInfo.id));
   }, [moment]);
 
   // 点赞或取消点赞
@@ -42,15 +47,17 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   const openCommentCollapse = (e: any) => {
     setCommentCollapseIsOpen(true);
     e.stopPropagation();
-  }
+  };
   return (
     <div className={styles.momentCard}>
       <div className={styles.left}>
-        <Avatar shape="square" src={moment.user_info.avatar} />
+        <Avatar className={styles.avatar} shape="square" src={moment.user_info.avatar} />
       </div>
       <div className={styles.main}>
         <div className={styles.name}>{moment?.user_info?.note || moment?.user_info?.name}</div>
-        <div className={styles.content}>{moment.content}</div>
+        <div className={styles.content}>
+          <pre>{moment.content}</pre>
+        </div>
         <div className={styles.imgList}>
           {moment?.imgs_list?.map(img => (
             <div className={styles.imgItem} key={img}>
@@ -74,7 +81,23 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
           </div>
         </div>
         <Collapsible isOpen={commentCollapseIsOpen} className={styles.commendCollapse}>
-          <Editor ref={editorRef} placeholder="请输入评论内容" isFunctionTabAtBottom />
+          <div ref={editorContainerRef}>
+            <Editor
+              ref={editorRef}
+              placeholder="请输入评论内容"
+              isFunctionTabAtBottom
+              uploadProps={{
+                listType: 'picture',
+                action: '/api/file/user/upload/img',
+                headers: {
+                  Authorization: 'Bearer ' + userInfo.token,
+                },
+                name: 'img',
+                onSuccess: handleUploadSuccess,
+                onRemove: handleRemoveImg,
+              }}
+            />
+          </div>
         </Collapsible>
       </div>
     </div>

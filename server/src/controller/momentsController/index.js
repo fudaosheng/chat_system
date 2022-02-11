@@ -1,6 +1,6 @@
 const connections = require('../../app/database');
 const { STATUS_CODE, SORT_TYPE } = require('../../constance');
-const { TABLE_NAMES, MOMENTS_TABLE, MOMENT_TYPE } = require('../../constance/tables');
+const { TABLE_NAMES, MOMENTS_TABLE } = require('../../constance/tables');
 const { getTableSelectColumns, getJSONOBJECTColumns, userTableCommonColumns } = require('../../utils');
 
 class MomentController {
@@ -68,7 +68,6 @@ class MomentController {
 
     // 获取动态的用户ID区间
     const idRange = [...friendIdList, userId].join(', ');
-
     // 动态列表中选择的列
     const momentTableSelectColumns = getTableSelectColumns(Object.values(MOMENTS_TABLE), TABLE_NAMES.MOMENTS);
 
@@ -78,11 +77,10 @@ class MomentController {
                   JSON_ARRAYAGG(JSON_OBJECT('id', moment_like.user_id)) like_user_ids 
                   FROM moments LEFT JOIN users ON moments.user_id = users.id 
                   LEFT JOIN moment_like ON moments.id = moment_like.moment_id
-                  WHERE moments.user_id IN (${idRange}) AND moment_like.moment_type = ${MOMENT_TYPE.MOMENT}
+                  WHERE moments.user_id IN (${idRange})
                   GROUP BY moments.id
                   ORDER BY moments.create_time ${SORT_TYPE.DESC} 
                   LIMIT ${(currentPage - 1) * pageSize}, ${pageSize}`;
-
     // 查询总共有多少条动态
     const totalSQL = `SELECT COUNT(*) as total FROM ${TABLE_NAMES.MOMENTS} WHERE user_id IN (${idRange})`;
 

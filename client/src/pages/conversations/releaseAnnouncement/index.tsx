@@ -14,7 +14,6 @@ export const ReleaseAnnoucement: React.FC<Props> = (props: Props) => {
     <Modal title="发布群公告" okText="发布" {...restProps} onOk={() => onOk(editorRef?.current?.innerText || '')}>
       <Editor
         ref={editorRef}
-        couldUploadImage={false}
         placeholder="请输入群公告内容"
       />
     </Modal>

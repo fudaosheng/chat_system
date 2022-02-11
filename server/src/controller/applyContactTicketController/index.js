@@ -6,6 +6,7 @@ const {
   APPLY_CONTACT_TICKET_STATUS,
   USER_TABLE,
   CONTACTS_TABLE,
+  CONTACT_GROUP_TABLE,
 } = require('../../constance/tables');
 const { getJSONOBJECTColumns, getTableSelectColumns } = require('../../utils');
 class ContactController {
@@ -134,6 +135,16 @@ class ContactController {
   async agreeApplyContact(ctx) {
     const { apply_contact_ticketId, group_id, note } = ctx.request.body;
     const { USER_ID, GROUP_ID, CONTACT_ID, NOTE } = CONTACTS_TABLE;
+
+    // 验证分组是否正确
+    const group = await ctx.service.dbService.query({
+      [CONTACT_GROUP_TABLE.USER_ID]: ctx.user.userId,
+      [CONTACT_GROUP_TABLE.ID]: group_id
+    }, TABLE_NAMES.CONTACT_GROUP);
+
+    if(!group.length) {
+      return ctx.makeResp({ code: STATUS_CODE.ERROR, message: '分组错误' });
+    }
     // 根据id查询好友申请工单详细信息
     const result = await ctx.service.dbService.query(
       { [APPLY_CONTACT_TICKET_TABLE.ID]: apply_contact_ticketId },

@@ -1,34 +1,47 @@
 .editorWrap {
   height: 100%;
-  display: flex;
-  flex-direction: column;
   border: 1px solid var(--border-color);
-  &Reverse {
-    flex-direction: column-reverse;
-  }
-  .functionTab {
-    padding: 6px 0;
+  .main {
+    height: 100%;
     display: flex;
-    align-items: center;
-    // border-bottom: 1px solid var(--border-color);
-    :global {
-      .semi-button {
-        margin: 0 4px;
+    flex-direction: column;
+    &Reverse {
+      flex-direction: column-reverse;
+    }
+    .functionTab {
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      // border-bottom: 1px solid var(--border-color);
+      :global {
+        .semi-button {
+          margin: 0 4px;
+        }
+      }
+    }
+
+    .richEditor {
+      flex: 1;
+      padding: 0 12px 12px 12px;
+      outline: none;
+      &:empty::before {
+        content: attr(data-placeholder);
+        color: var(--text-color2);
+        pointer-events: none;
+      }
+      &Reverse {
+        padding: 12px;
       }
     }
   }
-
-  .richEditor {
-    flex: 1;
-    padding: 0 12px 12px 12px;
-    outline: none;
-    &:empty::before {
-      content: attr(data-placeholder);
-      color: var(--text-color2);
-      pointer-events: none;
-    }
-    &Reverse {
-      padding: 12px;
+  .fileList {
+    padding: 0 12px;
+    .upload {
+      :global {
+        .semi-upload-add {
+          display: none;
+        }
+      }
     }
   }
 }

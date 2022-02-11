@@ -18,6 +18,8 @@ import { ReleaseAnnoucement } from './releaseAnnouncement';
 import { modifyAnnouncement } from 'common/api/chatGroup';
 import { getChatGroupMembers } from 'common/api/chatGroupContact';
 import { MemberList } from './memberList';
+import { customRequestArgs } from '@douyinfe/semi-ui/upload';
+import { userUploadImg } from 'common/api/file';
 const debounceGap = 1000;
 
 export const Conversations: React.FC = () => {
@@ -36,7 +38,7 @@ export const Conversations: React.FC = () => {
   const [releaseAnnoucementModalVisible, setReleaseAnnoucementModalVisible] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
   // 群成员
-  const [members, setMembers] = useState<Array<ChatGroupMember>>([])
+  const [members, setMembers] = useState<Array<ChatGroupMember>>([]);
 
   // 会话
   const chat = useMemo(
@@ -48,7 +50,7 @@ export const Conversations: React.FC = () => {
     return new Map(chat?.members?.map(i => [i.id, i]));
   }, [chat]);
 
-      // 监听鼠标移动，处理消息是否已读
+  // 监听鼠标移动，处理消息是否已读
   useEffect(() => {
     if (!(conversationsRef?.current && chat?.id)) {
       return;
@@ -60,15 +62,15 @@ export const Conversations: React.FC = () => {
     return () => conversationsRef.current?.removeEventListener('mousemove', updateLastReadedMessageIndex);
   }, [conversationsRef]);
 
-    // 获取群成员
-    useEffect(() => {
-      if(chatId && chatType === CHAT_TYPE.CHAT_GROUP) {
-        getChatGroupMembers(Number(chatId)).then(res => {
-          setMembers(res?.data || []);
-          dispatch(WebsocketAction.updateChatGroupMembers(Number(chatId), res?.data || []));
-        })
-      }
-    }, [chatId, chatType]);
+  // 获取群成员
+  useEffect(() => {
+    if (chatId && chatType === CHAT_TYPE.CHAT_GROUP) {
+      getChatGroupMembers(Number(chatId)).then(res => {
+        setMembers(res?.data || []);
+        dispatch(WebsocketAction.updateChatGroupMembers(Number(chatId), res?.data || []));
+      });
+    }
+  }, [chatId, chatType]);
 
   // 发送消息
   // todo：发送消息时用blob发送，阻止回车换行
@@ -119,6 +121,16 @@ export const Conversations: React.FC = () => {
     }
   };
 
+  // 自定义上传
+  const handleUploadImg = async (params: customRequestArgs) => {
+    try {
+      const { data } = await userUploadImg(params.fileInstance);
+      // 发送图片
+      data.url && handleSendMessage(data.url, MessageType.IMAGE);
+    } finally {
+    }
+  };
+
   return (
     <div className={styles.conversationPage}>
       <div className={styles.conversations} ref={conversationsRef}>
@@ -144,8 +156,14 @@ export const Conversations: React.FC = () => {
             <Editor
               ref={editorRef}
               className={styles.textArea}
+              uploadProps={{
+                action: '',
+                name: 'img',
+                accept: 'image/*',
+                showUploadList: false,
+                customRequest: handleUploadImg,
+              }}
               onEnterPress={handleEnterPress}
-              onUploadImageSuccess={url => handleSendMessage(url, MessageType.IMAGE)}
             />
           </div>
         </div>
