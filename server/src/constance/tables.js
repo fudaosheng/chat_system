@@ -19,6 +19,7 @@ const TABLE_NAMES = {
   CHAT_GROUP_CONTACTS: 'chat_group_contacts', //群组成员表
   MOMENTS: 'moments', //动态表
   MOMENT_LIKE: 'moment_like', //动态点赞表
+  MOMENT_COMMENTS: 'moment_comments', //动态评论表
 };
 
 // 图片表
@@ -155,6 +156,15 @@ const MOMENT_LIKE_TABLE = {
   MOMENT_ID: 'moment_id',
   MOMENT_TYPE: 'moment_type'
 }
+// 动态评论表
+const MOMENT_COMMENTS_TABLE = {
+  ...COMMON_TABLE_FIELDS,
+  USER_ID: 'user_id',
+  MOMENT_ID: 'moment_id',
+  CONTENT: 'content',
+  IMGS_LIST: 'imgs_list',
+  PARENT_ID: 'parent_id'
+}
 module.exports = {
   TABLE_NAMES,
   USER_TABLE,
@@ -173,5 +183,6 @@ module.exports = {
   IDENTIRY_LEVEL,
   MOMENTS_TABLE,
   MOMENT_LIKE_TABLE,
-  MOMENT_TYPE
+  MOMENT_TYPE,
+  MOMENT_COMMENTS_TABLE
 };
