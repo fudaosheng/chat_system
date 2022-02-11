@@ -96,9 +96,12 @@ const App: React.FC = () => {
 
   // 注册websocket
   useEffect(() => {
+    if(!userInfo.id) {
+      return;
+    }
     const ws = registryWebSocket();
     websocketDispatch(WebsocketAction.registryWebsocket(ws));
-  }, []);
+  }, [userInfo.id]);
 
   // 获取离线消息
   useEffect(() => {

@@ -16,11 +16,13 @@ interface Props {
   trigger?: 'hover' | 'click';
   position?: PopoverProps['position'];
   isFunctionTabAtBottom?: boolean; //为true功能tab在底部
+  showSendButton?: boolean; //是否显示发送按钮
   className?: string;
   placeholder?: string;
   uploadProps?: UploadProps;
   onEnterPress?: (e: HTMLDivElement) => void;
   onChange?: (value: string) => void;
+  onSend?: () => void; //点击发送按钮的回调
 }
 export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
   //必须要传ref
@@ -31,6 +33,8 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     isFunctionTabAtBottom = false,
     placeholder = '请输入内容',
     uploadProps,
+    showSendButton,
+    onSend,
     onEnterPress,
     onChange,
   } = props;
@@ -102,7 +106,14 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
             content={<Picker title="Pick your emoji…" set="apple" onSelect={handleSelectEmoji} />}>
             <Button icon={<IconEmoji size="large" />} theme="borderless" type="tertiary" />
           </Popover>
-          {uploadProps && <Button icon={<IconImage size="large" />} theme="borderless" type="tertiary" onClick={() => uploadTriggerRef.current?.click()} />}
+          {uploadProps && (
+            <Button
+              icon={<IconImage size="large" />}
+              theme="borderless"
+              type="tertiary"
+              onClick={() => uploadTriggerRef.current?.click()}
+            />
+          )}
         </div>
         <div
           ref={ref}
@@ -122,6 +133,13 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
         <Upload className={styles.upload} ref={uploadRef} onError={() => Toast.error('上传失败')} {...uploadProps}>
           <div ref={uploadTriggerRef}></div>
         </Upload>
+      </div>
+      <div className={styles.btnWrapper}>
+        {showSendButton && (
+          <Button theme="solid" onClick={onSend}>
+            发送
+          </Button>
+        )}
       </div>
     </div>
   );

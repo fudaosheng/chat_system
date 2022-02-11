@@ -84,6 +84,7 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
           <div ref={editorContainerRef}>
             <Editor
               ref={editorRef}
+              showSendButton
               placeholder="请输入评论内容"
               isFunctionTabAtBottom
               uploadProps={{
