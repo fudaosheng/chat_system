@@ -2,17 +2,19 @@ import { Avatar, Collapsible } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
 import { IconLikeThumb, IconComment } from '@douyinfe/semi-icons';
 import { dateTimeFormat, formatDate } from 'common/utils';
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, useContext, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { debounce } from 'lodash';
-import { getMomomentLikeRecord, likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLike';
+import { likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLike';
 import { Editor } from 'components/editor';
 import { useOnClickOutSide } from 'common/hooks/useOnClickOutSide';
+import { GlobalContext } from 'common/store';
 
 interface Props {
   moment: MomentExtra;
 }
 export const MomentCard: React.FC<Props> = (props: Props) => {
+  const { state: { userInfo } } = useContext(GlobalContext);
   const { moment } = props;
   // 是否喜欢该动态
   const [isLike, setIsLike] = useState(false);
@@ -23,11 +25,8 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   useOnClickOutSide<HTMLDivElement>(editorRef, () => setCommentCollapseIsOpen(false));
 
   useEffect(() => {
-    moment.id &&
-      getMomomentLikeRecord(moment.id, MomentType.MOMENT).then(res => {
-        setIsLike(res?.data?.length > 0);
-      });
-  }, [moment.id]);
+    setIsLike(moment?.like_user_ids?.some(i => i.id === userInfo.id))
+  }, [moment]);
 
   // 点赞或取消点赞
   const handleLikeOrUnlikeMoment = debounce(

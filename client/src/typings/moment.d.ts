@@ -8,6 +8,7 @@ interface Moment {
 }
 interface MomentExtra extends Moment {
   user_info: UserInfo;
+  like_user_ids: Array<{ id: number }>
 }
 
 interface MomentLikeRecord {

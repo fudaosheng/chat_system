@@ -1,6 +1,6 @@
 const connections = require('../../app/database');
 const { STATUS_CODE, SORT_TYPE } = require('../../constance');
-const { TABLE_NAMES, MOMENTS_TABLE } = require('../../constance/tables');
+const { TABLE_NAMES, MOMENTS_TABLE, MOMENT_TYPE } = require('../../constance/tables');
 const { getTableSelectColumns, getJSONOBJECTColumns, userTableCommonColumns } = require('../../utils');
 
 class MomentController {
@@ -30,28 +30,28 @@ class MomentController {
     const currentPage = Number(_currentPage);
     const pageSize = Number(_pageSize);
 
+    // 查询用户的动态量
     const totalSQL = `SELECT COUNT(*) as total FROM ${TABLE_NAMES.MOMENTS} WHERE user_id = ${userId}`;
+
+    // LEFT JOIN 查询动态
+    const SQL = `SELECT ${getTableSelectColumns(
+      Object.values(MOMENTS_TABLE),
+      TABLE_NAMES.MOMENTS
+    )}, JSON_ARRAYAGG(JSON_OBJECT('id', moment_like.user_id)) like_user_ids 
+      FROM moments LEFT JOIN moment_like ON moments.id = moment_like.moment_id 
+      WHERE moments.user_id = ${userId} 
+      GROUP BY moments.id
+      ORDER BY ${TABLE_NAMES.MOMENTS}.create_time ${SORT_TYPE.DESC} 
+      LIMIT ${(currentPage - 1) * pageSize}, ${pageSize}`;
+
     // 一次查询总数和用户动态
-    const [resp1, resp2] = await Promise.all([
-      connections.execute(totalSQL),
-      ctx.service.dbService.query(
-        {
-          [MOMENTS_TABLE.USER_ID]: userId,
-        },
-        TABLE_NAMES.MOMENTS,
-        {
-          orderBy: [MOMENTS_TABLE.CREATE_TIME, SORT_TYPE.DESC],
-          limit: Number(pageSize),
-          offset: (Number(currentPage) - 1) * Number(pageSize),
-        }
-      ),
-    ]);
+    const [resp1, resp2] = await Promise.all([connections.execute(totalSQL), connections.execute(SQL)]);
     return ctx.makeResp({
       code: STATUS_CODE.SUCCESS,
       data: {
         currentPage,
         pageSize,
-        list: resp2,
+        list: resp2[0],
         total: resp1[0][0].total,
       },
     });
@@ -72,14 +72,16 @@ class MomentController {
     // 动态列表中选择的列
     const momentTableSelectColumns = getTableSelectColumns(Object.values(MOMENTS_TABLE), TABLE_NAMES.MOMENTS);
 
-    // 根据ID批量查询用户的动态
-    const SQL = `SELECT ${momentTableSelectColumns}, JSON_OBJECT(${getJSONOBJECTColumns(
-      userTableCommonColumns
-    )}) user_info FROM ${TABLE_NAMES.MOMENTS} JOIN ${TABLE_NAMES.USERS} ON ${TABLE_NAMES.MOMENTS}.user_id = ${
-      TABLE_NAMES.USERS
-    }.id WHERE ${TABLE_NAMES.MOMENTS}.user_id IN (${idRange}) ORDER BY ${
-      TABLE_NAMES.MOMENTS
-    }.create_time ${SORT_TYPE.DESC} LIMIT ${(currentPage - 1) * pageSize}, ${pageSize}`;
+    // 根据ID批量查询用户的动态以及动态的点赞信息
+    const SQL = `SELECT ${momentTableSelectColumns}, 
+                  JSON_OBJECT(${getJSONOBJECTColumns(userTableCommonColumns)}) user_info,
+                  JSON_ARRAYAGG(JSON_OBJECT('id', moment_like.user_id)) like_user_ids 
+                  FROM moments LEFT JOIN users ON moments.user_id = users.id 
+                  LEFT JOIN moment_like ON moments.id = moment_like.moment_id
+                  WHERE moments.user_id IN (${idRange}) AND moment_like.moment_type = ${MOMENT_TYPE.MOMENT}
+                  GROUP BY moments.id
+                  ORDER BY moments.create_time ${SORT_TYPE.DESC} 
+                  LIMIT ${(currentPage - 1) * pageSize}, ${pageSize}`;
 
     // 查询总共有多少条动态
     const totalSQL = `SELECT COUNT(*) as total FROM ${TABLE_NAMES.MOMENTS} WHERE user_id IN (${idRange})`;
