@@ -1,15 +1,16 @@
-import { Avatar, Collapsible } from '@douyinfe/semi-ui';
+import { Avatar, Collapsible, OverflowList } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
 import { IconLikeThumb, IconComment } from '@douyinfe/semi-icons';
 import { dateTimeFormat, formatDate } from 'common/utils';
-import React, { createRef, useContext, useEffect, useState } from 'react';
+import React, { createRef, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import styles from './index.module.scss';
 import { debounce } from 'lodash';
-import { likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLike';
+import { getLikeMomentContactList, likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLike';
 import { Editor } from 'components/editor';
 import { useOnClickOutSide } from 'common/hooks/useOnClickOutSide';
 import { GlobalContext } from 'common/store';
 import { useUploadFiles } from 'common/hooks/useUploadFiles';
+import { LikeUserList } from '../likeUserList';
 
 interface Props {
   moment: MomentExtra;
@@ -21,10 +22,13 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   const { moment } = props;
   // 是否喜欢该动态
   const [isLike, setIsLike] = useState(false);
+  // 喜欢该动态的联系人列表
+  const [contactListForLikeMoment, setContactListForLikeMoment] = useState<Array<UserInfo & { key: string }>>([]);
   // 评论下拉框是否显示
   const [commentCollapseIsOpen, setCommentCollapseIsOpen] = useState(false);
   const editorRef = createRef<HTMLDivElement>();
   const editorContainerRef = createRef<HTMLDivElement>();
+  // 评论上传的文件列表
   const { fileList, handleRemoveImg, handleUploadSuccess } = useUploadFiles();
 
   useOnClickOutSide<HTMLDivElement>(editorContainerRef, () => setCommentCollapseIsOpen(false));
@@ -32,6 +36,19 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     setIsLike(moment?.like_user_ids?.some(i => i.id === userInfo.id));
   }, [moment]);
+
+  // 获取喜欢该动态的联系人列表
+  useEffect(() => {
+    if(moment.id && userInfo.id) {
+      getLikeMomentContactList(moment.id).then(res => {
+        const newContactListForLikeMoment = res?.data || [];
+        if(moment.like_user_ids.some(i => i.id === userInfo.id)) {
+          newContactListForLikeMoment.unshift(userInfo);
+        }
+        setContactListForLikeMoment(newContactListForLikeMoment?.map(i => ({ ...i, key: String(i.id) })));
+      })
+    }
+  }, [moment, userInfo]);
 
   // 点赞或取消点赞
   const handleLikeOrUnlikeMoment = debounce(
@@ -65,7 +82,7 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
             </div>
           ))}
         </div>
-        <div className={styles.footer}>
+        <div className={styles.btnGroup}>
           <div className={styles.createAt}>发布时间：{formatDate(new Date(moment.create_time), dateTimeFormat)}</div>
           <div className={styles.btnGroup}>
             <IconLikeThumb
@@ -100,6 +117,8 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
             />
           </div>
         </Collapsible>
+        {/* // 喜欢 */}
+        <LikeUserList userList={contactListForLikeMoment} />
       </div>
     </div>
   );

@@ -1,0 +1,51 @@
+@mixin flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
+.likeList {
+  font-size: 14px;
+  margin-top: 12px;
+  @include flex-align-center;
+
+  .overflowList {
+    // flex: 1;
+  }
+
+  .overflowBtn {
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .overflowBtn:hover {
+    background-color: transparent;
+  }
+
+  span {
+    margin-left: 6px;
+  }
+}
+
+
+.likeItem {
+  margin-left: 0;
+  color: #5b6c92;
+  @include flex-align-center;
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.likeItem::after {
+  content: "，";
+}
+.likeItem:first-of-type {
+    margin-left: 0;
+}
+
+.likeItem:last-of-type::after {
+  content: none;
+}
+.overflowWrapper {
+    min-width: 200px;
+    max-width: 400px;
+}

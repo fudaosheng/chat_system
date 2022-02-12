@@ -27,3 +27,14 @@ request({
   method: 'GET',
   data: { momentId, momentType },
 });
+
+// 获取对该动态点赞的联系人列表
+export interface GetLikeMomentContactListResp extends BaseResponse {
+  data: Array<UserInfo>
+}
+export const getLikeMomentContactList = (momentId: number): Promise<GetLikeMomentContactListResp> =>
+request({
+  url: '/moment_like/get_like_moment_contact_list',
+  method: 'GET',
+  data: { momentId },
+});
