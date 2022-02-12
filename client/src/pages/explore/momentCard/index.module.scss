@@ -17,7 +17,7 @@
     // border: 1px solid pink;
 
     .name {
-      color: #5b6c92;
+      color: var(--username-color);
       font-weight: 600;
     }
 
@@ -84,8 +84,9 @@
         }
       }
     }
-    .commendCollapse {
-      margin-top: 12px;
+    .commentList {
+      padding: 6px;
+      background-color: #f7f7f7;
     }
   }
 }

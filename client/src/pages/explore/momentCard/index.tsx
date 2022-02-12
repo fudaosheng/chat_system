@@ -1,17 +1,15 @@
-import { Avatar, Collapsible, OverflowList, Toast } from '@douyinfe/semi-ui';
+import { Avatar, Toast } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
 import { IconLikeThumb, IconComment } from '@douyinfe/semi-icons';
 import { dateTimeFormat, formatDate } from 'common/utils';
-import React, { createRef, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import styles from './index.module.scss';
 import { debounce } from 'lodash';
 import { getLikeMomentContactList, likeMoment, MomentType, unlikeMoment } from 'common/api/moment/momentLike';
-import { Editor } from 'components/editor';
-import { useOnClickOutSide } from 'common/hooks/useOnClickOutSide';
 import { GlobalContext } from 'common/store';
-import { useUploadFiles } from 'common/hooks/useUploadFiles';
 import { LikeUserList } from '../likeUserList';
-import { submitComment } from 'common/api/moment/momentComment';
+import { getCommentList, submitComment } from 'common/api/moment/momentComment';
+import { CommentList } from 'components/commentList';
 
 interface Props {
   moment: MomentExtra;
@@ -25,16 +23,10 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   const [isLike, setIsLike] = useState(false);
   // 喜欢该动态的联系人列表
   const [contactListForLikeMoment, setContactListForLikeMoment] = useState<Array<UserInfo & { key: string }>>([]);
-  // 评论下拉框是否显示
+  // 评论列表
+  const [commentList, setCommentList] = useState<Array<CommentExtra>>([]);
+  // 是否打开评论编辑器
   const [commentCollapseIsOpen, setCommentCollapseIsOpen] = useState(false);
-  const [btnLoading, setBtnLoading] = useState(false);
-  const [content, setContent] = useState('');
-  const editorRef = createRef<HTMLDivElement>();
-  const editorContainerRef = createRef<HTMLDivElement>();
-  // 评论上传的文件列表
-  const { fileList, handleRemoveImg, handleUploadSuccess } = useUploadFiles();
-
-  useOnClickOutSide<HTMLDivElement>(editorContainerRef, () => setCommentCollapseIsOpen(false));
 
   useEffect(() => {
     setIsLike(moment?.like_user_ids?.some(i => i.id === userInfo.id));
@@ -43,12 +35,18 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   // 获取喜欢该动态的联系人列表
   useEffect(() => {
     if (moment.id && userInfo.id) {
+      // 获取点赞信息
       getLikeMomentContactList(moment.id).then(res => {
         const newContactListForLikeMoment = res?.data || [];
         if (moment.like_user_ids.some(i => i.id === userInfo.id)) {
           newContactListForLikeMoment.unshift(userInfo);
         }
         setContactListForLikeMoment(newContactListForLikeMoment?.map(i => ({ ...i, key: String(i.id) })));
+      });
+      // 获取评论信息
+      getCommentList(moment.id).then(res => {
+        console.log(res.data);
+        setCommentList(res.data || []);
       });
     }
   }, [moment, userInfo]);
@@ -70,18 +68,14 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   };
 
   // 提交评论
-  const handleSubmitComment = async () => {
-    const imgList = fileList?.map(i => i?.response?.data?.url);
+  const handleSubmitComment = async (content: string, fileList?: Array<string>) => {
     try {
-      setBtnLoading(true);
       await submitComment({
         momentId: moment.id,
         content,
-        imgs_list: imgList.length ? imgList : undefined,
+        imgs_list: fileList,
       });
-      Toast.success('评论成功');
     } finally {
-      setBtnLoading(false);
     }
   };
   return (
@@ -116,31 +110,17 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
             <IconComment size="large" onClick={openCommentCollapse} />
           </div>
         </div>
-        <Collapsible isOpen={commentCollapseIsOpen} className={styles.commendCollapse}>
-          <div ref={editorContainerRef}>
-            <Editor
-              ref={editorRef}
-              showSendButton
-              placeholder="请输入评论内容"
-              isFunctionTabAtBottom
-              uploadProps={{
-                listType: 'picture',
-                action: '/api/file/user/upload/img',
-                headers: {
-                  Authorization: 'Bearer ' + userInfo.token,
-                },
-                name: 'img',
-                onSuccess: handleUploadSuccess,
-                onRemove: handleRemoveImg,
-              }}
-              onChange={v => setContent(v)}
-              sendButtomProps={{ disabled: !content, loading: btnLoading }}
-              onSend={handleSubmitComment}
-            />
-          </div>
-        </Collapsible>
+
         {/* // 喜欢 */}
         <LikeUserList userList={contactListForLikeMoment} />
+        {/* 评论 */}
+        <CommentList
+          commentList={commentList}
+          className={styles.commentList}
+          isOpen={commentCollapseIsOpen}
+          onClickEditorOutside={() => setCommentCollapseIsOpen(false)}
+          onSubmitComment={handleSubmitComment}
+        />
       </div>
     </div>
   );

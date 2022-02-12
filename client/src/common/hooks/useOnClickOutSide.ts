@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 interface Ref<T> {
   current: { contains: (arg0: T | null) => any } | null;
 }
-export const useOnClickOutSide = <T>(ref: Ref<T>, handle: () => void) => {
+export const useOnClickOutside = <T>(ref: Ref<T>, handle: () => void) => {
   useEffect(() => {
     const handleOutSide = (e: MouseEvent) => {
       if (!ref?.current || ref.current.contains(e?.target as any)) {

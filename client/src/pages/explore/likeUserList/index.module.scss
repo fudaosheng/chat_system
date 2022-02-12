@@ -6,8 +6,9 @@
 .likeList {
   font-size: 14px;
   margin-top: 12px;
+  padding: 6px;
   @include flex-align-center;
-
+  background-color: #f7f7f7;
   .overflowList {
     // flex: 1;
   }
@@ -26,26 +27,25 @@
   }
 }
 
-
 .likeItem {
   margin-left: 0;
-  color: #5b6c92;
+  color: var(--username-color);
   @include flex-align-center;
   display: inline-flex;
   white-space: nowrap;
 }
 
 .likeItem::after {
-  content: "，";
+  content: '，';
 }
 .likeItem:first-of-type {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 .likeItem:last-of-type::after {
   content: none;
 }
 .overflowWrapper {
-    min-width: 200px;
-    max-width: 400px;
+  min-width: 200px;
+  max-width: 400px;
 }

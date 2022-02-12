@@ -1,3 +1,7 @@
+@mixin flex-align-center {
+  display: flex;
+  align-items: center;
+}
 .editorWrap {
   height: 100%;
   border: 1px solid var(--border-color);
@@ -9,17 +13,20 @@
       flex-direction: column-reverse;
     }
     .functionTab {
-      &AtBottom {
-        padding: 0;
-      }
       padding: 6px 0;
-      display: flex;
-      align-items: center;
-      // border-bottom: 1px solid var(--border-color);
+      @include flex-align-center;
+      justify-content: space-between;
       :global {
         .semi-button {
           margin: 0 4px;
         }
+      }
+      .leftBtnWrapper {
+        @include flex-align-center;
+      }
+      .rightBtnWrapper {
+        @include flex-align-center;
+        justify-content: flex-end;
       }
     }
 
@@ -46,11 +53,5 @@
         }
       }
     }
-  }
-  .btnWrapper {
-    padding: 0 12px 12px 0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
   }
 }

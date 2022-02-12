@@ -155,7 +155,7 @@ export const Conversations: React.FC = () => {
           <div className={styles.editor}>
             <Editor
               ref={editorRef}
-              className={styles.textArea}
+              wrapperClassName={styles.textArea}
               uploadProps={{
                 action: '',
                 name: 'img',

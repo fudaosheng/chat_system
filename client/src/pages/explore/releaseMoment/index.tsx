@@ -51,7 +51,7 @@ export const ReleaseMoment: React.FC<Props> = (props: Props) => {
       onOk={handleReleaseMoment}>
       <div className={styles.content}>
         <Editor
-          className={styles.editor}
+          wrapperClassName={styles.editor}
           isFunctionTabAtBottom
           ref={editorRef}
           placeholder="这一刻的想法……"

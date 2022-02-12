@@ -19,6 +19,7 @@ interface Props {
   isFunctionTabAtBottom?: boolean; //为true功能tab在底部
   showSendButton?: boolean; //是否显示发送按钮
   sendButtomProps?: ButtonProps;
+  wrapperClassName?: string;
   className?: string;
   placeholder?: string;
   uploadProps?: UploadProps;
@@ -30,6 +31,7 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
   //必须要传ref
   const {
     className = '',
+    wrapperClassName = '',
     trigger = 'click',
     position = 'topLeft',
     isFunctionTabAtBottom = false,
@@ -94,14 +96,16 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     <div
       className={classNames({
         [styles.editorWrap]: true,
-        [className]: true,
+        [wrapperClassName]: true,
       })}>
       <div
         className={classNames({
           [styles.main]: true,
           [styles.mainReverse]: isFunctionTabAtBottom,
         })}>
-        <div className={classNames({[styles.functionTab]: true, [styles.functionTabAtBottom]: isFunctionTabAtBottom })}>
+        <div
+          className={classNames({ [styles.functionTab]: true })}>
+          <div className={styles.leftBtnWrapper}>
           <Popover
             trigger={trigger}
             position={position}
@@ -117,6 +121,14 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
               onClick={() => uploadTriggerRef.current?.click()}
             />
           )}
+          </div>
+          <div className={styles.rightBtnWrapper}>
+            {showSendButton && (
+              <Button theme="solid" {...sendButtomProps} onClick={onSend}>
+                发送
+              </Button>
+            )}
+          </div>
         </div>
         <div
           ref={ref}
@@ -124,6 +136,7 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
           className={classNames({
             [styles.richEditor]: true,
             [styles.richEditorReverse]: isFunctionTabAtBottom,
+            [className]: true,
           })}
           contentEditable
           data-placeholder={placeholder}
@@ -132,18 +145,13 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
           onKeyUp={handleKeyUp}
         />
       </div>
-      <div className={styles.fileList}>
-        <Upload className={styles.upload} ref={uploadRef} onError={() => Toast.error('上传失败')} {...uploadProps}>
-          <div ref={uploadTriggerRef}></div>
-        </Upload>
-      </div>
-      <div className={styles.btnWrapper}>
-        {showSendButton && (
-          <Button theme="solid" { ...sendButtomProps } onClick={onSend}>
-            发送
-          </Button>
-        )}
-      </div>
+      {uploadProps && (
+        <div className={styles.fileList}>
+          <Upload className={styles.upload} ref={uploadRef} onError={() => Toast.error('上传失败')} {...uploadProps}>
+            <div ref={uploadTriggerRef}></div>
+          </Upload>
+        </div>
+      )}
     </div>
   );
 });

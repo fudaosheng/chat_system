@@ -1,0 +1,22 @@
+.commentList {
+  font-size: 14px;
+  .comment {
+    cursor: pointer;
+    display: flex;
+    margin-top: 4px;
+    .profile {
+      .name {
+        color: var(--username-color);
+      }
+    }
+    .main {
+      flex: 1;
+    }
+  }
+  .commendCollapse {
+    margin-top: 12px;
+  }
+  .comment:first-of-type {
+    margin-top: 0;
+  }
+}

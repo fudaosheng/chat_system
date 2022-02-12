@@ -18,3 +18,18 @@ interface MomentLikeRecord {
   moment_type: number;
   create_time: string;
 }
+
+interface Comment {
+  id: number;
+  user_id: number;
+  moment_id: number;
+  content: string;
+  imgs_list?: Array<string>;
+  parent_id: number;
+  create_time: string;
+  update_time: string;
+}
+
+interface CommentExtra extends Comment {
+  user_info: UserInfo;
+}
