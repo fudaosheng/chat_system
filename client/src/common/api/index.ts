@@ -45,6 +45,7 @@ export function request(config: AxiosRequestConfig): Promise<BaseResponse> {
       return data?.data;
     },
     err => {
+      Toast.error(err?.message || 'System error');
       throw err;
     }
   );

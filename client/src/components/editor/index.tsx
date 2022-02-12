@@ -7,6 +7,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import { PopoverProps } from '@douyinfe/semi-ui/popover';
 import styles from './index.module.scss';
 import classNames from 'classnames';
+import { ButtonProps } from '@douyinfe/semi-ui/button';
 
 /**
  * 富文本编辑组件
@@ -17,6 +18,7 @@ interface Props {
   position?: PopoverProps['position'];
   isFunctionTabAtBottom?: boolean; //为true功能tab在底部
   showSendButton?: boolean; //是否显示发送按钮
+  sendButtomProps?: ButtonProps;
   className?: string;
   placeholder?: string;
   uploadProps?: UploadProps;
@@ -34,6 +36,7 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     placeholder = '请输入内容',
     uploadProps,
     showSendButton,
+    sendButtomProps = {},
     onSend,
     onEnterPress,
     onChange,
@@ -98,7 +101,7 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
           [styles.main]: true,
           [styles.mainReverse]: isFunctionTabAtBottom,
         })}>
-        <div className={styles.functionTab}>
+        <div className={classNames({[styles.functionTab]: true, [styles.functionTabAtBottom]: isFunctionTabAtBottom })}>
           <Popover
             trigger={trigger}
             position={position}
@@ -136,7 +139,7 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
       </div>
       <div className={styles.btnWrapper}>
         {showSendButton && (
-          <Button theme="solid" onClick={onSend}>
+          <Button theme="solid" { ...sendButtomProps } onClick={onSend}>
             发送
           </Button>
         )}

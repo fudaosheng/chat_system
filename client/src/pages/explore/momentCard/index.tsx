@@ -1,4 +1,4 @@
-import { Avatar, Collapsible, OverflowList } from '@douyinfe/semi-ui';
+import { Avatar, Collapsible, OverflowList, Toast } from '@douyinfe/semi-ui';
 import classNames from 'classnames';
 import { IconLikeThumb, IconComment } from '@douyinfe/semi-icons';
 import { dateTimeFormat, formatDate } from 'common/utils';
@@ -11,6 +11,7 @@ import { useOnClickOutSide } from 'common/hooks/useOnClickOutSide';
 import { GlobalContext } from 'common/store';
 import { useUploadFiles } from 'common/hooks/useUploadFiles';
 import { LikeUserList } from '../likeUserList';
+import { submitComment } from 'common/api/moment/momentComment';
 
 interface Props {
   moment: MomentExtra;
@@ -26,6 +27,8 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   const [contactListForLikeMoment, setContactListForLikeMoment] = useState<Array<UserInfo & { key: string }>>([]);
   // 评论下拉框是否显示
   const [commentCollapseIsOpen, setCommentCollapseIsOpen] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [content, setContent] = useState('');
   const editorRef = createRef<HTMLDivElement>();
   const editorContainerRef = createRef<HTMLDivElement>();
   // 评论上传的文件列表
@@ -39,14 +42,14 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
 
   // 获取喜欢该动态的联系人列表
   useEffect(() => {
-    if(moment.id && userInfo.id) {
+    if (moment.id && userInfo.id) {
       getLikeMomentContactList(moment.id).then(res => {
         const newContactListForLikeMoment = res?.data || [];
-        if(moment.like_user_ids.some(i => i.id === userInfo.id)) {
+        if (moment.like_user_ids.some(i => i.id === userInfo.id)) {
           newContactListForLikeMoment.unshift(userInfo);
         }
         setContactListForLikeMoment(newContactListForLikeMoment?.map(i => ({ ...i, key: String(i.id) })));
-      })
+      });
     }
   }, [moment, userInfo]);
 
@@ -64,6 +67,22 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   const openCommentCollapse = (e: any) => {
     setCommentCollapseIsOpen(true);
     e.stopPropagation();
+  };
+
+  // 提交评论
+  const handleSubmitComment = async () => {
+    const imgList = fileList?.map(i => i?.response?.data?.url);
+    try {
+      setBtnLoading(true);
+      await submitComment({
+        momentId: moment.id,
+        content,
+        imgs_list: imgList.length ? imgList : undefined,
+      });
+      Toast.success('评论成功');
+    } finally {
+      setBtnLoading(false);
+    }
   };
   return (
     <div className={styles.momentCard}>
@@ -114,6 +133,9 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
                 onSuccess: handleUploadSuccess,
                 onRemove: handleRemoveImg,
               }}
+              onChange={v => setContent(v)}
+              sendButtomProps={{ disabled: !content, loading: btnLoading }}
+              onSend={handleSubmitComment}
             />
           </div>
         </Collapsible>

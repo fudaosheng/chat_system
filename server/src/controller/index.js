@@ -10,7 +10,9 @@ function registryControllers() {
       return;
     }
     const controller = require(__dirname + sep + path);
-    this.context.controllers[path] = controller;
+    if(controller && typeof controller === 'object') {
+      this.context.controllers[path] = controller;
+    }
   });
 }
 

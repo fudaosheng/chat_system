@@ -214,20 +214,18 @@ CREATE TABLE `moment_like` (
 ```
 
 # 动态评论表
-```
 CREATE TABLE `moment_comments` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `momment_id` int NOT NULL,
-  `content` varchar(200) DEFAULT NULL,
+  `moment_id` int NOT NULL,
+  `content` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `imgs_list` json DEFAULT NULL,
   `parent_id` int DEFAULT '0',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  KEY `momment_id` (`momment_id`),
+  KEY `momment_id` (`moment_id`),
   CONSTRAINT `moment_comments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `moment_comments_ibfk_2` FOREIGN KEY (`momment_id`) REFERENCES `moments` (`id`) ON DELETE CASCADE
+  CONSTRAINT `moment_comments_ibfk_2` FOREIGN KEY (`moment_id`) REFERENCES `moments` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
-```
