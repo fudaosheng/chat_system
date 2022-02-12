@@ -1,4 +1,4 @@
-.commentList {
+.commentListWrapper {
   font-size: 14px;
   .comment {
     cursor: pointer;
@@ -7,6 +7,10 @@
     .profile {
       .name {
         color: var(--username-color);
+        .reply {
+          margin: 0 6px;
+          color: initial;
+        }
       }
     }
     .main {
@@ -15,8 +19,14 @@
   }
   .commendCollapse {
     margin-top: 12px;
+    .editor {
+      background-color: #fff;
+    }
   }
   .comment:first-of-type {
     margin-top: 0;
   }
+}
+.padding {
+  padding: 6px;
 }

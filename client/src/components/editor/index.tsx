@@ -89,8 +89,12 @@ export const Editor = forwardRef<HTMLDivElement, Props>((props, ref) => {
     if (trigger === 'hover') {
       return;
     }
-    const range = window.getSelection()?.getRangeAt(0);
+    try {
+      const range = window.getSelection()?.getRangeAt(0);
     setRange(range);
+    } catch(err) {
+      console.error(err);
+    }
   };
   return (
     <div

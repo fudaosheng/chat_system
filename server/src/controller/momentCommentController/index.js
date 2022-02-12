@@ -1,7 +1,6 @@
-const { STATUS_CODE, SORT_TYPE } = require('../../constance');
+const { STATUS_CODE } = require('../../constance');
 const { TABLE_NAMES, MOMENT_COMMENTS_TABLE } = require('../../constance/tables');
 const connections = require('../../app/database');
-const { getTableSelectColumns, userTableCommonColumns, getJSONOBJECTColumns } = require('../../utils');
 
 class MomentCommentController {
   // 提交评论
@@ -28,17 +27,21 @@ class MomentCommentController {
     const { momentId } = ctx.request.query;
     const userId = ctx.user.userId;
 
+    const contactIdList = await ctx.service.contactService.getContactIdList(userId);
+    const idRange = [userId, ...contactIdList].join(',');
+
     // 查询好友和自己对该动态的评论
-    // users.id = ${userId} AND contacts.user_id = NULL 查询自己的评论
-    const SQL = `SELECT ${getTableSelectColumns(Object.values(MOMENT_COMMENTS_TABLE), TABLE_NAMES.MOMENT_COMMENTS)},
-                  JSON_OBJECT(${getJSONOBJECTColumns(userTableCommonColumns)}, 'note', contacts.note) user_info
-                  FROM moment_comments JOIN users ON moment_comments.user_id = users.id 
-                  JOIN contacts ON users.id = contacts.contact_id
-                  WHERE moment_comments.moment_id = ${momentId} AND (contacts.user_id = ${userId} OR (users.id = ${userId} AND contacts.user_id = NULL)) 
-                  ORDER BY moment_comments.create_time ${SORT_TYPE.ASC}`;
-                
-    const result = await connections.execute(SQL);
-    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: result[0] });
+    const SQL = `SELECT * FROM moment_comments WHERE moment_comments.moment_id = ${momentId} AND moment_comments.user_id in (${idRange})`;
+
+    // resp1是评论信息，resp2是联系人信息
+    const [resp1, resp2] = await Promise.all([
+      connections.execute(SQL),
+      Promise.all(contactIdList.map(id => ctx.service.contactService.getContactInfo(userId, id)))
+    ]);
+
+    const commentList = resp1[0].map(comment => ({ ...comment, user_info: resp2.find(user => user.id === comment.user_id)  }));
+
+    return ctx.makeResp({ code: STATUS_CODE.SUCCESS, data: commentList });
   }
 }
 

@@ -6,6 +6,8 @@ import styles from './index.module.scss';
 import { ReleaseMoment } from './releaseMoment';
 import { getFriendsMomentList, getUserMomentList } from 'common/api/moment/moments';
 import { MomentCard } from './momentCard';
+import { NoResult } from 'components/empty';
+import classNames from 'classnames';
 enum MenuType {
   FRIENDS,
   ONESELF,
@@ -50,7 +52,9 @@ export const Explore: React.FC = () => {
       const {
         data: { total, list = [] },
       } = await request(_currentPage, _pageSize);
-      const newMomentList = (_activeMenu === MenuType.FRIENDS ? list : list?.map(i => ({ ...i, user_info: userInfo }))) as Array<MomentExtra>;
+      const newMomentList = (
+        _activeMenu === MenuType.FRIENDS ? list : list?.map(i => ({ ...i, user_info: userInfo }))
+      ) as Array<MomentExtra>;
       setMomentList(newMomentList);
       setTotal(total);
     } finally {
@@ -89,7 +93,32 @@ export const Explore: React.FC = () => {
   const handleReleaseMomentSuccess = () => {
     setReleaseMomentModalVisible(false);
     fetchMomentList();
-  }
+  };
+
+  const renderMomentList = () => {
+    return momentList.length ? (
+      <>
+        <div className={styles.momentList}>
+          {momentList?.map(moment => (
+            <MomentCard key={moment.id} moment={moment} />
+          ))}
+        </div>
+        <div className={styles.paginationWrapper}>
+          <span>共{total}条动态</span>
+          <Pagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            total={total}
+            showSizeChanger
+            pageSizeOpts={[5, 10, 20, 50]}
+            onChange={handlePaginationChange}
+          />
+        </div>
+      </>
+    ) : (
+      NoResult
+    );
+  };
 
   return (
     <div className={styles.explore}>
@@ -106,24 +135,10 @@ export const Explore: React.FC = () => {
         ))}
       </div>
       <Spin spinning={loading} wrapperClassName={styles.spin}>
-        <div className={styles.momentListWrapper}>
-          <div className={styles.momentList}>
-            {momentList?.map(moment => (
-              <MomentCard key={moment.id} moment={moment} />
-            ))}
-          </div>
-          <div className={styles.paginationWrapper}>
-            <span>共{total}条动态</span>
-            <Pagination
-              currentPage={currentPage}
-              pageSize={pageSize}
-              total={total}
-              showSizeChanger
-              pageSizeOpts={[5, 10, 20, 50]}
-              onChange={handlePaginationChange}
-            />
-          </div>
-        </div>
+        <div className={classNames({
+          [styles.momentListWrapper]: true,
+          [styles.empty]: !momentList.length
+        })}>{renderMomentList()}</div>
       </Spin>
       <div>
         <Tooltip content="发表动态">

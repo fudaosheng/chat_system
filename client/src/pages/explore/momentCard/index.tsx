@@ -9,7 +9,7 @@ import { getLikeMomentContactList, likeMoment, MomentType, unlikeMoment } from '
 import { GlobalContext } from 'common/store';
 import { LikeUserList } from '../likeUserList';
 import { getCommentList, submitComment } from 'common/api/moment/momentComment';
-import { CommentList } from 'components/commentList';
+import { CommentList, OnSubmitCommentParams } from 'components/commentList';
 
 interface Props {
   moment: MomentExtra;
@@ -32,6 +32,12 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
     setIsLike(moment?.like_user_ids?.some(i => i.id === userInfo.id));
   }, [moment]);
 
+  const fetchCommentList = () => {
+    getCommentList(moment.id).then(res => {
+      setCommentList(res.data || []);
+    });
+  }
+
   // 获取喜欢该动态的联系人列表
   useEffect(() => {
     if (moment.id && userInfo.id) {
@@ -44,10 +50,7 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
         setContactListForLikeMoment(newContactListForLikeMoment?.map(i => ({ ...i, key: String(i.id) })));
       });
       // 获取评论信息
-      getCommentList(moment.id).then(res => {
-        console.log(res.data);
-        setCommentList(res.data || []);
-      });
+      fetchCommentList();
     }
   }, [moment, userInfo]);
 
@@ -68,13 +71,16 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
   };
 
   // 提交评论
-  const handleSubmitComment = async (content: string, fileList?: Array<string>) => {
+  const handleSubmitComment = async ({ content, imgs_list, parent_id }: OnSubmitCommentParams) => {
     try {
       await submitComment({
         momentId: moment.id,
         content,
-        imgs_list: fileList,
+        imgs_list,
+        parent_id
       });
+      // 从新拉取评论
+      fetchCommentList();
     } finally {
     }
   };
@@ -95,7 +101,7 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
             </div>
           ))}
         </div>
-        <div className={styles.btnGroup}>
+        <div className={styles.btnGroupWrapper}>
           <div className={styles.createAt}>发布时间：{formatDate(new Date(moment.create_time), dateTimeFormat)}</div>
           <div className={styles.btnGroup}>
             <IconLikeThumb
@@ -112,7 +118,7 @@ export const MomentCard: React.FC<Props> = (props: Props) => {
         </div>
 
         {/* // 喜欢 */}
-        <LikeUserList userList={contactListForLikeMoment} />
+        {contactListForLikeMoment.length ? <LikeUserList userList={contactListForLikeMoment} /> : null}
         {/* 评论 */}
         <CommentList
           commentList={commentList}

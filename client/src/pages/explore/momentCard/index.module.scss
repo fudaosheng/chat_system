@@ -44,7 +44,7 @@
       }
     }
 
-    .btnGroup {
+    .btnGroupWrapper {
       @include flex-align-center;
       justify-content: space-between;
       margin-top: 20px;
@@ -85,7 +85,6 @@
       }
     }
     .commentList {
-      padding: 6px;
       background-color: #f7f7f7;
     }
   }
