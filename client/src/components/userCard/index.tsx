@@ -7,13 +7,14 @@ import classNames from 'classnames';
 interface Props {
   userInfo: UserInfo;
   name?: ReactElement | string;
+  bio?: ReactElement | string;
   size?: AvatarSize;
   className?: string;
   onClick?: () => void;
 }
 
 export const UserCard: React.FC<Props> = (props: Props) => {
-  const { userInfo, name, size, className = '', onClick } = props;
+  const { userInfo, name, size, className = '', bio, onClick } = props;
   return (
     <div className={`${styles.userCard} ${className}`} onClick={onClick}>
       <div className={styles.avatar}>
@@ -24,7 +25,7 @@ export const UserCard: React.FC<Props> = (props: Props) => {
           [styles.name]: true,
           [styles.nameSmallStyle]: size === "small"
         })}>{name || userInfo?.name}</div>
-        <div className={styles.bio}>{userInfo?.bio}</div>
+        <div className={styles.bio}>{bio || userInfo?.bio}</div>
       </div>
     </div>
   );

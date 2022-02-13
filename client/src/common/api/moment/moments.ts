@@ -13,14 +13,14 @@ export interface GetUserMomentListResp extends BaseResponse {
     currentPage: number;
     pageSize: number;
     total: number;
-    list: Array<Moment>;
+    list: Array<MomentExtra>;
   };
 }
 // 获取个人动态
-export const getUserMomentList = (currentPage: number, pageSize: number): Promise<GetUserMomentListResp> =>
+export const getUserMomentList = (userId: number, currentPage: number, pageSize: number): Promise<GetUserMomentListResp> =>
   request({
     url: '/moments/get_user_moments',
-    data: { currentPage, pageSize },
+    data: { userId, currentPage, pageSize },
   });
 
 export interface GetFriendsMomentListResp extends BaseResponse {

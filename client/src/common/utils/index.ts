@@ -54,3 +54,14 @@ export const depthFirstSearch = <T extends Record<string, any>>(
   };
   return s(list);
 };
+
+export const getURLQuery = () => {
+  const { href } = window.location;
+  const queryString = href.split('?')[1];
+  const query: Record<string, string | number> = {};
+  queryString?.split('&')?.forEach(i => {
+    const [key, value] = i?.split('=');
+    query[key] = Number(value) || value;
+  });
+  return query;
+};

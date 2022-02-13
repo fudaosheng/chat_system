@@ -10,7 +10,7 @@ export const MemberList: React.FC<Props> = (props: Props) => {
   return (
     <div>
       {members.map(member => (
-        <UserCard size="small" userInfo={member} className={styles.userCard} />
+        <UserCard key={member.id} size="small" userInfo={member} className={styles.userCard} />
       ))}
     </div>
   );

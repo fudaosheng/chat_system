@@ -22,9 +22,9 @@ class MomentController {
 
     return ctx.makeResp({ code: STATUS_CODE.SUCCESS });
   }
-  // 获取用户的动态
+  // 获取指定联系人的动态
   async getUserMoments(ctx) {
-    const userId = ctx.user.userId;
+    const { userId } = ctx.request.query;
     // 分页参数处理
     const { currentPage: _currentPage = 1, pageSize: _pageSize = 10 } = ctx.request.query;
     const currentPage = Number(_currentPage);
@@ -45,13 +45,23 @@ class MomentController {
       LIMIT ${(currentPage - 1) * pageSize}, ${pageSize}`;
 
     // 一次查询总数和用户动态
-    const [resp1, resp2] = await Promise.all([connections.execute(totalSQL), connections.execute(SQL)]);
+    const [resp1, resp2, resp3] = await Promise.all([
+      connections.execute(totalSQL),
+      connections.execute(SQL),
+      Number(userId) === Number(ctx.user.userId)
+        ? ctx.service.userService.getUserInfoById(userId)
+        : ctx.service.contactService.getContactInfo(ctx.user.userId, userId),
+    ]);
+    let list = resp2[0];
+    if (list && Array.isArray(list) && list.length) {
+      list = list.map(i => ({ ...i, user_info: resp3 }));
+    }
     return ctx.makeResp({
       code: STATUS_CODE.SUCCESS,
       data: {
         currentPage,
         pageSize,
-        list: resp2[0],
+        list: list,
         total: resp1[0][0].total,
       },
     });

@@ -10,6 +10,7 @@ import { Input } from '@douyinfe/semi-ui/lib/es/input';
 import { WebsocketContext } from 'core/store';
 import { WebsocketAction } from 'core/store/action';
 import { CHAT_TYPE } from 'core/typings';
+import { GlobalContext } from 'common/store';
 const day = 1000 * 60 * 60 * 24;
 
 interface Props {
@@ -142,7 +143,12 @@ export const UserInfo: React.FC<Props> = (props: Props) => {
             <div className={styles.name}>{contactInfo?.note || contactInfo.name}</div>
             <div className={styles.function}>
               <Button icon={<IconComment />} type="tertiary" theme="borderless" onClick={handleCreateChat} />
-              <Button icon={<IconGlobe />} type="tertiary" theme="borderless" />
+              <Button
+                icon={<IconGlobe />}
+                type="tertiary"
+                theme="borderless"
+                onClick={() => history.push(`/explore?uid=${contactInfo.id}`)}
+              />
             </div>
           </div>
         </div>

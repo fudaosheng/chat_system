@@ -1,16 +1,23 @@
 import { Button, Pagination, Spin, Tooltip } from '@douyinfe/semi-ui';
 import { IconEyeOpened, IconAt, IconPlus } from '@douyinfe/semi-icons';
 import { GlobalContext } from 'common/store';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import styles from './index.module.scss';
 import { ReleaseMoment } from './releaseMoment';
-import { getFriendsMomentList, getUserMomentList } from 'common/api/moment/moments';
+import {
+  getFriendsMomentList,
+  GetFriendsMomentListResp,
+  getUserMomentList,
+  GetUserMomentListResp,
+} from 'common/api/moment/moments';
 import { MomentCard } from './momentCard';
 import { NoResult } from 'components/empty';
 import classNames from 'classnames';
+import { getURLQuery } from 'common/utils';
 enum MenuType {
   FRIENDS,
   ONESELF,
+  SPECIAL_USER, //查看指定用户的空间
 }
 const MenuList = [
   {
@@ -29,11 +36,14 @@ const defaultPagination = {
   pageSize: 10,
 };
 export const Explore: React.FC = () => {
+  const { uid } = getURLQuery();
+
   const {
     state: { userInfo },
   } = useContext(GlobalContext);
+  
   // 活跃的左侧menu
-  const [activeMenu, setActiveMenu] = useState(MenuType.FRIENDS);
+  const [activeMenu, setActiveMenu] = useState(uid ? MenuType.SPECIAL_USER : MenuType.FRIENDS);
   // 发表动态modal visible
   const [releaseMomentModalVisible, setReleaseMomentModalVisible] = useState(false);
   // 动态列表
@@ -46,16 +56,22 @@ export const Explore: React.FC = () => {
 
   // 获取动态列表
   const fetchMomentList = async (_currentPage = currentPage, _pageSize = pageSize, _activeMenu = activeMenu) => {
-    const request = _activeMenu === MenuType.FRIENDS ? getFriendsMomentList : getUserMomentList;
+    let resp: GetFriendsMomentListResp | GetUserMomentListResp;
     try {
       setLoading(true);
+      if (_activeMenu === MenuType.FRIENDS) {
+        resp = await getFriendsMomentList(_currentPage, _pageSize);
+      } else {
+        resp = await getUserMomentList(
+          _activeMenu === MenuType.SPECIAL_USER ? Number(uid) : userInfo.id,
+          _currentPage,
+          _pageSize
+        );
+      }
       const {
         data: { total, list = [] },
-      } = await request(_currentPage, _pageSize);
-      const newMomentList = (
-        _activeMenu === MenuType.FRIENDS ? list : list?.map(i => ({ ...i, user_info: userInfo }))
-      ) as Array<MomentExtra>;
-      setMomentList(newMomentList);
+      } = resp || {};
+      setMomentList(list);
       setTotal(total);
     } finally {
       setLoading(false);
@@ -135,10 +151,13 @@ export const Explore: React.FC = () => {
         ))}
       </div>
       <Spin spinning={loading} wrapperClassName={styles.spin}>
-        <div className={classNames({
-          [styles.momentListWrapper]: true,
-          [styles.empty]: !momentList.length
-        })}>{renderMomentList()}</div>
+        <div
+          className={classNames({
+            [styles.momentListWrapper]: true,
+            [styles.empty]: !momentList.length,
+          })}>
+          {renderMomentList()}
+        </div>
       </Spin>
       <div>
         <Tooltip content="发表动态">

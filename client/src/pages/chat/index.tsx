@@ -8,7 +8,7 @@ import { WebsocketContext } from 'core/store';
 import { Conversations } from 'pages/conversations';
 import { GlobalContext } from 'common/store';
 import styles from './index.module.scss';
-import { CHAT_TYPE } from 'core/typings';
+import { CHAT_TYPE, MessageType } from 'core/typings';
 
 export const Chat: React.FC = () => {
   const { url } = useRouteMatch();
@@ -37,14 +37,22 @@ export const Chat: React.FC = () => {
                 .slice(lastReadedMessageIndex + 1)
                 .filter(i => i.receiverId === userInfo.id).length;
               const receiver = type === CHAT_TYPE.CHAT ? members[members?.findIndex(i => i.id === Number(id))] : chatGroupInfo;
+
+              // 最新消息
+              const latestMessage = conversations[conversations.length - 1];
+              // 最新消息发送人信息
+              const fromUserInfo = members?.find(i => i.id === latestMessage?.fromId);
+              // 最新消息内容
+              const latestMessageContent = latestMessage && fromUserInfo ? `${fromUserInfo?.note || fromUserInfo?.name}：${latestMessage?.type === MessageType.TEXT ? latestMessage.message : '[图片]'}` : undefined;
               const UserCardContent = (
                 <UserCard
                   key={id + type}
-                  userInfo={receiver as UserInfo}
                   className={classNames({
                     [styles.userCard]: true,
                     [styles.active]: active.id === receiver?.id && type === active.type
                   })}
+                  userInfo={receiver as UserInfo}
+                  bio={latestMessageContent}
                   onClick={() => handleClickContactCard(receiver?.id as number, type)}
                 />
               );
