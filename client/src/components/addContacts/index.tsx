@@ -17,8 +17,8 @@ export const AddButton: React.FC<ButtonProps> = (props: ButtonProps) => {
         position={'bottom'}
         render={
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setAddContactModalVisible(true)}>添加联系人/群组</Dropdown.Item>
-            <Dropdown.Item onClick={() => setCreateChatGroupModalVisible(true)}>创建群组</Dropdown.Item>
+            <Dropdown.Item key={1} onClick={() => setAddContactModalVisible(true)}>添加联系人/群组</Dropdown.Item>
+            <Dropdown.Item key={2} onClick={() => setCreateChatGroupModalVisible(true)}>创建群组</Dropdown.Item>
           </Dropdown.Menu>
         }>
         <Button {...props} icon={<IconPlus />}></Button>

@@ -13,6 +13,14 @@ export const reducer = (state: GlobalState, action: GlobalActionType): GlobalSta
         draft.userInfo = action.payload;
         break;
       }
+      case GLOBAL_OPERATION_TYPE.SET_CONTACT_GROUP_LIST: {
+        draft.contactGroupList = action.payload;
+        break;
+      }
+      case GLOBAL_OPERATION_TYPE.SET_CHAT_GROUP_LIST: {
+        draft.chatGroupList = action.payload;
+        return;
+      }
       default:
         throw new Error();
     }

@@ -11,10 +11,16 @@ export const defaultUserInfo = {
 };
 export interface GlobalState {
   userInfo: UserInfo;
+  // 联系人和分组列表
+  contactGroupList: Array<DetailContactGroupInfoExtra>;
+  // 群聊列表
+  chatGroupList: Array<ChatGroup>
 }
 
 export const initGlobalState: GlobalState = {
   userInfo: defaultUserInfo,
+  contactGroupList: [],
+  chatGroupList: []
 };
 
 interface ContextType {

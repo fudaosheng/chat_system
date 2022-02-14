@@ -6,3 +6,21 @@
 .searcher:hover {
   background-color: #fff;
 }
+.searchResult {
+  width: 300px;
+  padding: 12px;
+  .title {
+    font-weight: 600;
+  }
+  .wrapper {
+    max-height: 300px;
+    overflow: scroll;
+    .userCard {
+      padding: 8px 0;
+      cursor: pointer;
+    }
+    .empty {
+      color: var(--text-color2);
+    }
+  }
+}

@@ -126,7 +126,7 @@ export const AddContactModal: React.FC<Props> = (props: Props) => {
           <div className={styles.userList}>
             <Spin spinning={loading} style={spinStyle} childStyle={spinStyle}>
               {searchResultList.map(item => (
-                <div key={item.id} className={styles.userItem}>
+                <div key={`${item.type}-${item.id}`} className={styles.userItem}>
                   <UserCard userInfo={item as UserInfo} name={renderName(item as Item)} />
                   <Button
                     icon={<IconPlusCircle size="large" />}

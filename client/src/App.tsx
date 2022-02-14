@@ -10,14 +10,14 @@ import { CHAT_TYPE, MessageStruct } from 'core/typings';
 import { WebsocketAction } from 'core/store/action';
 import { WebsocketContext } from 'core/store';
 import { findIndex } from 'core/store/util';
-import { getContactInfo } from 'common/api/contacts';
+import { getContactInfo, makeTreeWithContactList } from 'common/api/contacts';
 import {
   deleteAllOfflineMessage,
   getChatGroupOfflineMessageList,
   getOfflineMessageList,
 } from 'common/api/offlineMessage';
 import { Toast } from '@douyinfe/semi-ui';
-import { getChatGroupDetailInfo } from 'common/api/chatGroup';
+import { getChatGroupDetailInfo, getChatGroupList } from 'common/api/chatGroup';
 import { getChatGroupMembers } from 'common/api/chatGroupContact';
 const AUDIO_ID = 'chat_system_audio';
 
@@ -85,8 +85,8 @@ const App: React.FC = () => {
     deleteAllOfflineMessage();
   };
 
+  // 从缓存中读取用户信息
   useEffect(() => {
-    // 从缓存中读取用户信息
     const userInfoJSON = localStorage.getItem(LOCAL_STORAGE_USER_INFO);
     const userInfo = userInfoJSON ? JSON.parse(userInfoJSON) : undefined;
     if (userInfo) {
@@ -142,6 +142,7 @@ const App: React.FC = () => {
     };
   }, [userInfo.id, ws]);
 
+  // 音频处理
   useEffect(() => {
     const audio = document.getElementById(AUDIO_ID);
     const handleCanplaythrough = () => {
@@ -150,6 +151,21 @@ const App: React.FC = () => {
     audio?.addEventListener('canplaythrough', handleCanplaythrough);
     return () => audio?.removeEventListener('canplaythrough', handleCanplaythrough);
   }, []);
+
+  // 加载全局数据
+  useEffect(() => {
+    if(!userInfo.id) {
+      return;
+    }
+    // 获取联系人信息
+    makeTreeWithContactList().then(res => {
+      dispatch(GlobalAction.setContactGroupList(res));
+    });
+    // 获取群聊信息
+    getChatGroupList().then(res => {
+      dispatch(GlobalAction.setChatGroupList(res?.data || []));
+    })
+  }, [userInfo.id]);
 
   return (
     <div className="App">

@@ -65,3 +65,8 @@ export const getURLQuery = () => {
   });
   return query;
 };
+
+// 根据用户名搜索联系人
+export const searchContactByName = (contactList: Array<UserInfo>, keyword: string) => {
+  return contactList.filter(i => (i?.note || i.name).includes(keyword));
+};

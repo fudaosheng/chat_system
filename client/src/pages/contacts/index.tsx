@@ -16,6 +16,7 @@ import { getAllChatGroupApplyTickets } from 'common/api/chatGroupApplyTickets';
 import { getChatGroupList } from 'common/api/chatGroup';
 import { ChatGroupList } from './components/chatGroupList';
 import { ChatGroupInfo } from './subPages/chatGroupInfo';
+import { GlobalAction } from 'common/store/action';
 const interval = 1000 * 60; //轮询间隔
 
 export interface SystemAssistant {
@@ -30,13 +31,10 @@ export const Contacts: React.FC = () => {
   const history = useHistory();
   const { path, url } = useRouteMatch();
   const {
-    state: { userInfo },
+    state: { userInfo, contactGroupList, chatGroupList },
+    dispatch
   } = useContext(GlobalContext);
 
-  // 联系人分组列表
-  const [contactGroupList, setContactGroupList] = useState<Array<DetailContactGroupInfoExtra>>([]);
-  // 用户群聊列表
-  const [chatGroupList, setChatGroupList] = useState<Array<ChatGroup>>([]);
   const [loading, setLoading] = useState(false);
   // 联系人申请列表
   const [applyTicketList, setApplyTicketList] = useState<Array<ApplyTicket>>([]);
@@ -62,15 +60,13 @@ export const Contacts: React.FC = () => {
     return () => clearInterval(timer);
   }, [userInfo.id]);
 
-  // 获取联系人分组列表
-  // todo：要先查询分组，再根据分组查询联系人，否则查询的分组不全
+  // 获取联系人列表
   const getContactGroupListRequest = async (needLoading = false) => {
     needLoading && setLoading(true);
     try {
       // 将分组和联系人信息进行处理
       const newContactGroupList = await makeTreeWithContactList();
-
-      setContactGroupList(newContactGroupList);
+      dispatch(GlobalAction.setContactGroupList(newContactGroupList));
     } finally {
       needLoading && setLoading(false);
     }
@@ -79,11 +75,11 @@ export const Contacts: React.FC = () => {
   // 获取群聊列表
   const getChatGroupListRequest = async () => {
     try {
+      setLoading(true);
       const { data = [] } = await getChatGroupList();
-      
-      setChatGroupList(data);
+      dispatch(GlobalAction.setChatGroupList(data));
     } finally {
-
+      setLoading(false);
     }
   }
 
@@ -92,10 +88,10 @@ export const Contacts: React.FC = () => {
       return;
     }
     // 获取联系人 + 分组信息
-    getContactGroupListRequest(true);
-    getChatGroupListRequest();
-    // 获取用户群聊列表
-  }, [userInfo.id]);
+    !contactGroupList.length && getContactGroupListRequest(true);
+    // 获取群聊列表
+    !chatGroupList.length && getChatGroupListRequest();
+  }, [userInfo.id, contactGroupList, chatGroupList]);
 
   // 系统助手
   const assistantList: Array<SystemAssistant> = useMemo(() => {
