@@ -24,7 +24,7 @@ export const UserCard: React.FC<Props> = (props: Props) => {
         <div className={classNames({
           [styles.name]: true,
           [styles.nameSmallStyle]: size === "small"
-        })}>{name || userInfo?.name}</div>
+        })}>{name || userInfo?.note || userInfo?.name}</div>
         <div className={styles.bio}>{bio || userInfo?.bio}</div>
       </div>
     </div>

@@ -91,7 +91,7 @@ export const Contacts: React.FC = () => {
     !contactGroupList.length && getContactGroupListRequest(true);
     // 获取群聊列表
     !chatGroupList.length && getChatGroupListRequest();
-  }, [userInfo.id, contactGroupList, chatGroupList]);
+  }, [userInfo.id]);
 
   // 系统助手
   const assistantList: Array<SystemAssistant> = useMemo(() => {

@@ -1,4 +1,4 @@
-import { MessageStruct, MessageType } from 'core/typings';
+import { CHAT_TYPE, MessageStruct, MessageType } from 'core/typings';
 import React, { createRef, useEffect, useMemo } from 'react';
 import { Avatar } from '@douyinfe/semi-ui';
 import { IconCommentStroked } from '@douyinfe/semi-icons';
@@ -24,7 +24,7 @@ export const ConversationList: React.FC<Props> = (props: Props) => {
   const handleImageLoad = (data: MessageStruct) => {
     const { receiverId, message } = data;
     // 如果自己不是消息接收人不处理
-    if(Number(receiverId) !== userInfo.id || !message) {
+    if(Number(receiverId) !== userInfo.id || !message || data.chatType === CHAT_TYPE.CHAT_GROUP) {
       return;
     } 
     // 自己是消息接收人，加载完成图片时删除图片

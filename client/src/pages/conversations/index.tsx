@@ -57,7 +57,7 @@ export const Conversations: React.FC = () => {
     }
     const updateLastReadedMessageIndex = debounce(() => {
       dispatch(WebsocketAction.updateLastReadedMessageIndex(chat?.id, chatType));
-    }, debounceGap);
+    }, debounceGap, { leading: true });
     conversationsRef.current.addEventListener('mousemove', updateLastReadedMessageIndex);
     return () => conversationsRef.current?.removeEventListener('mousemove', updateLastReadedMessageIndex);
   }, [conversationsRef]);

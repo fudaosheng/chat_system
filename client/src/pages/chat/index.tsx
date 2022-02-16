@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import classNames from 'classnames';
 import { Badge } from '@douyinfe/semi-ui';
-import { EmptyContent, NoContacts } from 'components/empty';
+import { EmptyContent, NoContent } from 'components/empty';
 import { UserCard } from 'components/userCard';
 import { WebsocketContext } from 'core/store';
 import { Conversations } from 'pages/conversations';
@@ -64,7 +64,7 @@ export const Chat: React.FC = () => {
                 UserCardContent
               );
             })
-          : NoContacts}
+          : <NoContent description="暂无会话" />}
       </div>
       <div className={styles.conversations}>
         {chatList.length ? (
