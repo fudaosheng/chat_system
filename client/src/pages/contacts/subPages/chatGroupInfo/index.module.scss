@@ -25,6 +25,7 @@
   .top {
     padding: 24px;
     background: #f9dcdb;
+    position: relative;
     
     .avatar {
       //   transform: translateY(-30%);
@@ -54,6 +55,13 @@
           }
         }
       }
+    }
+    .setting {
+      position: absolute;
+      top: 12px;
+      right: 24px;
+      font-size: 14px;
+      cursor: pointer;
     }
   }
   .main {

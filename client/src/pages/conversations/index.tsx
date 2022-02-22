@@ -146,7 +146,7 @@ export const Conversations: React.FC = () => {
           </div>
         </div>
         <div className={styles.conversationList}>
-          <ConversationList userInfo={userInfo} membersMap={membersMap} conversationList={chat?.conversations} />
+          <ConversationList type={chat?.type || CHAT_TYPE.CHAT} userInfo={userInfo} membersMap={membersMap} conversationList={chat?.conversations} />
         </div>
         <div className={styles.footer}>
           {/* <div className={styles.funtionNav}>

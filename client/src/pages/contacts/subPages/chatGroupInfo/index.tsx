@@ -130,9 +130,9 @@ export const ChatGroupInfo: React.FC<Props> = (props: Props) => {
             <div className={styles.id}>群号：{chatGroupInfo.id}</div>
             <div className={styles.function}>
               <Button icon={<IconComment />} type="tertiary" theme="borderless" onClick={handleCreateChat} />
-              <Button icon={<IconGlobe />} type="tertiary" theme="borderless" />
             </div>
           </div>
+          {/* <div className={styles.setting}>设置</div> */}
         </div>
         <div className={styles.main}>
           <div className={styles.otherInfo}>{renderOtherInfo()}</div>
