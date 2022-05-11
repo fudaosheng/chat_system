@@ -51,7 +51,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3
 ```
 
-# 申请好友工单表
+# 好友申请工单表
 ```
 CREATE TABLE `apply_contact_ticket` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -71,7 +71,7 @@ CREATE TABLE `apply_contact_ticket` (
   CONSTRAINT `apply_contact_ticket_ibfk_2` FOREIGN KEY (`target_user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `apply_contact_ticket_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `contact_group` (`id`),
   CONSTRAINT `apply_contact_ticket_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `contact_group` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb3
 ```
 
 # 联系人分组表
@@ -147,9 +147,9 @@ CREATE TABLE `chat_groups` (
 ```
 CREATE TABLE `chat_group_apply_tickets` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `applicant_user_id` int NOT NULL,
+  `applicant_user_id` int NOT NULL, # 申请发起人唯一用户标识
   `group_id` int NOT NULL,
-  `target_user_id` int NOT NULL,
+  `target_user_id` int NOT NULL, # 申请人唯一用户标识
   `status` enum('1','2','3') DEFAULT '1',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -158,7 +158,7 @@ CREATE TABLE `chat_group_apply_tickets` (
   KEY `applicant_user_id` (`applicant_user_id`),
   KEY `group_id` (`group_id`),
   KEY `target_user_id` (`target_user_id`),
-  KEY `operator_id` (`operator_id`),
+  KEY `operator_id` (`operator_id`), # 处理人唯一用户标识
   CONSTRAINT `chat_group_apply_tickets_ibfk_1` FOREIGN KEY (`applicant_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `chat_group_apply_tickets_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `chat_groups` (`id`) ON DELETE CASCADE,
   CONSTRAINT `chat_group_apply_tickets_ibfk_3` FOREIGN KEY (`target_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
@@ -197,7 +197,7 @@ CREATE TABLE `moments` (
   CONSTRAINT `moments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 
-# 动态或动态评论点赞表 
+# 动态点赞表 
 ```
 CREATE TABLE `moment_like` (
   `id` int NOT NULL AUTO_INCREMENT,

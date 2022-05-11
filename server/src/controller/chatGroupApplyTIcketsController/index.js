@@ -60,19 +60,12 @@ class ChatGroupApplyTicketsController {
     const totalSQL = `SELECT COUNT(*) as total FROM ${CHAT_GROUP_APPLY_TICKETS} WHERE ${queryCondition}`;
 
     // 查询和自己相关的工单列表的SQL
-    const SQL = `SELECT ${chatGroupApplyTableSelectColumns}, JSON_OBJECT(${getJSONOBJECTColumns(
-      userTableCommonColumns
-    )}) applicant_user, JSON_OBJECT(${getJSONOBJECTColumns(
-      userTableCommonColumns,
-      'tarUsers'
-    )}) target_user, JSON_OBJECT(${getJSONOBJECTColumns(
-      Object.values(CHAT_GROUPS_TABLE),
-      TABLE_NAMES.CHAT_GROUPS
-    )}) chat_group FROM ${CHAT_GROUP_APPLY_TICKETS} 
+    const SQL = `SELECT ${chatGroupApplyTableSelectColumns}, JSON_OBJECT(${getJSONOBJECTColumns(userTableCommonColumns)}) applicant_user, 
+    JSON_OBJECT(${getJSONOBJECTColumns(userTableCommonColumns,'tarUsers')}) target_user, 
+    JSON_OBJECT(${getJSONOBJECTColumns(Object.values(CHAT_GROUPS_TABLE),TABLE_NAMES.CHAT_GROUPS)}) 
+    chat_group FROM ${CHAT_GROUP_APPLY_TICKETS} 
     JOIN ${USERS} ON ${CHAT_GROUP_APPLY_TICKETS}.${CHAT_GROUP_APPLY_TICKETS_TABLE.APPLICANT_USER_ID} = ${USERS}.id 
-    JOIN ${USERS} as tarUsers ON ${CHAT_GROUP_APPLY_TICKETS}.${
-      CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID
-    } = tarUsers.id 
+    JOIN ${USERS} as tarUsers ON ${CHAT_GROUP_APPLY_TICKETS}.${CHAT_GROUP_APPLY_TICKETS_TABLE.TARGET_USER_ID} = tarUsers.id 
     JOIN ${CHAT_GROUPS} ON ${CHAT_GROUP_APPLY_TICKETS}.${CHAT_GROUP_APPLY_TICKETS_TABLE.GROUP_ID} = ${CHAT_GROUPS}.id  
     WHERE ${queryCondition}
     ORDER BY ${CHAT_GROUP_APPLY_TICKETS}.update_time DESC LIMIT ${offset}, ${pageSize};`;

@@ -86,7 +86,7 @@ export const CommentList: React.FC<Props> = (props: Props) => {
   const handleClick = (e: any, item: CommentExtra) => {
     setActiveComment(item);
     setCommentCollapseIsOpen(true);
-    setPlaceholder(`回复${item.user_info?.note || item.user_info.name}`);
+    setPlaceholder(`回复${item?.user_info?.note || item?.user_info?.name || userInfo?.name}`);
     editorRef?.current?.focus();
     e.stopPropagation();
   };

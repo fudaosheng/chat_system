@@ -72,7 +72,6 @@ export const CreateChatGroupModal: React.FC<Props> = (props: Props) => {
         data: { id },
       } = await createChatGroup(name, avatar);
       const userIdList = selectedContactList.filter(i => typeof i === 'number') as Array<number>;
-      console.log(userIdList);
       // 2. 向选中的群成员发送入群申请
       id && (await batchCreateChatGroupApplyTickets(id, userIdList));
       Toast.success('群聊创建成功');
