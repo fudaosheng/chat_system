@@ -34,15 +34,15 @@
 ![入群记录](./docs/client/moments.png)|![动态评论](./docs/client/comment_moment.png)|![动态点赞](./docs/client/like_moment.png)
 
 ## 如何启动项目
-1. 创建数据库
+1. ***创建数据库：*** 
 `create database chat_system;`
-2. 连接数据库
+2. ***连接数据库：***
 `use chat_system`;
-3. 创建数据表
+3. ***创建数据表：***
 创建本系统各表的SQL详见:point_right:[各表SQL语句](./docs/server/tables.md),copy到终端中执行即可。
-4. 创建系统配置文件
+4. ***创建系统配置文件：***
 进入到本系统目录执行`touch server/.env`
-5. 配置系统配置文件
+5. ***配置系统配置文件：***
 将如下代码copy到server/.env中
 ```
 # 服务端口号
@@ -63,9 +63,9 @@ MYSQL_DATABASE=chat_system
 MYSQL_CONNECTION_LIMIT=10
 MYSQL_QUEUE_LIMIT=0
 ```
-6. 在系统根目录下安装依赖
+6. ***在系统根目录下安装依赖：***
 `npm run post-install`
-7. 启动项目
+7. ***启动项目：***
 `npm start`
 至此，本项目已启动成功，你可以开始体验本项目，或对本项目进行二次开发。
 
