@@ -5,6 +5,7 @@
 
 ## 系统技术栈：
 ***前端主要技术栈：*** React、TypeScript、WebSocket API、semi-ui、axios、immer、sass等。
+
 ***后端主要技术栈：*** Node.js、Koa、mysql2、ws、koa-router、@koa/multer、jsonwebtoken、koa-bodyparser等。
 
 ## 系统主要功能
@@ -16,6 +17,18 @@
 6. ***朋友圈模块：*** 支持发表动态，查看好友动态，对动态进行点赞、评论。
 
 ## 系统预览
-聊天|发送emojo|个信人戏卡片
+聊天|发送emojo|个人信息
 ---|:--:|---:
 ![聊天](./docs/client/conversation.png)|![emoji](./docs/client/emoji.png)|![个人信息卡片](./docs/client/profileInfo.png)
+
+添加联系人|好友申请信息|添加好友记录
+---|:--:|---:
+![添加联系人](./docs/client/contact.png)|![好友申请信息](./docs/client/apply.png)|![添加好友记录](./docs/client/contact_tickets.png)
+
+入群记录|好友申请信息|添加好友记录
+---|:--:|---:
+![入群记录](./docs/client/group_tickets.png)|![联系人信息](./docs/client/contactInfo.png)|![发表动态](./docs/client/release_moment.png)
+
+动态列表|好友申请信息|添加好友记录
+---|:--:|---:
+![入群记录](./docs/client/moments.png)|![动态评论](./docs/client/comment_moment.png)|![动态点赞](./docs/client/like_moment.png)
