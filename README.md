@@ -80,4 +80,5 @@ MYSQL_QUEUE_LIMIT=0
 在提Issues时请尽可能简洁、清楚的描述问题，和如何进行场景复现。这能使开发者快速定位、解决问题。
 ### 技术交流群
 欢迎大家入群（QQ）交流。
+
 ![QR_code](./docs/OR_code.jpg)
