@@ -21,14 +21,49 @@
 ---|:--:|---:
 ![聊天](./docs/client/conversation.png)|![emoji](./docs/client/emoji.png)|![个人信息卡片](./docs/client/profileInfo.png)
 
-添加联系人|好友申请信息|添加好友记录
+添加联系人|申请好友表单|添加好友记录
 ---|:--:|---:
 ![添加联系人](./docs/client/contact.png)|![好友申请信息](./docs/client/apply.png)|![添加好友记录](./docs/client/contact_tickets.png)
 
-入群记录|好友申请信息|添加好友记录
+入群记录|联系人信息|发表动态
 ---|:--:|---:
 ![入群记录](./docs/client/group_tickets.png)|![联系人信息](./docs/client/contactInfo.png)|![发表动态](./docs/client/release_moment.png)
 
-动态列表|好友申请信息|添加好友记录
+动态列表|动态评论|动态点赞
 ---|:--:|---:
 ![入群记录](./docs/client/moments.png)|![动态评论](./docs/client/comment_moment.png)|![动态点赞](./docs/client/like_moment.png)
+
+## 如何启动项目
+1. 创建数据库
+`create database chat_system;`
+2. 连接数据库
+`use chat_system`;
+3. 创建数据表
+创建本系统各表的SQL详见:point_right:[各表SQL语句](./docs/server/tables.md),copy到终端中执行即可。
+4. 创建系统配置文件
+进入到本系统目录执行`touch server/.env`
+5. 配置系统配置文件
+将如下代码copy到server/.env中
+```
+# 服务端口号
+SERVER_PORT=8000 
+# 系统图片保存路径，绝对路径。
+IMG_PATH=/Users/bytedance/test
+# mysql host配置
+MYSQL_LOCALHOST=localhost 
+# mysql 端口配置
+MYSQL_PROT=3306
+# mysql 连接身份
+MYSQL_USER=root
+# mysql 连接密码，在这里配置上自己mysql的密码
+MYSQL_PASSWORD=password
+# 数据库
+MYSQL_DATABASE=chat_system
+# 连接池配置
+MYSQL_CONNECTION_LIMIT=10
+MYSQL_QUEUE_LIMIT=0
+```
+6. 在系统根目录下安装依赖
+`npm run post-install`
+7. 启动项目
+`npm start`
