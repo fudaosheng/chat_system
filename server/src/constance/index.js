@@ -1,4 +1,5 @@
 const path = require('path');
+const { IMG_PATH } = require('../app/env');
 /**
  * 请求状态吗
  */
@@ -19,7 +20,7 @@ const SORT_TYPE = {
   ASC: 'ASC'
 }
 
-const imgUploadPath = path.resolve(__dirname, '../../resource/img');
+const imgUploadPath = path.resolve(IMG_PATH);
 // 消息会话类型
 const CHAT_TYPE = {
   CHAT: 'chat', // 单聊
