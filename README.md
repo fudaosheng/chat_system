@@ -50,7 +50,7 @@
 # 服务端口号
 SERVER_PORT=8000 
 # 系统图片保存路径，绝对路径。
-IMG_PATH=/Users/bytedance/test
+IMG_PATH=/Users/chat_system/test
 # mysql host配置
 MYSQL_LOCALHOST=localhost 
 # mysql 端口配置
