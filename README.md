@@ -17,7 +17,8 @@
 6. ***朋友圈模块：*** 支持发表动态，查看好友动态，对动态进行点赞、评论。
 
 ## 系统功能预览
-[视频演示地址](https://www.bilibili.com/video/BV1z94y1X7J4?spm_id_from=333.999.0.0&vd_source=9beb9d610c807fa3b7ff85522c0e595a)
+<a href="https://www.bilibili.com/video/BV1z94y1X7J4?spm_id_from=333.999.0.0&vd_source=9beb9d610c807fa3b7ff85522c0e595a" target="_blank">系统视频演示地址</a>
+
 聊天|发送emojo|个人信息
 ---|:--:|---:
 ![聊天](./docs/client/conversation.png)|![emoji](./docs/client/emoji.png)|![个人信息卡片](./docs/client/profileInfo.png)
